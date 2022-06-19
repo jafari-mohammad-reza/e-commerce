@@ -27,8 +27,8 @@ const OrderSchema = new mongoose.Schema({
   costumer: { type: mongoose.Types.ObjectId, required: true, ref: "user" },
   items: { type: [ProductSchema], required: true },
   totalPrice: { type: Number, required: true },
-  isCompleted: { type: boolean, default: false },
-  isCanceled: { type: boolean, default: false },
+  isCompleted: { type: Boolean, default: false },
+  isCanceled: { type: Boolean, default: false },
 });
 const CartSchema = new mongoose.Schema({
   costumer: { type: mongoose.Types.ObjectId, required: true, ref: "user" },

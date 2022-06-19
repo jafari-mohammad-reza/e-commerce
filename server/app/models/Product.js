@@ -1,5 +1,5 @@
 const { default: mongoose } = require("mongoose");
-const { CommentSchema } = require("./public.schema");
+const { CommentSchema } = require("./public.schemas");
 const ProductSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },
@@ -34,9 +34,9 @@ const ProductSchema = new mongoose.Schema(
       type: Object,
       default: {},
     },
-    isActive: { type: boolean, default: true },
-    isTrend: { type: boolean, default: false },
-    isPrime: { type: boolean, default: false },
+    isActive: { type: Boolean, default: true },
+    isTrend: { type: Boolean, default: false },
+    isPrime: { type: Boolean, default: false },
   },
   {
     toJSON: {

@@ -1,4 +1,3 @@
-const { ref } = require("@hapi/joi/lib/compile");
 const { default: mongoose } = require("mongoose");
 const { OrderSchema, CartSchema } = require("./public.schemas");
 
@@ -24,8 +23,14 @@ const UserSchema = new mongoose.Schema(
     discount: { type: Number, default: 0 },
     birthday: { type: Date },
     Role: { type: [String], default: "USER" },
-    isPrime: { type: boolean, default: false },
-    isBanned: { type: boolean, default: false },
+    isVerified: { type: Boolean, default: false },
+    isPrime: { type: Boolean, default: false },
+    isBanned: { type: Boolean, default: false },
+    accessToken: { type: String, required: true, default: "" },
+    resetpasswordAttempt: { type: Number, default: 0 },
+    verificationToken: { type: String, required: true, default: "" },
+    resetPassworToken: { type: String, required: false, default: "" },
+    refreshToken: { type: String, default: "" },
   },
   {
     timestamps: true,
