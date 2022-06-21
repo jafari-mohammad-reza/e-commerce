@@ -9,6 +9,7 @@ const cors = require("cors");
 const { mainRouter } = require("./routes/routes");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
+const configureMongoose = require("./conf/mongooseConfiguration");
 module.exports = class ApplicationServer {
   #app = express();
 
@@ -31,22 +32,37 @@ module.exports = class ApplicationServer {
       swaggerUi.serve,
       swaggerUi.setup(
         swaggerJsdoc({
-          swaggerDefinition: {
-            info: {
-              title: "E-Commerce server",
-              description: "E-Commerce server api endpoints",
-              version: "1.0.0",
-              contact: {
-                email: "mohammadrezajafari.dev@gmail.com",
-                name: "Mohammadreza Jafari",
-                url: "https://www.mohammadrezajafari.info",
-              },
+            swaggerDefinition: {
+                openapi: "3.0.0",
+                info: {
+                    title: "E-Commerce Api",
+                    version: "1.0.0",
+                    description: "E-Commerce server api documntations",
+                    contact: {
+                        name: "mohammadreza jafari",
+                        url: "https://mohammadrezajafari.info",
+                        email: "mohammadrezajafari.dev@gmail.com",
+                    },
+                },
+                servers: [
+                    {
+                        url: "http://localhost:5000",
+                    },
+                ],
+                components: {
+                    securitySchemes: {
+                        BearerAuth: {
+                            type: "http",
+                            scheme: "bearer",
+                            bearerFormat: "JWT",
+                        },
+                    },
+                },
+                security: [{BearerAuth: []}],
             },
-            host: "http://localhost:5000",
-          },
-
-          apis: ["./routes/**/*.js"],
-        })
+            apis: ["/app/routes/**/*.js"],
+        }),
+          {explorer: true}
       )
     );
   }
@@ -59,24 +75,8 @@ module.exports = class ApplicationServer {
       });
   }
   configureDataBases(mongoUrl) {
-    mongoose.connect(mongoUrl);
-    const connection = mongoose.connection;
-    connection.on("open", () => {
-      console.log("\x1b[34m", "Connected to mongodb");
-    });
-    connection.on("close", () => {
-      console.log("\x1b[33m", "Disconnected from mongodb");
-    });
-    connection.once("error", (error) => {
-      console.log(
-        "\x1b[35m",
-        `Error while connecting to mongodb , error : ${error.message}`
-      );
-    });
-    process.once("SIGINT", async () => {
-      await connection.close();
-      process.exit(0);
-    });
+      configureMongoose(mongoUrl);
+      require("./conf/redisConfiguration");
   }
   configureRoutes() {
     this.#app.get("/", (req, res) => {
@@ -85,16 +85,19 @@ module.exports = class ApplicationServer {
     this.#app.use(mainRouter);
   }
   configureErrorHandlers() {
-    this.#app.use((req, res, next) => {
-      next(createError.NotFound("the route you looking for is not available."));
-    });
-    this.#app.use((err, req, res, next) => {
-      const statusCode =
-        err?.status || err?.code || StatusCodes.INTERNAL_SERVER_ERROR;
-      const message = err?.message || createError.InternalServerError().message;
-      return res.status(statusCode).json({
-        errors: { statusCode, success: false, message },
+      this.#app.use((req, res, next) => {
+          next(createError.NotFound("the route you looking for is not available."));
       });
-    });
+      this.#app.use((error, req, res, next) => {
+          const serverError = createError.InternalServerError();
+          const statusCode = error.status || serverError.status;
+          const message = error.message || serverError.message;
+          return res.status(statusCode).json({
+              errors: {
+                  statusCode,
+                  message,
+              },
+          });
+      });
   }
 };
