@@ -20,7 +20,16 @@ function VerifyRefreshToken(req, res, next) {
     }
 }
 
+function checkRole(role){
+    try {
+    }
+    catch (err){
+
+    }
+}
+
 module.exports = {
     VerifyRefreshToken,
-    VerifyAccessToken
+    VerifyAccessToken,
+    checkRole
 }

@@ -58,10 +58,11 @@ module.exports = new (class CategoryController extends DefaultController {
                 if (!result) {
                     throw createError.NotFound("there was no category with this id.")
                 }
+                // delete the category with the id in parameters and all categories with this parent id
                 CategoryModel.deleteMany({$or: [{_id: id}, {parent: id}]})
                 return res.status(StatusCodes.OK).json({
                     success: true,
-                    message: "the category and all it childs hav been removed"
+                    message: "the category and all it child's hav been removed"
                 })
             }).catch(error => {
                 throw createError.InternalServerError(error)
@@ -147,7 +148,6 @@ module.exports = new (class CategoryController extends DefaultController {
             next(createError(error))
         }
     }
-
 
 
 })

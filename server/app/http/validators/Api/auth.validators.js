@@ -60,22 +60,22 @@ const isEmailValid = Joi.string()
     .required()
     .error(new Error("Email cannot be empty"))
     .email()
-  .error(new Error("not a valid email address"))
-  .lowercase()
-  .trim()
-  .custom((value, helper) => {
-    if (
-      !value.endsWith("@gmail.com") ||
-        value.endsWith("@email.com") ||
-        value.endsWith("@yahoo.com")
-    ) {
-        return helper.error(
-            "only @gmail.com , @email.com and @yahoo.com are allowed"
-        );
-    } else {
-        return true;
-    }
-  });
+    .error(new Error("not a valid email address"))
+    .lowercase()
+    .trim()
+    .custom((value, helper) => {
+        if (
+            !value.endsWith("@gmail.com") ||
+            value.endsWith("@email.com") ||
+            value.endsWith("@yahoo.com")
+        ) {
+            return helper.error(
+                "only @gmail.com , @email.com and @yahoo.com are allowed"
+            );
+        } else {
+            return true;
+        }
+    });
 const mobileNumber = Joi.string()
     .required()
     .error(new Error("mobile number is required"))

@@ -9,5 +9,5 @@ router.patch("/:id", CategoryController.editCategory)
 router.delete("/:id", CategoryController.removeCategory)
 
 module.exports = {
-    CategoryRoutes: router
+    AdminCategoryRoutes: router
 }

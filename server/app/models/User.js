@@ -1,51 +1,51 @@
-const { default: mongoose } = require("mongoose");
-const { OrderSchema, CartSchema } = require("./public.schemas");
+const {default: mongoose} = require("mongoose");
+const {OrderSchema, CartSchema} = require("./public.schemas");
 
 const UserSchema = new mongoose.Schema(
-  {
-      firstName: {type: String},
-      lastName: {type: String},
-      username: {type: String, uniq: true},
-      mobileNumber: {type: String, uniq: true},
-      email: {type: String, lowercase: true, uniq: true},
-      password: {type: String},
-      otp: {
-          type: Object,
-          default: {
-              code: 0,
-              expiresIn: 0,
-          },
-      },
-      orders: {type: [OrderSchema], default: []},
-      cart: {type: [CartSchema], default: []},
-      wishList: {type: [CartSchema], default: []},
-      bookMarks: {type: [mongoose.Types.ObjectId], default: []},
-      discount: {type: Number, default: 0},
-      birthday: {type: Date},
-      Role: {type: [String], default: "USER"},
-      isVerified: {type: Boolean, default: false},
-      isPrime: {type: Boolean, default: false},
-      isBanned: {type: Boolean, default: false},
-      accessToken: {type: String, default: ""},
-      resetPasswordAttempt: {type: Number, default: 0},
-      verificationToken: {type: String, default: ""},
-      resetPasswordToken: {type: String, default: ""},
-      refreshToken: {type: String, default: ""},
-  },
-  {
-    timestamps: true,
-    toJSON: {
-      virtuals: true,
+    {
+        firstName: {type: String},
+        lastName: {type: String},
+        username: {type: String, uniq: true},
+        mobileNumber: {type: String, uniq: true},
+        email: {type: String, lowercase: true, uniq: true},
+        password: {type: String},
+        otp: {
+            type: Object,
+            default: {
+                code: 0,
+                expiresIn: 0,
+            },
+        },
+        orders: {type: [OrderSchema], default: []},
+        cart: {type: [CartSchema], default: []},
+        wishList: {type: [CartSchema], default: []},
+        bookMarks: {type: [mongoose.Types.ObjectId], default: []},
+        discount: {type: Number, default: 0},
+        birthday: {type: Date},
+        Role: {type: [String], default: "USER"},
+        isVerified: {type: Boolean, default: false},
+        isPrime: {type: Boolean, default: false},
+        isBanned: {type: Boolean, default: false},
+        accessToken: {type: String, default: ""},
+        resetPasswordAttempt: {type: Number, default: 0},
+        verificationToken: {type: String, default: ""},
+        resetPasswordToken: {type: String, default: ""},
+        refreshToken: {type: String, default: ""},
     },
-  }
+    {
+        timestamps: true,
+        toJSON: {
+            virtuals: true,
+        },
+    }
 );
 UserSchema.index({
-  first_name: "text",
-  last_name: "text",
-  username: "text",
-  mobile: "text",
-  email: "text",
+    first_name: "text",
+    last_name: "text",
+    username: "text",
+    mobile: "text",
+    email: "text",
 });
 module.exports = {
-  UserModel: mongoose.model("user", UserSchema),
+    UserModel: mongoose.model("user", UserSchema),
 };
