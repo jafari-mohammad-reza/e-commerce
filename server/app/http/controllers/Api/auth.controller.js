@@ -1,4 +1,4 @@
-const DefaultController = require("../default.contoller");
+const DefaultController = require("../default.controller");
 const createError = require("http-errors");
 const { StatusCodes, NOT_ACCEPTABLE } = require("http-status-codes");
 const { UserModel } = require("../../../models/User");

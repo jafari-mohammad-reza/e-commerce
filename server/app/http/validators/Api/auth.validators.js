@@ -37,7 +37,11 @@ const passwordValidator = Joi.string()
         createError.BadRequest(
             "password must contains at least 1 uppercase letter,1 lowercase letter and 1 number"
         )
-    );
+    ).messages({
+        "any.required": "password cannot be empty",
+        "string.max": "password must be between 8 to 16 characters",
+        "string.min": "password must be between 8 to 16 characters",
+    });
 const emailLoginValidator = Joi.object({
     username: userNameValidator,
     email: emailValidator,

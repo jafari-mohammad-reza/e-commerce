@@ -1,12 +1,12 @@
 const express = require("express");
-const {default: mongoose, mongo} = require("mongoose");
+const { default: mongoose, mongo } = require("mongoose");
 const path = require("path");
 const createError = require("http-errors");
-const {StatusCodes} = require("http-status-codes");
+const { StatusCodes } = require("http-status-codes");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
-const {mainRouter} = require("./routes/router");
+const { mainRouter } = require("./routes/router");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const configureMongoose = require("./conf/mongooseConfiguration");
@@ -24,9 +24,9 @@ module.exports = class ApplicationServer {
     configureApplication() {
         this.#app.use(morgan("dev"));
         this.#app.use(helmet());
-        this.#app.use(cors({credentials: true, origin: "http://localhost:3000"}));
+        this.#app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
         this.#app.use(express.json());
-        this.#app.use(express.urlencoded({extended: true}));
+        this.#app.use(express.urlencoded({ extended: true }));
         this.#app.use(express.static(path.join(__dirname, "..", "public")));
         this.#app.use(
             "/api-docs",
@@ -59,11 +59,11 @@ module.exports = class ApplicationServer {
                                 },
                             },
                         },
-                        security: [{BearerAuth: []}],
+                        security: [{ BearerAuth: [] }],
                     },
-                    apis: ["/app/routes/**/*.js"],
+                    apis: ["./app/routes/**/*.js"],
                 }),
-                {explorer: true}
+                { explorer: true }
             )
         );
     }
@@ -96,7 +96,7 @@ module.exports = class ApplicationServer {
         this.#app.use((error, req, res, next) => {
             const serverError = createError.InternalServerError();
             const statusCode = error.status || serverError.status;
-            const message = error.message || serverError.message;
+            const message = error.message.message || serverError.message;
             return res.status(statusCode).json({
                 errors: {
                     statusCode,
