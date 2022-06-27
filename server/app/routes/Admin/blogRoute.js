@@ -121,9 +121,9 @@ router.post("/", imageUploader.single("image"), stringToArray("tags"), AdminBlog
  *          description: update blog
  *          produces: [application/json]
  *          parameters:
- *              - name :id
+ *              - name: id
  *                in : path
- *                required :true
+ *                required: true
  *              - name: title
  *                in: input
  *                schema:

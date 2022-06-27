@@ -15,7 +15,7 @@ const router = require("express").Router();
  *              500:
  *                  description : Internal Server Error
  * */
-router.get("/", productController.getAllProduct)
+router.get("/", productController.getAllProduct);
 /**
  * @swagger
  *  /admin/product/{id}:
@@ -23,17 +23,17 @@ router.get("/", productController.getAllProduct)
  *          description : Get product by id
  *          tags : [Admin-Products]
  *          produces: [application/json]
- *          parameters : 
- *              - name :id  
+ *          parameters :
+ *              - name: id
  *                in : path
- *                required :true
+ *                required: true
  *          responses :
  *              200 :
  *                  description : Get  product
  *              500:
  *                  description : Internal Server Error
  * */
-router.get("/:id", productController.getProductById)
+router.get("/:id", productController.getProductById);
 /**
  * @swagger
  *  /admin/product:
@@ -47,7 +47,7 @@ router.get("/:id", productController.getProductById)
  *              500:
  *                  description : Internal Server Error
  * */
-router.post("/", productController.createProduct)
+router.post("/", productController.createProduct);
 /**
  * @swagger
  *  /admin/product/{id}:
@@ -66,7 +66,7 @@ router.post("/", productController.createProduct)
  *              500:
  *                  description : Internal Server Error
  * */
-router.put("/:id", productController.editProduct)
+router.put("/:id", productController.editProduct);
 /**
  * @swagger
  *  /admin/product/{id}:
@@ -85,7 +85,8 @@ router.put("/:id", productController.editProduct)
  *              500:
  *                  description : Internal Server Error
  * */
-router.delete("/:id", productController.removeProduct)
+router.delete("/:id", productController.removeProduct);
 module.exports = {
-    AdminProductRoutes: router
-}
+  AdminProductRoutes: router,
+};
+
