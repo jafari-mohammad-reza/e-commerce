@@ -1,7 +1,7 @@
 const createError = require("http-errors");
 const redis = require("redis")
 const redisClient = redis.createClient({
-    url: "redis://127.0.0.1:6379",
+    url: process.env.REDIS_URL,
     retry_strategy: function (options) {
         if (options.error && options.error.code === "ECONNREFUSED") {
             // End reconnecting on a specific error and flush all commands

@@ -42,22 +42,23 @@ function generateRefreshToken(userId) {
 }
 
 function generateOTP() {
-    return Promise.resolve({
+    return {
         code: Math.floor(Math.random() * 1000000),
-        expiresIn: new Date().getTime() + 120000,
-    });
+        expiresIn: new Date().getTime() + 120000
+    }
+
 }
 
 function validateToken(token) {
     try {
-        let token;
+        let tk;
         jwt.verify(token, process.env.JWT_TOKEN, {}, (err, verifiedToken) => {
-            if (err) throw createHttpError.InternalError(err);
-            token = verifiedToken;
+            if (err) throw createHttpError.InternalServerError(err);
+            tk = verifiedToken
         });
-        return token;
+        return tk;
     } catch (err) {
-        createHttpError.InternalError(err.message);
+        createHttpError.InternalServerError(err);
     }
 }
 
@@ -83,7 +84,7 @@ function validateRefreshToken(token) {
             }
         );
     } catch (err) {
-        createHttpError.InternalError(err.message);
+        createHttpError.InternalServerError(err.message);
     }
 }
 

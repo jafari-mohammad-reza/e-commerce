@@ -3,7 +3,7 @@ module.exports = new (class ProfileController extends DefaultController {
     async changePassword(req, res, next) {
         try {
             const user = req?.user;
-            const { password, confirmPassword } = req.body;
+            const {password, confirmPassword} = req.body;
             if (password !== confirmPassword) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     success: false,

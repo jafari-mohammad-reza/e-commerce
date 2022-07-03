@@ -33,14 +33,12 @@ const passwordValidator = Joi.string()
     .min(8)
     .max(16)
     .pattern(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/)
-    .error(
-        createError.BadRequest(
-            "password must contains at least 1 uppercase letter,1 lowercase letter and 1 number"
-        )
-    ).messages({
+    .messages({
         "any.required": "password cannot be empty",
         "string.max": "password must be between 8 to 16 characters",
         "string.min": "password must be between 8 to 16 characters",
+        "string.pattern": "password must contains at least on uppercase and lowercase character and one number.",
+        "string.equal": "confirmPassword must be exactly equal to password"
     });
 const emailLoginValidator = Joi.object({
     username: userNameValidator,
@@ -50,45 +48,61 @@ const emailLoginValidator = Joi.object({
 });
 
 const emailRegisterValidator = Joi.object({
-    username: userNameValidator,
-    email: emailValidator,
+    username: userNameValidator.required(),
+    email: emailValidator.required(),
     password: passwordValidator,
     confirmPassword: passwordValidator
         .equal(Joi.ref("password"))
-        .error(
-            createError.BadRequest("confirmPassword must be exactly qual to password")
-        ),
-});
 
-const isEmailValid = Joi.string()
-    .required()
-    .error(new Error("Email cannot be empty"))
-    .email()
-    .error(new Error("not a valid email address"))
-    .lowercase()
-    .trim()
-    .custom((value, helper) => {
-        if (
-            !value.endsWith("@gmail.com") ||
-            value.endsWith("@email.com") ||
-            value.endsWith("@yahoo.com")
-        ) {
-            return helper.error(
-                "only @gmail.com , @email.com and @yahoo.com are allowed"
-            );
-        } else {
-            return true;
-        }
-    });
-const mobileNumber = Joi.string()
-    .required()
-    .error(new Error("mobile number is required"))
-    .length(11)
-    .pattern(/^09[0-9]{9}$/)
-    .trim();
+});
+const validatePassword = Joi.object({
+    password: passwordValidator,
+    confirmPassword: passwordValidator
+        .equal(Joi.ref("password"))
+
+})
+const isEmailValid = Joi.object({
+    email: Joi.string()
+        .required()
+        .email()
+        .lowercase()
+        .trim()
+        .custom((value, helper) => {
+            const ending = value.trim().split("@")[1].split(".")[0];
+            if (ending === "gmail" || ending === "email" || ending === "yahoo") {
+                return value;
+            } else {
+                return helper.message("Not a valid domain");
+            }
+        })
+        .messages({
+            "any.required": "the email is required",
+            "string.email": "make sure to enter a valid email address"
+        })
+})
+const mobileNumber = Joi.object({
+    mobile: Joi.string()
+        .required()
+        .length(11)
+        .pattern(/^09[0-9]{9}$/)
+        .trim().messages({
+            "any.required": "Mobile cannot be empty",
+            "any.pattern": "Not a valid mobile number  "
+        })
+});
 const loginByMobile = Joi.object({
-    mobileNumber,
-    otp: Joi.string().required().error(new Error("otp is required")).length(6),
+    mobile: Joi.string()
+        .required()
+        .length(11)
+        .pattern(/^09[0-9]{9}$/)
+        .trim().messages({
+            "any.required": "Mobile cannot be empty",
+            "any.pattern": "Not a valid mobile number  "
+        }),
+    otp: Joi.string().required().length(6).messages({
+        "any.required": "OTP cannot be empty",
+        "string.length": "OTP should bbe 6 numbers"
+    }),
 });
 
 module.exports = {
@@ -97,4 +111,5 @@ module.exports = {
     isEmailValid,
     mobileNumber,
     loginByMobile,
+    validatePassword
 };

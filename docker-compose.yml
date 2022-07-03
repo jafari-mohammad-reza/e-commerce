@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app
+  server:
+    build: ./server
+    ports:
+      - "5000:5000"
+    environment:
+      MONGO_URL: mongodb://mongodb/e-commerce
+      REDIS_URL: redis://redis
+    volumes:
+      - ./server:/app
+  mongodb:
+    image: mongo:4.0-xenial
+    ports:
+      - "27018:27017"
+    volumes:
+      - e-commerce:/data/db
+    container_name: main_Mongo
+  redis:
+    image: redis:alpine
+    command:
+      - redis-server
+    ports:
+      - 6379:6379
+    container_name: main_Redis
+    volumes:
+      - redis-data:/data
+      - redis-conf:/usr/local/etc/redis/redis.conf
+volumes:
+  e-commerce:
+  redis-data:
+  redis-conf:
+

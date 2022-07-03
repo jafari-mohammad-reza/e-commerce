@@ -1,36 +1,36 @@
 const DefaultController = require("../default.controller")
 const createHttpError = require("http-errors")
-const { createBlogValidator } = require("../../validators/Admin/blog.validators");
+const {createBlogValidator} = require("../../validators/Admin/blog.validators");
 const path = require("path")
-const { StatusCodes } = require("http-status-codes");
-const { BlogModel } = require("../../../models/Blog");
-const { isValidObjectId } = require("mongoose");
-const { createTransport } = require("nodemailer");
-const { deleteImageFromPath } = require("../../../utils/imageUtils");
+const {StatusCodes} = require("http-status-codes");
+const {BlogModel} = require("../../../models/Blog");
+const {isValidObjectId} = require("mongoose");
+const {createTransport} = require("nodemailer");
+const {deleteImageFromPath} = require("../../../utils/imageUtils");
 module.exports = new class AdminBlogController extends DefaultController {
     async createBlog(req, res, next) {
         try {
             const bodyData = await createBlogValidator.validateAsync(req.body);
-            const { title, overView, content, tags, category } = bodyData;
+            const {title, overView, content, tags, category} = bodyData;
             req.body.image = (path.join(req.body.fileUploadPath, req.body.fileName)).replaceAll(/\\/gi)
             const image = req.body.image
             const author = req?.user?._id
-            await BlogModel.create({ title, overView, content, tags, category, image, author }).then(() => {
+            await BlogModel.create({title, overView, content, tags, category, image, author}).then(() => {
                 return res.status(StatusCodes.OK).json({
                     success: true,
                     message: "Blog has been created successfuly."
                 })
             }).catch(error => {
-                throw createHttpError.INTERNALSERVERERROR(error)
+                throw createHttpError.InternalServerError(error)
             })
         } catch (error) {
-            next(createHttpError.InternalServerError(error))
+            next(error)
         }
     }
 
     async editBlog(req, res, next) {
         try {
-            const { id } = req.params;
+            const {id} = req.params;
             if (!isValidObjectId(id)) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     success: false,
@@ -51,7 +51,7 @@ module.exports = new class AdminBlogController extends DefaultController {
                 if (Array.isArray(data[key]) && data[key].length > 0) data[key] = data[key].map(item => item.trim())
                 if (nullishData.includes(data[key])) delete data[key];
             })
-            await BlogModel.updateOne({ _id: id }, { $set: data }).then(result => {
+            await BlogModel.updateOne({_id: id}, {$set: data}).then(result => {
                 if (result.modifiedCount > 0) {
                     return res.status(StatusCodes.OK).json({
                         success: true,
@@ -63,17 +63,17 @@ module.exports = new class AdminBlogController extends DefaultController {
                 throw createHttpError.InternalServerError(err)
             })
         } catch (error) {
-            next(createHttpError.InternalServerError(error))
+            next(error)
         }
     }
 
     async deleteBlog(req, res, next) {
         try {
-            const { id } = req.params;
+            const {id} = req.params;
             if (!isValidObjectId(id)) {
                 throw createHttpError.BadRequest("the id is not valid")
             }
-            await BlogModel.deleteOne({ _id: id }).then((result) => {
+            await BlogModel.deleteOne({_id: id}).then((result) => {
                 if (result.deletedCount > 0) {
                     deleteImageFromPath(result.image)
                     return res.status(StatusCodes.OK).json({
@@ -86,14 +86,14 @@ module.exports = new class AdminBlogController extends DefaultController {
                 throw createHttpError.InternalServerError(err)
             })
         } catch (error) {
-            next(createHttpError.InternalServerError(error))
+            next(error)
         }
     }
 
     async getAllBlogs(req, res, next) {
         try {
             const blogs = await BlogModel.aggregate([
-                { $match: {} },
+                {$match: {}},
                 {
                     $lookup: {
                         from: "users",
@@ -126,26 +126,31 @@ module.exports = new class AdminBlogController extends DefaultController {
                         "author.orders": 0,
                     }
                 }
-            ]).catch(err => { throw createHttpError.INTERNALSERVERERROR(err) })
+            ]).catch(err => {
+                throw createHttpError.INTERNALSERVERERROR(err)
+            })
             return res.status(StatusCodes.OK).json({
                 success: true,
                 blogs
             })
         } catch (error) {
-            next(createHttpError.InternalServerError(error))
+            next(error)
         }
     }
 
     async getBlogById(req, res, next) {
         try {
-            const { id } = req.params;
+            const {id} = req.params;
             if (!isValidObjectId(id)) {
                 return res.status(StatusCodes.BAD_REQUEST).json({
                     success: false,
                     message: "Not a valid id"
                 })
             }
-            await BlogModel.findOne({ _id: id }).populate([{ path: "category", select: ['title'] }, { path: "author", select: ['mobile', 'first_name', 'last_name', 'username'] }]).then(result => {
+            await BlogModel.findOne({_id: id}).populate([{path: "category", select: ['title']}, {
+                path: "author",
+                select: ['mobile', 'first_name', 'last_name', 'username']
+            }]).then(result => {
                 if (!result) {
                     return res.status(StatusCodes.NOT_FOUND).json({
                         success: false,
@@ -161,14 +166,15 @@ module.exports = new class AdminBlogController extends DefaultController {
             })
 
         } catch (error) {
-            next(createHttpError.InternalServerError(error))
+            next(error)
         }
     }
+
     // should be tested in future
     async getBlogByQuery(req, res, next) {
         try {
-            const { query } = req.params;
-            await BlogModel.findOne({ query }).then(result => {
+            const {query} = req.params;
+            await BlogModel.findOne({query}).then(result => {
                 if (!result) {
                     return res.status(StatusCodes.NotFound).json({
                         success: false,
@@ -183,10 +189,9 @@ module.exports = new class AdminBlogController extends DefaultController {
                 throw createHttpError.BadRequest(err);
             })
         } catch (error) {
-            next(createHttpError.InternalServerError(error))
+            next(error)
         }
     }
-
 
 
 }()

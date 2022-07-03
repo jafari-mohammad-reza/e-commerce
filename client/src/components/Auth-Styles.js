@@ -21,6 +21,7 @@ export const AuthWrapper = styled.form`
     padding: 1rem;
     margin-top: 0;
   }
+
   h1 {
     font-size: 3.2rem;
     font-weight: 600;
@@ -29,6 +30,7 @@ export const AuthWrapper = styled.form`
       font-size: 2.4rem;
     }
   }
+
   hr {
     width: 100%;
     height: 1px;
@@ -70,9 +72,11 @@ export const Button = styled.button`
     height: auto;
     font-size: 1.2rem;
   }
+
   &:hover {
     transform: translate(-12px, -12px);
   }
+
   &::before,
   &::after {
     content: "";
@@ -87,6 +91,7 @@ export const Button = styled.button`
     z-index: -1;
     transition: transform 0.3s ease;
   }
+
   &:hover::after {
     transform: translate(6px, 6px);
   }
@@ -100,11 +105,13 @@ export const SubLink = styled(Link)`
   justify-content: center;
   align-items: center;
   margin-top: 1rem;
+
   h5 {
     font-size: 2rem;
     font-weight: 600;
     color: #595959;
   }
+
   span {
     font-size: 1.5rem;
     font-weight: 600;
@@ -122,6 +129,7 @@ export const OuterOptions = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
   span {
     font-size: 2rem;
     font-weight: 500;
@@ -130,6 +138,7 @@ export const OuterOptions = styled.div`
       font-size: 2.4rem;
     }
   }
+
   hr {
     width: 100%;
     height: 1px;
@@ -144,6 +153,7 @@ export const GoogleButton = styled(FaGoogle)`
   font-size: 3rem;
   margin: 2.5rem;
   transition: all 0.3s ease-in-out;
+
   &:hover {
     transform: scale(1.2);
   }

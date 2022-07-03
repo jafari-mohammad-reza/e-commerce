@@ -11,10 +11,7 @@ const UserSchema = new mongoose.Schema(
         password: {type: String},
         otp: {
             type: Object,
-            default: {
-                code: 0,
-                expiresIn: 0,
-            },
+            default: {},
         },
         orders: {type: [OrderSchema], default: []},
         cart: {type: [CartSchema], default: []},

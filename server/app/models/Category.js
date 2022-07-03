@@ -7,6 +7,7 @@ const CategorySchema = new mongoose.Schema(
             type: mongoose.Types.ObjectId,
             ref: "category",
             default: undefined,
+            required: false
         },
     },
     {

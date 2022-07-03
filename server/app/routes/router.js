@@ -1,5 +1,5 @@
-const {adminRoutes} = require("./Admin/adminRoutes");
-const {apiRoutes} = require("./Api/apiRouter");
+const {adminRoutes} = require("./Admin/admin.routes");
+const {apiRoutes} = require("./Api/api.routes");
 const {clientRoutes} = require("./Client/client.routes");
 
 const router = require("express").Router();
