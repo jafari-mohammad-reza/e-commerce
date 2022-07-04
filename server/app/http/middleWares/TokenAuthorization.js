@@ -1,51 +1,57 @@
-const createError = require("http-errors");
+const createHttpError = require("http-errors");
 const {UserModel} = require("../../models/User");
-const {validateToken} = require("../../utils/Security");
+const JWT = require("jsonwebtoken");
 
 function getToken(headers) {
-    const {cookie, authorization} = headers;
-    if (!cookie["token"] && !authorization) throw createError.Unauthorized("Please login first.")
-    return cookie.trim().split("=")[1] || authorization.trim().split("Bearer")[1]
+    const {authorization, cookie} = headers;
+    if (!authorization || !cookie) {
+        throw createHttpError.Unauthorized(
+            "Please login first"
+        )
+    }
+    if (authorization) {
+        const [bearer, token] = authorization?.split(" ") || [];
+        if (token && ["Bearer", "bearer"].includes(bearer)) return token;
+        throw createHttpError.Unauthorized(
+            "Please login first"
+        );
+    }
+    if (cookie) {
+        const token = cookie["access_token"].split("=")[1]
+        if (token) return token;
+        throw createHttpError.Unauthorized(
+            "Please login first"
+        );
+    }
+    throw createHttpError.Unauthorized(
+        "Please login first"
+    );
 }
 
 function VerifyAccessToken(req, res, next) {
     try {
         const token = getToken(req.headers);
-        const {email} = validateToken(token);
-        const user = UserModel.findOne({email}, {password: 0, __v: 0, createdAt: 0, updatedAt: 0});
-        if (!user) throw createError.Unauthorized("Please login first.")
-        req.user = user;
-        next()
+        JWT.verify(token, process.env.JWT_TOKEN, async (err, encoded) => {
+            try {
+                if (err) throw createHttpError.Unauthorized("Please login first");
+                const {email, mobileNumber} = encoded.payload || {};
+                const user = await UserModel.findOne(
+                    {mobileNumber, email},
+                    {mobileNumber: 1, email: 1, username: 1, Role: 1}
+                );
+                if (!user) throw createHttpError.Unauthorized("no account");
+                req.user = user;
+                return next();
+            } catch (error) {
+                next(error);
+            }
+        });
     } catch (error) {
-        next(createError.InternalServerError(error))
-    }
-}
-
-function VerifyRefreshToken(req, res, next) {
-    try {
-    } catch (error) {
-    }
-}
-
-function checkRole(req, res, next) {
-    return function (role) {
-
-        try {
-            const token = getToken(req.headers);
-            const {email} = validateToken(token);
-            const user = UserModel.findOne({email}, {password: 0, __v: 0, createdAt: 0, updatedAt: 0});
-            if (!user) throw createError.Unauthorized("Please login first.")
-            if (!user.Role.includes(role)) throw createError.Unauthorized("You don't have permission to access this page.")
-            req.user = user;
-            next()
-        } catch (err) {
-            next(createError.InternalServerError(err))
-        }
+        next(error);
     }
 }
 
 module.exports = {
-    VerifyRefreshToken,
     VerifyAccessToken,
-    checkRole
+
 }

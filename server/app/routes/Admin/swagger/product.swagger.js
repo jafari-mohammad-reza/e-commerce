@@ -38,29 +38,25 @@
  *                      description: the title of product
  *                  overView:
  *                      type: string
- *                      description: the overView of product
+ *                      description: the title of product
  *                  description:
  *                      type: string
- *                      description: the description of product
+ *                      description: the title of product
  *                  tags:
  *                      type: array
- *                      description: the tags of product
+ *                      description: the title of product
  *                  category:
  *                      type: string
- *                      description: the category of product
- *                      example: 6279e994c1e47a98d0f356d3
+ *                      description: the title of product
  *                  price:
  *                      type: string
  *                      description: the title of product
- *                      example: 2500000
  *                  discount:
  *                      type: string
- *                      description: the discount product
- *                      example: 20
+ *                      description: the title of product
  *                  stockCount:
  *                      type: string
- *                      description: the stock count of product
- *                      example: 100
+ *                      description: the title of product
  *                  images:
  *                      type: array
  *                      items:
@@ -69,19 +65,15 @@
  *                  height:
  *                      type: string
  *                      description: the height of product packet
- *                      example: 0
  *                  weight:
  *                      type: string
  *                      description: the weight of product packet
- *                      example: 0
  *                  width:
  *                      type: string
  *                      description: the with of product packet
- *                      example: 0
  *                  length:
  *                      type: string
  *                      description: the length of product packet
- *                      example: 0
  *                  colors:
  *                      $ref: '#/components/schemas/Color'
  *
@@ -94,34 +86,30 @@
  *          Edit-Product:
  *              type: object
  *              properties:
- *                 title:
+ *                  title:
  *                      type: string
  *                      description: the title of product
  *                  overView:
  *                      type: string
- *                      description: the overView of product
+ *                      description: the title of product
  *                  description:
  *                      type: string
- *                      description: the description of product
+ *                      description: the title of product
  *                  tags:
  *                      type: array
- *                      description: the tags of product
+ *                      description: the title of product
  *                  category:
  *                      type: string
- *                      description: the category of product
- *                      example: 6279e994c1e47a98d0f356d3
+ *                      description: the title of product
  *                  price:
  *                      type: string
  *                      description: the title of product
- *                      example: 2500000
  *                  discount:
  *                      type: string
- *                      description: the discount product
- *                      example: 20
+ *                      description: the title of product
  *                  stockCount:
  *                      type: string
- *                      description: the stock count of product
- *                      example: 100
+ *                      description: the title of product
  *                  images:
  *                      type: array
  *                      items:
@@ -130,24 +118,19 @@
  *                  height:
  *                      type: string
  *                      description: the height of product packet
- *                      example: 0
  *                  weight:
  *                      type: string
  *                      description: the weight of product packet
- *                      example: 0
  *                  width:
  *                      type: string
  *                      description: the with of product packet
- *                      example: 0
  *                  length:
  *                      type: string
  *                      description: the length of product packet
- *                      example: 0
  *                  colors:
  *                      $ref: '#/components/schemas/Color'
  *
  */
-
 
 /**
  * @swagger
@@ -181,7 +164,7 @@
  *              -   in: query
  *                  name: search
  *                  type: string
- *                  description: text for search in title, text, short_text of (product)
+ *                  description: description for search in title, description, overView of (product)
  *          responses:
  *              200:
  *                  description: success
@@ -223,7 +206,7 @@
 /**
  * @swagger
  *  /admin/products/{id}:
- *      patch:
+ *      put:
  *          tags: [Product(AdminPanel)]
  *          summary: create and save product
  *          parameters:

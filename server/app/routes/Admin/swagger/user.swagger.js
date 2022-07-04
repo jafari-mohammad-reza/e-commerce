@@ -13,12 +13,12 @@
  *                      type: string
  *                      description: the last_name of user
  *                      example: Jafari
- *                  email:
- *                      type: string
- *                      description: the email of user
- *                      example: erfanyousefi@gmail.com
  *                  username:
  *                      type: string
+ *                      description: the email of user
+ *                      example: mohammad@gmail.com
+ *                  birthday:
+ *                      type: Date
  *                      example: MohammadJafari
  *                      description: the username of user
  *
@@ -55,7 +55,7 @@
  *                                  email:
  *                                      type: string
  *                                      example: "the_user_email@example.com"
- *                                  mobile:
+ *                                  mobileNumber:
  *                                      type: string
  *                                      example: "09121212121"
  */

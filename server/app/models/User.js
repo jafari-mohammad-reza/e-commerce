@@ -1,5 +1,6 @@
 const {default: mongoose} = require("mongoose");
 const {OrderSchema, CartSchema} = require("./public.schemas");
+const {RoleSchema} = require("./Role");
 
 const UserSchema = new mongoose.Schema(
     {
@@ -19,7 +20,10 @@ const UserSchema = new mongoose.Schema(
         bookMarks: {type: [mongoose.Types.ObjectId], default: []},
         discount: {type: Number, default: 0},
         birthday: {type: Date},
-        Role: {type: [String], default: "USER"},
+        Role: {
+            type: RoleSchema,
+            default: {title: "USER", permissions: [{_id: "62c377a034fb3572506afd75", title: "user"}]}
+        },
         isVerified: {type: Boolean, default: false},
         isPrime: {type: Boolean, default: false},
         isBanned: {type: Boolean, default: false},
@@ -37,10 +41,10 @@ const UserSchema = new mongoose.Schema(
     }
 );
 UserSchema.index({
-    first_name: "text",
-    last_name: "text",
+    firstName: "text",
+    lastMame: "text",
     username: "text",
-    mobile: "text",
+    mobileNumber: "text",
     email: "text",
 });
 module.exports = {

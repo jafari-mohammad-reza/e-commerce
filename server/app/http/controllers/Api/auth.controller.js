@@ -39,17 +39,17 @@ module.exports = new (class AuthController extends DefaultController {
                 // await SendAccountVerification(user.email, user.verificationToken);
                 throw createError(401, "you have not verify your account yet,do it by the link we sent to your email.")
             }
-            user.accessToken = generateAccessToken(user.email);
-            user.refreshToken = generateAccessToken(user._id);
+            user.accessToken = generateAccessToken({email: user.email});
+            user.refreshToken = generateRefreshToken({userId: user._id});
             await user.save();
             return res
                 .status(StatusCodes.OK)
-                .cookie("access-token", user.accessToken, {
+                .cookie("access_token", user.accessToken, {
                     expires: rememberme
                         ? new Date(Date.now() + 2592000)
                         : new Date(Date.now() + 86400),
                 })
-                .cookie("refresh-token", user.refreshToken, {httpOnly: true})
+                .cookie("refresh_token", user.refreshToken, {httpOnly: true})
                 .json({
                     success: true,
                     message: "logged in successfully.",
@@ -238,7 +238,7 @@ module.exports = new (class AuthController extends DefaultController {
         try {
             const bodyData = await loginByMobile.validateAsync(req.body);
             const {mobile, otp} = bodyData;
-            const user = await UserModel.findOne({mobileNumber: mobile}, {otp: 1});
+            const user = await UserModel.findOne({mobileNumber: mobile}, {otp: 1, mobileNumber: 1});
             if (!user) {
                 throw createError.NotFound("there is no user  with this mobile number");
             }
@@ -257,13 +257,14 @@ module.exports = new (class AuthController extends DefaultController {
             }
             user.otp = {}
             user.isMobileVerified = true;
-            user.accessToken = generateAccessToken(user.mobileNumber);
-            user.refreshToken = generateRefreshToken(user._id);
+            user.isVerified = true;
+            user.accessToken = generateAccessToken({mobileNumber: user?.mobileNumber});
+            user.refreshToken = generateRefreshToken({userId: user._id});
             await user.save();
             return res
                 .status(StatusCodes.OK)
-                .cookie("access-token", user.accessToken)
-                .cookie("refresh-token", user.refreshToken, {httpOnly: true})
+                .cookie("access_token", user.accessToken)
+                .cookie("refresh_token", user.refreshToken, {httpOnly: true})
                 .json({
                     success: true,
                     message: "you've been logged in successfully.",

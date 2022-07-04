@@ -2,10 +2,11 @@ const mongoose = require("mongoose");
 
 const PermissionSchema = new mongoose.Schema(
     {
-        name: {type: String, unique: true},
-        description: {type: String, default: ""},
+        title: {type: String, unique: true},
     },
     {
+        versionKey: false,
+        id: false,
         toJSON: {virtuals: true},
     }
 );

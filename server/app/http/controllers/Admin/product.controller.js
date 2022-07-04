@@ -13,6 +13,7 @@ const {
 module.exports = new (class AdminProductController extends DefaultController {
     async createProduct(req, res, next) {
         try {
+            console.log(req.body)
             const images = uploadMultipleFiles(
                 req?.files || [],
                 req.body.fileUploadPath

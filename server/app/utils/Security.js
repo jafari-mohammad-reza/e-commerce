@@ -53,7 +53,11 @@ function validateToken(token) {
     try {
         let tk;
         jwt.verify(token, process.env.JWT_TOKEN, {}, (err, verifiedToken) => {
-            if (err) throw createHttpError.InternalServerError(err);
+            if (err) {
+                console.log(process.env.JWT_TOKEN)
+                throw createHttpError.InternalServerError(err)
+            }
+            // console.log(verifiedToken)
             tk = verifiedToken
         });
         return tk;

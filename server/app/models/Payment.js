@@ -11,5 +11,5 @@ const PermissionSchema = new mongoose.Schema(
 );
 
 module.exports = {
-    PermissionsModel: mongoose.model("permission", PermissionSchema),
+    PaymentsModel: mongoose.model("permission", PermissionSchema),
 };
