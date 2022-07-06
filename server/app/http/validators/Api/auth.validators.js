@@ -16,11 +16,11 @@ const emailValidator = Joi.string()
 const userNameValidator = Joi.string()
     .empty()
     .min(3)
-    .max(10)
+    .max(12)
     .messages({
         "any.required": "username cannot be empty",
-        "string.max": "username must be between 5 to 10 characters",
-        "string.min": "username must be between 5 to 10 characters",
+        "string.max": "username must be between 5 to 12 characters",
+        "string.min": "username must be between 5 to 12 characters",
     })
     .custom((value, helper) => {
         const specialCharactersRegex = /[!@#$&*]/;
@@ -41,7 +41,6 @@ const passwordValidator = Joi.string()
         "string.equal": "confirmPassword must be exactly equal to password"
     });
 const emailLoginValidator = Joi.object({
-    username: userNameValidator,
     email: emailValidator,
     password: passwordValidator,
     rememberme: Joi.boolean().default(false),
