@@ -1,10 +1,14 @@
 import React, {useEffect} from "react";
-import {useCookies} from "react-cookie";
+import {useSelector} from "react-redux";
+import {selectCurrentToken} from "../app/features/auth/authSlice";
+import {Link} from "react-router-dom";
 
 export default function HomePage() {
-    const [cookies, setCookie] = useCookies();
+    const token = useSelector(selectCurrentToken)
     useEffect(() => {
-        console.log(cookies["access-token"]);
-    }, [cookies]);
-    return <div>HomePage</div>;
+        console.log(document.cookie.toString())
+    }, [document.cookie])
+    return <div>
+        <Link to={"/admin"}>admin route</Link>
+        {token}</div>;
 }

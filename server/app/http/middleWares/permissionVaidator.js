@@ -9,9 +9,7 @@ function permissionVaidator(requiredPermissions = []) {
             const allPermissions = requiredPermissions.flat(2)
             const user = req.user
             if (!user) throw createHttpError.Unauthorized("Please login first")
-            console.log(user)
-            const role = await RoleModel.findOne({title: user.Role.title})
-            console.log(role)
+            const role = await RoleModel.findOne({title: user.Role})
             const permissions = await PermissionsModel.find({_id: {$in: role.permissions}})
             const userPermissions = permissions.map(permission => permission.title)
             const hasPermission = allPermissions.every(permission => {
