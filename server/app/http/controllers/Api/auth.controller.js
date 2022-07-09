@@ -36,7 +36,8 @@ module.exports = new (class AuthController extends DefaultController {
                 username: 1,
                 password: 1,
                 accessToken: 1,
-                isVerified: 1
+                isVerified: 1,
+                Role: 1
             });
             if (!user) {
                 throw createHttpError.NotFound(
@@ -65,7 +66,7 @@ module.exports = new (class AuthController extends DefaultController {
                 .cookie("refresh_token", user.refreshToken, {httpOnly: true})
                 .json({
                     success: true,
-                    credentials: {email: user.email, username: user.username, token: user.accessToken},
+                    credentials: {email: user.email, username: user.username, token: user.accessToken, Role: user.Role},
                 });
         } catch (error) {
             next(error);
@@ -267,7 +268,7 @@ module.exports = new (class AuthController extends DefaultController {
             const {mobile, otp} = bodyData;
             const user = await UserModel.findOne(
                 {mobileNumber: mobile},
-                {otp: 1, mobileNumber: 1}
+                {otp: 1, mobileNumber: 1, Role: 1}
             );
             if (!user) {
                 throw createHttpError.NotFound(
@@ -300,7 +301,7 @@ module.exports = new (class AuthController extends DefaultController {
                 .cookie("refresh_token", user.refreshToken, {httpOnly: true})
                 .json({
                     success: true,
-                    credentials: {mobile: user.mobileNumber, token: user.accessToken},
+                    credentials: {mobile: user.mobileNumber, token: user.accessToken, Role: user.Role},
                 });
         } catch (e) {
             next(e);
@@ -311,7 +312,7 @@ module.exports = new (class AuthController extends DefaultController {
         try {
             const user = req.user;
             return res.status(StatusCodes.OK).json({
-                user: user
+                token: user?.accessToken
             })
         } catch (error) {
             next(error)

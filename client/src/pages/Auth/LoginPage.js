@@ -24,8 +24,10 @@ function LoginPage() {
             ) {
                 try {
                     const userData = await login({email, password}).unwrap();
-                    dispatch(setCredentials({...userData}))
                     if (userData.success) {
+                        const {credentials} = userData;
+                        console.log(credentials)
+                        dispatch(setCredentials({...credentials}))
                         await Swal.fire({
                             icon: "success",
                             title: "Logged IN",

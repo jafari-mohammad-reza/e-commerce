@@ -8,6 +8,7 @@ function permissionVaidator(requiredPermissions = []) {
         try {
             const allPermissions = requiredPermissions.flat(2)
             const user = req.user
+            console.log(user)
             if (!user) throw createHttpError.Unauthorized("Please login first")
             const role = await RoleModel.findOne({title: user.Role})
             const permissions = await PermissionsModel.find({_id: {$in: role.permissions}})
@@ -15,7 +16,7 @@ function permissionVaidator(requiredPermissions = []) {
             const hasPermission = allPermissions.every(permission => {
                 return userPermissions.includes(permissions)
             })
-            if (userPermissions.includes(PERMISSIONS.ALL)) return next()
+            if (userPermissions.includes(PERMISSIONS.ADMIN)) return next()
             if (allPermissions.length === 0 || hasPermission) return next();
             throw createHttpError.Forbidden("you dont have access to this section")
         } catch (e) {

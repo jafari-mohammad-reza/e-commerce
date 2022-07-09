@@ -11,6 +11,7 @@ import ForgotPasswordPage from "./pages/Auth/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/Auth/ResetPasswordPage";
 import MobileLoginPage from "./pages/Auth/MobileLoginPage";
 import RequireAuth from "./app/features/auth/RequireAuth";
+import {Roles} from "./conf/constants";
 
 function App() {
     const {pathname} = useLocation();
@@ -54,9 +55,11 @@ function App() {
                     />
                     //? User Routes
                     {/*! protected routes */}
-                    <Route element={<RequireAuth/>}>
-                        <Route path="/cart" index element={<CheckoutPage/>}/>
+                    <Route element={<RequireAuth allowedRoutes={Roles.ADMIN}/>}>
                         <Route path={"/admin/*"} element={<AdminDashboard/>}/>
+                    </Route>
+                    <Route element={<RequireAuth allowedRoutes={Roles.USER}/>}>
+                        <Route path="/cart" index element={<CheckoutPage/>}/>
                     </Route>
                     <Route path="*" element={<NotFound/>}/>
 

@@ -4,7 +4,7 @@ const {
     VerifyVerificationToken, VerifyRefreshToken,
 } = require("../../http/middleWares/TokenAuthorization");
 const router = require("express").Router();
-router.post("/get-access-token", VerifyRefreshToken, authController.getAccessToken);
+router.get("/get-access-token", VerifyRefreshToken, authController.getAccessToken);
 
 //? Email Authentication Routes=
 router.post("/email/login", authController.loginByEmail);

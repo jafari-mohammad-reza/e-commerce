@@ -54,7 +54,7 @@ function VerifyVerificationToken(req, res, next) {
                 console.log(err);
                 if (err) throw createHttpError.Unauthorized("Please login first");
                 const {email} = encoded.payload || {};
-                const user = await UserModel.findOne({email}, {email});
+                const user = await UserModel.findOne({email}, {email: 1});
                 if (!user) throw createHttpError.Unauthorized("no account");
                 req.user = user;
                 return next();
@@ -68,26 +68,27 @@ function VerifyVerificationToken(req, res, next) {
 }
 
 
-function VerifyRefreshToken() {
-    return async function (req, res, next) {
-        const token = getToken(req.headers, "refresh_token")
-        JWT.verify(token, process.env.JWT_REFRESH_TOKEN, async (err, payload) => {
-            if (err) {
-                console.log(err)
-                throw (createHttpError.Unauthorized("Please Login."))
-            }
-            const {email, mobileNumber} = payload.payload || {};
-            const user = await UserModel.findOne(
-                {mobileNumber, email},
-                {mobileNumber: 1, email: 1, username: 1, Role: 1}
-            );
-            if (!user) throw (createHttpError.Unauthorized("User not found."))
-            const refreshToken = await redisClient.get(String(user?._id));
-            if (!refreshToken) throw (createHttpError.Unauthorized("ورود مجدد به حسابی کاربری انجام نشد"))
-            if (token === refreshToken) req.user = user;
-            throw (createHttpError.Unauthorized("ورود مجدد به حسابی کاربری انجام نشد"))
+function VerifyRefreshToken(req, res, next) {
+    try {
+        const token = getToken(req.headers, "refresh_token");
+        console.log(token)
+        JWT.verify(token, process.env.JWT_REFRESH_TOKEN, async (err, encoded) => {
+            console.log(encoded)
+            if (err) throw createHttpError.InternalServerError(err)
+            const {userId} = encoded.userId || {};
+            const user = await UserModel.findOne({_id: userId}, {accessToken: 1})
+            if (!user) throw (createHttpError.Unauthorized("Please Login"))
+            const refreshToken = await redisClient.get(String(userId));
+            console.log(refreshToken);
+            console.log(token);
+            if (!refreshToken) throw (createHttpError.Unauthorized("Login into your account"))
+            if (token === refreshToken) return req.user = user;
+            throw (createHttpError.Unauthorized("Login again"))
         })
+    } catch (error) {
+        next(error);
     }
+
 }
 
 
