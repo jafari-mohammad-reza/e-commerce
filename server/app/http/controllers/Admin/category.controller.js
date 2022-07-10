@@ -81,6 +81,7 @@ module.exports = new (class AdminCategoryController extends DefaultController {
                 data: categories
             })
         } catch (error) {
+            console.log(error)
             next(error)
         }
     }

@@ -9,7 +9,7 @@ module.exports = {
     }),
     PERMISSIONS: Object.freeze({
         USER: ["profile"],
-        ADMIN: ["all"],
+        ADMIN: "admin",
         SUPERADMIN: ["all"],
         CONTENT_MANAGER: ["blog", "category", "product"],
         COUNTER: ["MONEY"],

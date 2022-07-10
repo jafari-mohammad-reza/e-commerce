@@ -16,7 +16,7 @@ const AdminCategories = () => {
     return (
         <div>
             {isLoading ? <LoadingComponent/> : categories.map(category => {
-                return <div id={category._id}>
+                return <div key={category._id}>
                     {category.title}
                 </div>
             })}
