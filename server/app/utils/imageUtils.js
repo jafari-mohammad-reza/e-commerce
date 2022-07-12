@@ -13,6 +13,7 @@ const directoryCreator = (req) => {
         "..",
         "..",
         "public",
+        "uploads",
         splitUrl,
         currentDate
     );

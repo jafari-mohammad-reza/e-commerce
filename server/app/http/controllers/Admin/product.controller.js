@@ -32,7 +32,7 @@ module.exports = new (class AdminProductController extends DefaultController {
                 additionalFeatures,
             } = bodyData;
             const supplier = req?.user?._id;
-            await ProductModel.createOne({
+            await ProductModel.create({
                 title,
                 overView,
                 description,

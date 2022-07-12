@@ -39,8 +39,11 @@ const ProductSchema = new mongoose.Schema(
         isPrime: {type: Boolean, default: false},
     },
     {
+        id: false,
+        versionKey: false,
         toJSON: {
             virtuals: true,
+
         },
     }
 );
@@ -51,6 +54,21 @@ ProductSchema.virtual("imagesURL").get(function () {
             `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${image}`
     );
 });
+ProductSchema.virtual("categoryName", {
+    ref: "category",
+    localField: "category",
+    foreignField: "_id",
+    justOne: true,
+
+})
+
+function autoPopulate(next) {
+    this.populate([{path: "categoryName", select: {__v: 0, id: 0, _id: 0, parent: 0}}]);
+    next();
+}
+
+ProductSchema.pre("findOne", autoPopulate).pre("find", autoPopulate);
+
 module.exports = {
     ProductSchema,
     ProductModel: mongoose.model("product", ProductSchema),

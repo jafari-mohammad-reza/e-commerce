@@ -59,7 +59,7 @@ module.exports = new (class AdminCategoryController extends DefaultController {
                 if (!result) {
                     throw createError.NotFound("there was no category with this id.")
                 }
-                // delete the category with the id in parameters and all categories with this parent id
+                // delete the category with the id in parameters and all AdminApies with this parent id
                 CategoryModel.deleteMany({$or: [{_id: id}, {parent: id}]})
                 return res.status(StatusCodes.OK).json({
                     success: true,

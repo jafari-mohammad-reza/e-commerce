@@ -137,7 +137,7 @@ export default function Header() {
                         <Link to={"/hotItems"}>Discounts</Link>
                     </ListItem>
                     <ListItem>
-                        <Link to={"/categories"}>Categories</Link>
+                        <Link to={"/AdminApies"}>Categories</Link>
                     </ListItem>
                     <ListItem>
                         <Link to={"/contact"}>Contact</Link>

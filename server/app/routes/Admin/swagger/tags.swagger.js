@@ -10,5 +10,5 @@
  *      -   name: Blog(AdminPanel)
  *          description: manage website blogs
  *      -   name: Category(AdminPanel)
- *          description: manage website categories
+ *          description: manage website AdminApies
  */
