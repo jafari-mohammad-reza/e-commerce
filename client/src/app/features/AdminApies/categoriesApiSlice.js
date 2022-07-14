@@ -9,17 +9,43 @@ export const categoriesApiSlice = apiSlice.injectEndpoints({
             }),
             keepUnusedDataFor: 5,
         }),
-        createCategories: builder.query({
-            query: (credentials) => ({
+        getCategory: builder.query({
+            query: ({token, id}) => ({
+                url: `/admin/categories/${id}`,
+                headers: {authorization: `Bearer ${token}`},
+                method: "get"
+            })
+        }),
+        createCategory: builder.mutation({
+            query: ({token, body}) => ({
                 url: '/admin/categories',
-                headers: {authorization: `Bearer ${credentials}`},
+                headers: {authorization: `Bearer ${token}`},
                 method: "post",
-                body: {...credentials}
+                body: body
             }),
+        }),
+        deleteCategory: builder.mutation({
+            query: ({token, id}) => ({
+                url: `/admin/categories/${id}`,
+                header: {authorization: `Bearer ${token}`},
+                method: "delete",
+            })
+        }),
+        editCategory: builder.mutation({
+            query: ({token, id, body}) => ({
+                url: `/admin/categories/${id}`,
+                header: {authorization: `Bearer ${token}`},
+                method: "put",
+                body: body,
+            })
         }),
     })
 })
 
 export const {
-    useGetCategoriesQuery
+    useGetCategoriesQuery,
+    useGetCategoryQuery,
+    useDeleteCategoryMutation,
+    useEditCategoryMutation,
+    useCreateCategoryMutation,
 } = categoriesApiSlice

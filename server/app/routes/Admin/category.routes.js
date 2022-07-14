@@ -5,13 +5,13 @@ router.get("/", CategoryController.getAllCategories)
 
 router.get("/parents", CategoryController.getAllParentCategories)
 
-router.get("/:id", CategoryController.getCategoryById)
-
 router.get("/parents/:id", CategoryController.getParentCategoryById)
+
+router.get("/:id", CategoryController.getCategoryById)
 
 router.post("/", CategoryController.createCategory)
 
-router.patch("/:id", CategoryController.editCategory)
+router.put("/:id", CategoryController.editCategory)
 
 router.delete("/:id", CategoryController.removeCategory)
 

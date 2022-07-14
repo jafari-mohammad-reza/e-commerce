@@ -103,7 +103,7 @@
 /**
  * @swagger
  *  /admin/categories/{id}:
- *      patch:
+ *      put:
  *          tags: [Category(AdminPanel)]
  *          summary: edit or update category title with object id
  *          parameters:

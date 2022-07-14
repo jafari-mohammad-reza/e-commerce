@@ -7,6 +7,7 @@ export const Wrapper = styled.div`
   flex-direction: column;
   height: 100vh;
   width: 100%;
+  overflow-y: scroll;
 `
 
 export const Header = styled.div`
@@ -29,7 +30,7 @@ export const Header = styled.div`
     justify-content: center;
 
     button {
-      width: 8rem;
+      width: 10rem;
       margin: 0 1rem;
       border: none;
       outline: none;
@@ -131,7 +132,8 @@ export const Table = styled.table`
 
 
 export const Button = styled.button`
-  padding: 1.25rem 2rem 1.5rem 2rem;
+
+
   color: #000;
   border-radius: 1.7rem;
   background-color: #c8a267;

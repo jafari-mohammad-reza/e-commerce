@@ -25,6 +25,7 @@ const directoryCreator = (req) => {
 };
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
+        console.log(file)
         if (file?.originalname) {
             const filePath = directoryCreator(req);
             return cb(null, filePath);
@@ -32,6 +33,7 @@ const storage = multer.diskStorage({
         cb(null, null);
     },
     filename: function (req, file, cb) {
+        console.log(file)
         if (file.originalname) {
             // ext  = file formant
             const ext = path.extname(file.originalname);
@@ -66,9 +68,11 @@ const imageUploader = multer({
     limit: {fileSize: (1000 * 1000)},
 });
 
-function deleteImageFromPath(path) {
-    if (fs.existsSync(path.join(__dirname, "..", "..", "public", path))) {
-        fs.unlinkSync(path);
+function deleteImageFromPath(imagePath) {
+    const newPath = path.join(__dirname, "..", "..", "public", imagePath)
+    if (fs.existsSync(newPath)) {
+        fs.unlinkSync(newPath);
+        console.log("deletedFile")
     }
 }
 

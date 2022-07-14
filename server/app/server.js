@@ -23,9 +23,11 @@ module.exports = class ApplicationServer {
 
     configureApplication() {
         this.#app.use(morgan("dev"));
-        this.#app.use(helmet({
-            crossOriginResourcePolicy: false,
-        }));
+        this.#app.use(
+            helmet({
+                crossOriginResourcePolicy: false,
+            })
+        );
         this.#app.use(cors({credentials: true, origin: "http://localhost:3000"}));
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extended: true}));
@@ -84,9 +86,6 @@ module.exports = class ApplicationServer {
     }
 
     configureRoutes() {
-        this.#app.get("/", (req, res) => {
-            return res.json("hello");
-        });
         this.#app.use(mainRouter);
     }
 

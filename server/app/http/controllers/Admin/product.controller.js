@@ -13,7 +13,6 @@ const {
 module.exports = new (class AdminProductController extends DefaultController {
     async createProduct(req, res, next) {
         try {
-            console.log(req.body)
             const images = uploadMultipleFiles(
                 req?.files || [],
                 req.body.fileUploadPath
@@ -94,6 +93,9 @@ module.exports = new (class AdminProductController extends DefaultController {
             await ProductModel.updateOne({_id: id}, {$set: bodyData}).then(
                 (result) => {
                     if (result.modifiedCount > 0) {
+                        for (const image of product.images) {
+                            deleteImageFromPath(image);
+                        }
                         return res.status(StatusCodes.OK).json({
                             success: true,
                             message: "product has been updated successfully",
@@ -114,12 +116,12 @@ module.exports = new (class AdminProductController extends DefaultController {
         try {
             const {id} = req.params;
             const product = await this.getById(id);
-            await ProductModel.deleteOne(product)
+            await ProductModel.deleteOne({_id: product._id})
                 .then((result) => {
-                    if (result.deletedCount > 0) {
-                        product.images.forEach((image) => {
-                            deleteImageFromPath(image.fileUploadPath);
-                        });
+                    if (result && result.deletedCount > 0) {
+                        for (const image of product.images) {
+                            deleteImageFromPath(image);
+                        }
                         return res.status(StatusCodes.OK).json({
                             success: true,
                             message: "product deleted successfully",
@@ -176,7 +178,7 @@ module.exports = new (class AdminProductController extends DefaultController {
         if (!isValidObjectId(id)) {
             throw {status: StatusCodes.BadRequest, message: "not a valid id"};
         }
-        await ProductModel.findOne({_id: id}).then((result) => {
+        return await ProductModel.findOne({_id: id}).then((result) => {
             if (result) {
                 return result;
             }

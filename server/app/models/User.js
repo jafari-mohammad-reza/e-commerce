@@ -4,8 +4,8 @@ const {RoleSchema} = require("./Role");
 
 const UserSchema = new mongoose.Schema(
     {
-        firstName: {type: String},
-        lastName: {type: String},
+        firstName: {type: String, default: "", required: false},
+        lastName: {type: String, default: "", required: false},
         username: {type: String, uniq: true},
         mobileNumber: {type: String},
         email: {type: String, lowercase: true, uniq: true},

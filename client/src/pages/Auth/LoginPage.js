@@ -24,9 +24,10 @@ function LoginPage() {
             ) {
                 try {
                     const userData = await login({email, password}).unwrap();
+                    console.log(userData);
                     if (userData.success) {
                         const {credentials} = userData;
-                        dispatch(setCredentials({...credentials}))
+                        dispatch(setCredentials({...credentials}));
                         await Swal.fire({
                             icon: "success",
                             title: "Logged IN",
@@ -34,8 +35,8 @@ function LoginPage() {
                             position: "top-right",
                         });
                         setTimeout(() => {
-                            navigate("/", {replace: true})
-                        }, 600)
+                            navigate("/", {replace: true});
+                        }, 600);
                     }
                 } catch (error) {
                     return await Swal.fire({
