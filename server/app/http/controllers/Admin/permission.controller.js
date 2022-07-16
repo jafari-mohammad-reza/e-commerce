@@ -11,7 +11,7 @@ module.exports = new (class PermissionController extends DefaultController {
                 .then((result) => {
                     return res.status(StatusCodes.OK).json({
                         success: true,
-                        message: result,
+                        permissions: result,
                     });
                 })
                 .catch((error) => {
@@ -22,9 +22,36 @@ module.exports = new (class PermissionController extends DefaultController {
         }
     }
 
+    async getById(req, res, next) {
+        try {
+            const {id} = req.params;
+            if (!isValidObjectId(id)) {
+                throw createHttpError.BadRequest("Not a valid id.");
+            }
+            await PermissionsModel.findById(id)
+                .then((result) => {
+                    if (!result) {
+                        throw createHttpError.InternalServerError(
+                            "permission has not been found."
+                        );
+                    }
+                    return res.status(StatusCodes.OK).json({
+                        success: true,
+                        permission: result,
+                    });
+                })
+                .catch((error) => {
+                    throw createHttpError.InternalServerError(error);
+                });
+        } catch (error) {
+            next(error);
+        }
+
+    }
+
     async createPermission(req, res, next) {
         try {
-            const {title} = req.body;
+            const {title, description} = req.body;
             if (!title) {
                 throw createHttpError.BadRequest(
                     "each permission need to have a title."
@@ -35,7 +62,7 @@ module.exports = new (class PermissionController extends DefaultController {
                     "there is already one permission with this title."
                 );
             }
-            await PermissionsModel.create({title})
+            await PermissionsModel.create({title, description})
                 .then((result) => {
                     if (!result) {
                         throw createHttpError.InternalServerError(
@@ -61,13 +88,13 @@ module.exports = new (class PermissionController extends DefaultController {
             if (!isValidObjectId(id)) {
                 throw createHttpError.BadRequest("Not a valid id.");
             }
-            const {title} = req.body;
+            const {title, description} = req.body;
             if (!title) {
                 throw createHttpError.BadRequest(
                     "each permission need to have a title."
                 );
             }
-            await PermissionsModel.findByIdAndUpdate(id, {$set: {title}})
+            await PermissionsModel.findByIdAndUpdate(id, {$set: {title, description}})
                 .then((result) => {
                     if (!result) {
                         throw createHttpError.InternalServerError(

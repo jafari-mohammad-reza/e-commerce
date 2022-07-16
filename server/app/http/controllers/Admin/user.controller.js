@@ -59,10 +59,10 @@ module.exports = new (class UserController extends DefaultController {
     async updateProfile(req, res, next) {
         try {
             const {id} = req.params
-            // console.log(userId)
+            console.log(req.body)
 
             const body = req.body;
-            await UserModel.updateOne({_id: id}, {$set: {body}}).then(result => {
+            await UserModel.updateOne({_id: id}, {$set: {...body}}).then(result => {
                 if (result.modifiedCount > 0) {
                     return res.status(StatusCodes.OK).json({
                         success: true,

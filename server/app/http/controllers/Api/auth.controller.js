@@ -37,7 +37,8 @@ module.exports = new (class AuthController extends DefaultController {
                 password: 1,
                 accessToken: 1,
                 isVerified: 1,
-                Role: 1
+                Role: 1,
+                isBanned: 1
             });
             if (!user) {
                 throw createHttpError.NotFound(
@@ -56,6 +57,12 @@ module.exports = new (class AuthController extends DefaultController {
                 throw createHttpError(
                     401,
                     "you have not verify your account yet,do it by the link we sent to your email."
+                );
+            }
+            if (user.isBanned === true) {
+                throw createHttpError(
+                    401,
+                    "you have been banned from the system, please contact our support for more info."
                 );
             }
             user.accessToken = generateAccessToken({email: user.email});

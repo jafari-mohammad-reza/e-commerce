@@ -15,12 +15,6 @@ export const productApiSlice = apiSlice.injectEndpoints({
                 headers: {
                     authorization: `Bearer ${token}`,
                     accept: 'application/json',
-                    'sec-fetch-site': 'same-origin',
-                    'sec-fetch-mode': 'cors',
-                    'sec-fetch-dest': 'empty',
-                    'accept-encoding': 'gzip, deflate, br',
-                    'accept-language': 'en-US,en;q=0.9',
-
                 },
                 method: "post",
                 body: formData,

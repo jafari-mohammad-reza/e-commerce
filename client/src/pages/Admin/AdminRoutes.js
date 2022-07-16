@@ -8,6 +8,7 @@ import AdminProducts from "./Products/Admin.products";
 import AdminUsers from "./users/Admin.Users";
 import AdminRoles from "./roles/Admin.Roles";
 import AdminPermissions from "./permissions/Admin.Permissions";
+import AdminBlog from "./Blogs/Admin.Blog";
 
 const Wrapper = styled.div`
   display: flex;
@@ -21,6 +22,7 @@ const AdminRoutes = () => {
                 <Route path={"/"} index element={<AdminDashboard/>}/>
                 <Route path={"/categories"} element={<AdminCategories/>}/>
                 <Route path={"/products"} element={<AdminProducts/>}/>
+                <Route path={"/blogs"} element={<AdminBlog/>}/>
                 <Route path={"/users"} element={<AdminUsers/>}/>
                 <Route path={"/roles"} element={<AdminRoles/>}/>
                 <Route path={"/permissions"} element={<AdminPermissions/>}/>

@@ -1,118 +1,106 @@
 import React, {Fragment, useEffect, useState} from 'react';
-import {CloseButton} from "../../../components/FormsComponents";
-import {AiFillDelete, AiFillEdit, AiOutlineClose} from "react-icons/ai";
-import {Header, Table, Wrapper} from "../../../components/tableComponents";
+import {Button, Header, Table, Wrapper} from "../../../components/tableComponents";
 import {BiDownArrow} from "react-icons/bi";
-import {Link} from "react-router-dom";
-import {FaUniversalAccess} from "react-icons/fa";
-import {IoCreate} from "react-icons/io5";
+import {IoCreateOutline} from "react-icons/io5";
 import LoadingComponent from "../../../components/LoadingComponent";
 import {BsGearWide} from "react-icons/bs";
+import {AiFillDelete, AiFillEdit} from "react-icons/ai";
 import Swal from "sweetalert2";
 import {useSelector} from "react-redux";
 import {selectCurrentToken} from "../../../app/features/auth/authSlice";
-import {
-    useDeletePermissionsMutation,
-    useGetPermissionsQuery
-} from "../../../app/features/AdminApies/PermissionsApiSlice";
-import AdminPermissionsForm from "./Admin.PermissionsForm";
+import {useDeleteBlogMutation, useGetBlogsQuery} from "../../../app/features/AdminApies/BlogsApiSlice";
+import {Link} from "react-router-dom";
 
-const AdminPermissions = () => {
+const AdminBlog = () => {
     const token = useSelector(selectCurrentToken);
-    const {data, isLoading} = useGetPermissionsQuery({token});
-    const [permissions, setPermissions] = useState([]);
-    const [showForm, setShowForm] = useState(false);
-    const [formMode, setFormMode] = useState("create");
-    const [selectedPermission, setSelectedPermission] = useState(null)
-    const [remove] = useDeletePermissionsMutation()
+    const {data, isLoading} = useGetBlogsQuery({token});
+    const [blogs, setBlogs] = useState([]);
+    const [remove] = useDeleteBlogMutation();
+
     useEffect(() => {
         if (!isLoading) {
             console.log(data)
-            setPermissions(data.permissions)
+            setBlogs(data.blogs);
         }
-    }, [data])
+    }, [data]);
     return (
         <Fragment>
-            {showForm && (
-                <Fragment>
-                    <CloseButton onClick={() => {
-                        setShowForm(false)
-                        setSelectedPermission(null)
-                    }}>
-                        <AiOutlineClose/>
-                    </CloseButton>
-                    <AdminPermissionsForm mode={formMode} id={selectedPermission}/>
-                </Fragment>
-            )}
             <Wrapper>
                 <Header>
-                    <h3>Permissions</h3>
+                    <h3>Blogs</h3>
                     <div>
-                        <button>
+                        <Button>
                             Export <BiDownArrow/>
-                        </button>
-                        <button>
-                            <Link to={"/admin/roles"}>Roles <FaUniversalAccess/></Link>
-                        </button>
-                        <button
-                            onClick={() => {
-                                setShowForm(true)
-                            }}
-                        >
-                            Create New <IoCreate/>
-                        </button>
-
-
+                        </Button>
+                        <Link to={'/admin/blogs/create'}>
+                            <Button>
+                                Create <IoCreateOutline/>
+                            </Button>
+                        </Link>
                     </div>
                 </Header>
                 <Table>
                     {isLoading ? (
                         <LoadingComponent/>
-                    ) : permissions?.length > 0 ? (
+                    ) : blogs ? (
                         <Fragment>
                             <thead>
-                            <th>ID</th>
                             <th>Title</th>
-                            <th>Description</th>
+                            <th>overView</th>
+                            <th>Tags</th>
+                            <th>Category</th>
+                            <th>Image</th>
                             <th>
                                 <BsGearWide/>
                             </th>
                             </thead>
-                            {permissions?.map((permission) => (
-                                <tr key={permission._id}>
-                                    <td>{permission._id}</td>
-                                    <td>{permission.title}</td>
-                                    <td>{permission.description}</td>
+                            {blogs?.map((blog) => (
+                                <tr key={blog._id}>
+                                    <td>{blog.title}</td>
+                                    <td>{blog.overView.substring(0, 30)}</td>
+                                    <td>
+                                        {blog.tags.map((tag) => (
+                                            <span key={tag}>
+                        #{tag}
+                                                <br/>
+                      </span>
+                                        ))}
+                                    </td>
+                                    <td>{blog?.categoryName?.title}</td>
+                                    <td>
+                                        <img
+                                            src={blog?.imageURL}
+                                            alt={blog.title}
+                                        />
+                                    </td>
                                     <td className="flex">
                                         <div className="btnContainer">
-                                            <button className={"editBtn"} onClick={() => {
-                                                setShowForm(true)
-                                                setFormMode("edit")
-                                                setSelectedPermission(permission._id)
-                                            }}>
-                                                Edit <AiFillEdit/>
-                                            </button>
+                                            <Link to={'/admin/blogs/edit/' + blog._id}>
+                                                <button className={"editBtn"}>
+                                                    Edit <AiFillEdit/>
+                                                </button>
+                                            </Link>
                                             <button
                                                 className={"deleteBtn"}
                                                 onClick={() => {
                                                     Swal.fire({
-                                                        title: "Do you want to delete this Role?",
+                                                        title: "Do you want to delete this product?",
                                                         showDenyButton: true,
                                                         confirmButtonText: "Delete",
                                                     }).then(async (result) => {
                                                         if (result.isConfirmed) {
                                                             const response = await remove({
                                                                 token: token,
-                                                                id: permission._id,
+                                                                id: blog._id,
                                                             }).unwrap();
                                                             if (response.success) {
-                                                                await Swal.fire({
+                                                                Swal.fire({
                                                                     icon: "success",
                                                                     title: "Deleted!",
                                                                 });
-                                                                setPermissions((permissions) => [
-                                                                    ...permissions.filter(
-                                                                        (pr) => pr._id !== permission._id
+                                                                setBlogs((blogs) => [
+                                                                    ...blogs.filter(
+                                                                        (pr) => pr._id !== blog._id
                                                                     ),
                                                                 ]);
                                                             }
@@ -134,7 +122,7 @@ const AdminPermissions = () => {
                             ))}
                         </Fragment>
                     ) : (
-                        <h1>No Role</h1>
+                        <h1>No Blog</h1>
                     )}
                 </Table>
             </Wrapper>
@@ -142,4 +130,4 @@ const AdminPermissions = () => {
     );
 };
 
-export default AdminPermissions;
+export default AdminBlog;

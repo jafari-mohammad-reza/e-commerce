@@ -22,18 +22,7 @@ const AdminProductsForm = ({formMode}) => {
 
     async function submitHandler(e) {
         e.preventDefault();
-        const body = {
-            title,
-            overView,
-            tags,
-            category,
-            price,
-            discount,
-            stockCount,
-            images,
-            description,
-        };
-        let formData = new FormData();
+        const formData = new FormData();
         formData.append("title", title);
         formData.append("overView", overView);
         formData.append("tags", tags);
@@ -41,14 +30,17 @@ const AdminProductsForm = ({formMode}) => {
         formData.append("price", price);
         formData.append("discount", discount);
         formData.append("stockCount", stockCount);
-        for (const image of images) {
-            formData.append("images", image);
-        }
+        formData.append("images", images);
         formData.append("description", description);
+        const response = await axios.post("/admin/products", formData, {
+            headers: {
+                authorization: `Bearer ${token}`,
+                "Content-Type": "multipart/form-data",
+            }
+        });
 
-        const response = await create({token: token, formData: formData}).unwrap();
         console.log(response);
-        if (response?.success) {
+        if (response.status === 200) {
             await Swal.fire({
                 icon: "success",
                 title: "Success ✅",

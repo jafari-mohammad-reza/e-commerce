@@ -62,6 +62,33 @@ module.exports = new (class RoleController extends DefaultController {
         }
     }
 
+    async getRoleById(req, res, next) {
+        try {
+            const {id} = req.params;
+            if (!isValidObjectId(id)) {
+                throw createHttpError.BadRequest("Not a valid id");
+            }
+            await RoleModel.findById(id)
+                .populate({path: "permissions"})
+                .then((result) => {
+                    if (!result) {
+                        throw createHttpError.BadRequest(
+                            "role has not been found."
+                        );
+                    }
+                    return res.status(StatusCodes.OK).json({
+                        success: true,
+                        role: result,
+                    });
+                })
+                .catch((error) => {
+                    throw createHttpError.InternalServerError(error);
+                });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async updateRole(req, res, next) {
         try {
             const {id} = req.params;
@@ -70,7 +97,7 @@ module.exports = new (class RoleController extends DefaultController {
             }
             let bodyData = copyObject(req.body);
             bodyData.title = bodyData?.title?.toUpperCase();
-            deleteInvalidPropertyInObject(bodyData, []);
+            // deleteInvalidPropertyInObject(bodyData, []);
             await RoleModel.findByIdAndUpdate(id, {$set: bodyData})
                 .then((result) => {
                     if (!result) {
@@ -94,12 +121,12 @@ module.exports = new (class RoleController extends DefaultController {
     async deleteRole(req, res, next) {
         try {
             const {id} = req.params;
-            console.log(req.params);
             if (!isValidObjectId(id)) {
                 throw createHttpError.BadRequest("Not a valid id");
             }
             await RoleModel.findByIdAndDelete(id)
                 .then((result) => {
+                    console.log(result)
                     if (!result) {
                         throw createHttpError.BadRequest(
                             "role has not been deleted successfully."

@@ -15,6 +15,9 @@ import {
 import {ImBlog, ImCreditCard, ImStatsDots} from "react-icons/im";
 import {MdCategory} from "react-icons/md";
 import {Link} from "react-router-dom";
+import {useDispatch, useSelector} from "react-redux";
+import {logout, selectCurrentToken} from "../app/features/auth/authSlice";
+import axios from "../conf/axios";
 
 const Wrapper = styled.div`
   flex: 1;
@@ -109,6 +112,8 @@ const BottomWrapper = styled.div``
 
 const AdminSideBar = () => {
     const [isLightTheme, setIsLightTheme] = useState(true)
+    const dispatch = useDispatch()
+    const token = useSelector(selectCurrentToken)
     return (
         <Wrapper>
             <TopWrapper><img src={'/images/logo.png'} alt={'logo'}/></TopWrapper>
@@ -158,9 +163,13 @@ const AdminSideBar = () => {
                         <li><RiSettings3Line/><span>Settings</span></li>
                     </Link>
 
-                    <Link to={"/admin/Logout"}>
-                        <li><RiLogoutBoxRLine/><span>Logout</span></li>
-                    </Link>
+                    <a href={'#'}>
+                        <li onClick={async () => {
+                            dispatch(logout())
+                            await axios.post(`/api/v1/auth/email/logout/${token}`).catch(err => console.log(err))
+                        }}><RiLogoutBoxRLine/><span>Logout</span></li>
+                    </a>
+
                     {isLightTheme ? (<li onClick={() => setIsLightTheme(!isLightTheme)} className={'themeSwitcher'}>
                             <RiLightbulbLine/></li>) :
                         <li onClick={() => setIsLightTheme(!isLightTheme)} className={'themeSwitcher'}>

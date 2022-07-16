@@ -47,7 +47,7 @@ const ProductSchema = new mongoose.Schema(
         },
     }
 );
-ProductSchema.index({title: "text", short_text: "text", text: "text"});
+ProductSchema.index({title: "text", overView: "text", description: "text"});
 ProductSchema.virtual("imagesURL").get(function () {
     return this.images.map(
         (image) =>

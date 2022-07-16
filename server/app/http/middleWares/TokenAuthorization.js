@@ -70,13 +70,17 @@ function VerifyRefreshToken(req, res, next) {
     try {
         const token = getToken(req.headers, "refresh_token");
         JWT.verify(token, process.env.JWT_REFRESH_TOKEN, async (err, encoded) => {
-            if (err) throw createHttpError.InternalServerError(err)
-            const {userId} = encoded.userId || {};
-            const user = await UserModel.findOne({_id: userId}, {accessToken: 1})
-            if (!user) throw (createHttpError.Unauthorized("Please Login"))
-            req.user = user;
-            return next()
-            throw (createHttpError.Unauthorized("Login again"))
+            try {
+                if (err) throw createHttpError.InternalServerError(err)
+                const {userId} = encoded.userId || {};
+                const user = await UserModel.findOne({_id: userId}, {accessToken: 1})
+                if (!user) throw (createHttpError.Unauthorized("Please Login"))
+                req.user = user;
+                return next()
+                throw (createHttpError.Unauthorized("Login again"))
+            } catch (e) {
+                next(e);
+            }
         })
     } catch (error) {
         next(error);

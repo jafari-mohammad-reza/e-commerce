@@ -21,8 +21,26 @@ const AdminUsersForm = ({id = null}) => {
     const [isBanned, setIsBanned] = useState(null)
     const [roles, setRoles] = useState([])
     const [update, {isLoading}] = useUpdateUserMutation()
+
+    async function fetchRoles() {
+        const {data} = await axios.get("/admin/roles", {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        }).catch(err => {
+            console.log(err)
+            return Swal.fire({
+                title: "Error",
+                text: "Something went wrong",
+                icon: "error",
+                confirmButtonText: "Ok"
+            })
+        })
+        setRoles(data.roles)
+    }
+
     useEffect(() => {
-        axios.get(`/admin/users/${id}`, {headers: {authorization: `Bearer ${token}`}}).then(response => {
+        axios.get(`/admin/users/${id}`, {headers: {authorization: `Bearer ${token}`}}).then(async response => {
             const {user} = response.data
             setFirstName(user.firstName)
             setLastName(user.lastName)
@@ -33,6 +51,8 @@ const AdminUsersForm = ({id = null}) => {
             setRole(user.Role)
             setIsPrime(user.isPrime)
             setIsBanned(user.isBanned)
+            await fetchRoles()
+            console.log(roles)
         }).catch(err => {
             console.log(err)
             return Swal.fire({
@@ -56,6 +76,7 @@ const AdminUsersForm = ({id = null}) => {
             isPrime,
             isBanned
         };
+
         const response = await update({
             token,
             body,
@@ -134,9 +155,13 @@ const AdminUsersForm = ({id = null}) => {
                         }}
                     />
                         {/*Role selector */}
-                        <select name="role" defaultValue={Role}>
+                        <select name="role" defaultValue={'Select Role'} onChange={(e) => {
+                            console.log(e.currentTarget.value)
+                            setRole(e.currentTarget.value)
+                        }
+                        }>
                             {roles && roles.map(role => (
-                                <option value={role._id} key={role._id}>{role.title}</option>
+                                <option value={role.title} key={role.title}>{role.title}</option>
                             ))}
                         </select>
 
@@ -147,9 +172,10 @@ const AdminUsersForm = ({id = null}) => {
                                 name={"isPrime"}
                                 placeholder={"isPrime"}
                                 type={'checkbox'}
-                                value={isPrime}
+                                checked={!!isPrime}
+
                                 onChange={(e) => {
-                                    setIsPrime(e.target.value)
+                                    setIsPrime(Boolean(e.target.checked))
                                 }}
                             />
                             <span>is Banned</span>
@@ -158,9 +184,10 @@ const AdminUsersForm = ({id = null}) => {
                                 name={"isBanned"}
                                 placeholder={"isBanned"}
                                 type={'checkbox'}
-                                value={isBanned}
+
+                                checked={!!isBanned}
                                 onChange={(e) => {
-                                    setIsBanned(e.target.value)
+                                    setIsBanned(Boolean(e.target.checked))
                                 }}
                             />
                         </div>

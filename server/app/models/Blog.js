@@ -12,21 +12,47 @@ const BlogSchema = new mongoose.Schema({
     like: {type: [mongoose.Types.ObjectId], ref: "users", default: []},
     dislikes: {type: [mongoose.Types.ObjectId], ref: "users", default: []},
     bookmarks: {type: [mongoose.Types.ObjectId], ref: "users", default: []},
+}, {
+    id: false,
+    versionKey: false,
+    toJSON: {
+        virtuals: true,
+
+    },
 });
 
-BlogSchema.virtual("user", {
+BlogSchema.virtual("writer", {
     ref: "user",
-    localField: "_id",
-    foreignField: "author",
+    localField: "author",
+    foreignField: "_id",
 });
-BlogSchema.virtual("category_detail", {
-    ref: "category",
-    localField: "_id",
-    foreignField: "category",
-});
+BlogSchema.virtual("categoryName", {
+        ref: "category",
+        localField: "category",
+        foreignField: "_id",
+        justOne: true,
+        options: {
+            projection: {
+                title: 1,
+                children: 0
+            },
+        }
+    }
+)
 BlogSchema.virtual("imageURL").get(function () {
     return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${this.image}`;
 });
+
+function autoPopulate(next) {
+    this.populate([{path: "author", select: {username: 1, email: 1, mobile: 1}}, {
+        path: "categoryName",
+        select: {title: 1, children: 0}
+    }]);
+    next()
+}
+
+BlogSchema.pre("findOne", autoPopulate).pre("find", autoPopulate);
+
 module.exports = {
     BlogModel: mongoose.model("blog", BlogSchema),
 };

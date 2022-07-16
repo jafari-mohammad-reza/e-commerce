@@ -77,6 +77,21 @@ export const Form = styled.form`
       margin-right: .4rem;
     }
   }
+
+  .flex-col {
+    width: 100%;
+    min-height: 3rem;
+    height: max-content;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+
+    input, select {
+      margin: .5rem 0;
+    }
+  }
 `
 export const FormInput = styled.input`
   width: 45%;

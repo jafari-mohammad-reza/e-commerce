@@ -3,9 +3,10 @@ const {stringToArray} = require("../../http/middleWares/StringToArray");
 
 const router = require("express").Router()
 router.get("/", roleController.getAllRoles);
-router.post("/", stringToArray("permissions"), roleController.createRole);
+router.get("/:id", roleController.getRoleById);
+router.post("/", roleController.createRole);
 router.delete("/:id", roleController.deleteRole);
-router.patch("/:id", stringToArray("permissions"), roleController.updateRole);
+router.put("/:id", roleController.updateRole);
 
 module.exports = {
     AdminRoleRoutes: router
