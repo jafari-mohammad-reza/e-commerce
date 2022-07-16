@@ -10,6 +10,7 @@ const {
     uploadMultipleFiles,
     deleteImageFromPath,
 } = require("../../../utils/imageUtils");
+const {copyObject} = require("../../../utils/functions");
 module.exports = new (class AdminProductController extends DefaultController {
     async createProduct(req, res, next) {
         try {
@@ -69,7 +70,11 @@ module.exports = new (class AdminProductController extends DefaultController {
         try {
             const {id} = req.params;
             const product = await this.getById(id);
-            const bodyData = JSON.parse(JSON.stringify(req.body));
+            const bodyData = copyObject(req.body);
+            bodyData.images = uploadMultipleFiles(
+                req?.files || [],
+                req.body.fileUploadPath
+            );
             Object.keys(bodyData).forEach((key) => {
                 if (["likes", "dislikes", "comments", "rate"].includes(key))
                     delete bodyData[key];
@@ -77,7 +82,7 @@ module.exports = new (class AdminProductController extends DefaultController {
                     bodyData[key] = bodyData[key].trim();
                 if (Array.isArray(bodyData[key]) && bodyData[key].length > 0)
                     bodyData[key] = bodyData[key].map((item) => item.trim());
-                if (Array.isArray(bodyData[key]) && bodyData[key].length == 0)
+                if (Array.isArray(bodyData[key]) && bodyData[key].length === 0)
                     delete bodyData[key];
                 if (
                     ["null", null, undefined, "undefined", " ", ""].includes(
@@ -86,10 +91,7 @@ module.exports = new (class AdminProductController extends DefaultController {
                 )
                     delete bodyData[key];
             });
-            bodyData.images = uploadMultipleFiles(
-                req?.files || [],
-                req.body.uploadPath
-            );
+
             await ProductModel.updateOne({_id: id}, {$set: bodyData}).then(
                 (result) => {
                     if (result.modifiedCount > 0) {

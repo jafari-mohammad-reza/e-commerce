@@ -22,25 +22,25 @@ const BlogsApiSlice = apiSlice.injectEndpoints({
             })
         }),
         createBlog: builder.mutation({
-            query: ({token, body}) => ({
+            query: ({token, formData}) => ({
                 url: "/admin/blogs",
                 headers: {
                     authorization: `Bearer ${token}`,
                     "accept": "application/json",
                 },
                 method: "POST",
-                body: body
+                body: formData
             })
         }),
         updateBlog: builder.mutation({
-            query: ({token, id, body}) => ({
+            query: ({token, id, formData}) => ({
                 url: `/admin/blogs/${id}`,
                 headers: {
                     authorization: `Bearer ${token}`,
                     "accept": "application/json",
                 },
                 method: "PUT",
-                body: body
+                body: formData
             })
         }),
         deleteBlog: builder.mutation({

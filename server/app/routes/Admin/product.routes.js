@@ -9,9 +9,9 @@ router.get("/", productController.getAllProduct);
 
 router.get("/:id", productController.getProductById);
 
-router.post("/", imageUploader.array("images"), stringToArray("tags"), productController.createProduct);
+router.post("/", imageUploader.array("images", 6), stringToArray("tags"), productController.createProduct);
 
-router.put("/:id", productController.editProduct);
+router.put("/:id", imageUploader.array("images", 6), stringToArray("tags"), productController.editProduct);
 
 router.delete("/:id", productController.removeProduct);
 module.exports = {

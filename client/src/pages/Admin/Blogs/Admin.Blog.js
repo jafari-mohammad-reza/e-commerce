@@ -4,19 +4,22 @@ import {BiDownArrow} from "react-icons/bi";
 import {IoCreateOutline} from "react-icons/io5";
 import LoadingComponent from "../../../components/LoadingComponent";
 import {BsGearWide} from "react-icons/bs";
-import {AiFillDelete, AiFillEdit} from "react-icons/ai";
+import {AiFillDelete, AiFillEdit, AiOutlineClose} from "react-icons/ai";
 import Swal from "sweetalert2";
 import {useSelector} from "react-redux";
 import {selectCurrentToken} from "../../../app/features/auth/authSlice";
 import {useDeleteBlogMutation, useGetBlogsQuery} from "../../../app/features/AdminApies/BlogsApiSlice";
-import {Link} from "react-router-dom";
+import {CloseButton} from "../../../components/FormsComponents";
+import AdminBlogForm from "./Admin.BlogForm";
 
 const AdminBlog = () => {
     const token = useSelector(selectCurrentToken);
     const {data, isLoading} = useGetBlogsQuery({token});
     const [blogs, setBlogs] = useState([]);
     const [remove] = useDeleteBlogMutation();
-
+    const [showForm, setShowForm] = useState(false);
+    const [formMode, setFormMode] = useState("create");
+    const [selectedBlog, setSelectedBlog] = useState(null);
     useEffect(() => {
         if (!isLoading) {
             console.log(data)
@@ -32,11 +35,12 @@ const AdminBlog = () => {
                         <Button>
                             Export <BiDownArrow/>
                         </Button>
-                        <Link to={'/admin/blogs/create'}>
-                            <Button>
-                                Create <IoCreateOutline/>
-                            </Button>
-                        </Link>
+                        <Button onClick={() => {
+                            setShowForm(true);
+                            setFormMode("create");
+                        }}>
+                            Create <IoCreateOutline/>
+                        </Button>
                     </div>
                 </Header>
                 <Table>
@@ -75,11 +79,15 @@ const AdminBlog = () => {
                                     </td>
                                     <td className="flex">
                                         <div className="btnContainer">
-                                            <Link to={'/admin/blogs/edit/' + blog._id}>
-                                                <button className={"editBtn"}>
-                                                    Edit <AiFillEdit/>
-                                                </button>
-                                            </Link>
+                                            <button className={"editBtn"}
+                                                    onClick={() => {
+                                                        setSelectedBlog(blog._id);
+                                                        setShowForm(true);
+                                                        setFormMode("edit");
+                                                    }}
+                                            >
+                                                Edit <AiFillEdit/>
+                                            </button>
                                             <button
                                                 className={"deleteBtn"}
                                                 onClick={() => {
@@ -126,6 +134,14 @@ const AdminBlog = () => {
                     )}
                 </Table>
             </Wrapper>
+            {showForm && (
+                <Fragment>
+                    <CloseButton onClick={() => setShowForm(false)}>
+                        <AiOutlineClose/>
+                    </CloseButton>
+                    <AdminBlogForm mode={formMode} id={selectedBlog}/>
+                </Fragment>
+            )}
         </Fragment>
     );
 };

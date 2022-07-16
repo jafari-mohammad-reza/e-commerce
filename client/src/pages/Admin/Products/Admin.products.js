@@ -18,6 +18,7 @@ const AdminProducts = () => {
     const [products, setProducts] = useState([]);
     const [showForm, setShowForm] = useState(false);
     const [formMode, setFormMode] = useState("");
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [remove] = useDeleteProductMutation();
 
     useEffect(() => {
@@ -86,7 +87,13 @@ const AdminProducts = () => {
                                     </td>
                                     <td className="flex">
                                         <div className="btnContainer">
-                                            <button className={"editBtn"}>
+                                            <button className={"editBtn"}
+                                                    onClick={() => {
+                                                        setFormMode("edit");
+                                                        setShowForm(true);
+                                                        setSelectedProduct(product._id);
+                                                    }}
+                                            >
                                                 Edit <AiFillEdit/>
                                             </button>
                                             <button
@@ -140,7 +147,7 @@ const AdminProducts = () => {
                     <CloseButton onClick={() => setShowForm(false)}>
                         <AiOutlineClose/>
                     </CloseButton>
-                    <AdminProductsForm formMode setShowForm/>
+                    <AdminProductsForm mode={formMode} id={selectedProduct}/>
                 </Fragment>
             )}
         </Fragment>

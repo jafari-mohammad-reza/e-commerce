@@ -1,46 +1,37 @@
-import React, {useEffect, useState} from "react";
-import {Form, FormArea, FormButton, FormInput, FormWrapper,} from "../../../components/FormsComponents";
-import axios from "../../../conf/axios";
+import React, {useEffect, useState} from 'react';
 import {useSelector} from "react-redux";
 import {selectCurrentToken} from "../../../app/features/auth/authSlice";
-import {useCreateProductMutation, useUpdateProductMutation} from "../../../app/features/AdminApies/ProductsApiSlice";
+import {useCreateBlogMutation, useUpdateBlogMutation} from "../../../app/features/AdminApies/BlogsApiSlice";
+import axios from "../../../conf/axios";
+import {Form, FormArea, FormButton, FormInput, FormWrapper} from "../../../components/FormsComponents";
 import Swal from "sweetalert2";
 
-const AdminProductsForm = ({mode = "create", id = null}) => {
-    const [categories, setCategories] = useState([]);
+const AdminBlogForm = ({mode = "create", id = null}) => {
     const token = useSelector(selectCurrentToken);
     const [title, setTitle] = useState("");
     const [overView, setOverView] = useState("");
+    const [content, setContent] = useState("");
     const [tags, setTags] = useState("");
     const [category, setCategory] = useState("");
-    const [price, setPrice] = useState("");
-    const [discount, setDiscount] = useState("");
-    const [stockCount, setStockCount] = useState("");
-    const [images, setImages] = useState([]);
-    const [description, setDescription] = useState("");
-    const [create, {isLoading}] = useCreateProductMutation();
-    const [update] = useUpdateProductMutation();
+    const [image, setImage] = useState("");
+    const [create] = useCreateBlogMutation()
+    const [update] = useUpdateBlogMutation()
+    const [categories, setCategories] = useState([]);
 
     async function submitHandler(e) {
         e.preventDefault();
         const formData = new FormData();
         formData.append("title", title);
         formData.append("overView", overView);
+        formData.append("content", content);
         formData.append("tags", tags);
         formData.append("category", category);
-        formData.append("price", price);
-        formData.append("discount", discount);
-        formData.append("stockCount", stockCount);
-        for (let i = 0; i < images.length; i++) {
-            formData.append("images", images[i]);
-        }
-        formData.append("description", description);
+        formData.append("image", image);
         const response = mode === "create" ? await create({formData, token}).unwrap() : await update({
             formData,
             id,
             token
         }).unwrap();
-        console.log(response);
         if (response.success) {
             await Swal.fire({
                 icon: "success",
@@ -63,6 +54,7 @@ const AdminProductsForm = ({mode = "create", id = null}) => {
                 authorization: `Bearer ${token}`,
             },
         });
+
         return response.data.data;
     }
 
@@ -71,23 +63,26 @@ const AdminProductsForm = ({mode = "create", id = null}) => {
             setCategories(r);
         });
         if (mode === "edit" && id) {
-            axios.get(`/admin/products/${id}`, {
+            axios.get("/admin/blogs/" + id, {
                 headers: {
                     authorization: `Bearer ${token}`,
                 }
-            }).then((r) => {
-                setTitle(r.data.product.title);
-                setOverView(r.data.product.overView);
-                setTags(r.data.product.tags);
-                setCategory(r.data.product.category);
-                setPrice(r.data.product.price);
-                setDiscount(r.data.product.discount);
-                setStockCount(r.data.product.stockCount);
-                setDescription(r.data.product.description);
-                setImages(r.data.product.images);
+            }).then(res => {
+                setTitle(res.data.blog.title);
+                setOverView(res.data.blog.overView);
+                setContent(res.data.blog.content);
+                setTags(res.data.blog.tags);
+                setCategory(res.data.blog.category);
+                setImage(res.data.blog.image);
+            }).catch(err => {
+                return Swal.fire({
+                    icon: "Error",
+                    title: "Error!",
+                    text: err?.response?.data?.errors?.message,
+                })
             })
         }
-    }, [id, mode]);
+    }, [id, mode])
 
     return (
         <FormWrapper>
@@ -134,52 +129,26 @@ const AdminProductsForm = ({mode = "create", id = null}) => {
                             </option>
                         ))}
                 </select>
-                <FormInput
-                    required={true}
-                    name={"price"}
-                    placeholder={"Price"}
-                    value={price}
-                    onChange={(e) => {
-                        setPrice(e.target.value);
-                    }}
-                />
-                <FormInput
-                    required={true}
-                    name={"discount"}
-                    placeholder={"Discount percentage"}
-                    value={discount}
-                    onChange={(e) => {
-                        setDiscount(e.target.value);
-                    }}
-                />
-                <FormInput
-                    required={true}
-                    name={"stockCount"}
-                    placeholder={"items in stock"}
-                    value={stockCount}
-                    onChange={(e) => {
-                        setStockCount(e.target.value);
-                    }}
-                />
+
+
                 <FormInput
                     type='file'
-                    id='images'
-                    name="images"
+                    id='image'
+                    name="image"
                     placeholder="Upload an Image"
-                    multiple={true}
+                    multiple={false}
                     required={true}
                     onChange={(e) => {
-
-                        setImages([...images, ...e.target.files]);
+                        setImage(e.target.files[0]);
                     }}
                 />
                 <FormArea
                     required={true}
                     name={"description"}
                     placeholder={"Description"}
-                    value={description}
+                    value={content}
                     onChange={(e) => {
-                        setDescription(e.target.value);
+                        setContent(e.target.value);
                     }}
                 />
                 <FormButton value={"Create"} type={"submit"}>
@@ -190,4 +159,4 @@ const AdminProductsForm = ({mode = "create", id = null}) => {
     );
 };
 
-export default AdminProductsForm;
+export default AdminBlogForm;

@@ -20,6 +20,17 @@ export const productApiSlice = apiSlice.injectEndpoints({
                 body: formData,
             }),
         }),
+        updateProduct: builder.mutation({
+            query: ({id, formData, token}) => ({
+                url: `/admin/products/${id}`,
+                headers: {
+                    authorization: `Bearer ${token}`,
+                    accept: 'application/json',
+                },
+                method: "put",
+                body: formData,
+            })
+        }),
         deleteProduct: builder.mutation({
             query: (credentials) => ({
                 url: `/admin/products/${credentials.id}`,
@@ -34,4 +45,5 @@ export const {
     useGetProductsQuery,
     useCreateProductMutation,
     useDeleteProductMutation,
+    useUpdateProductMutation,
 } = productApiSlice;

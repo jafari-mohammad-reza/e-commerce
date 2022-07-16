@@ -7,6 +7,7 @@ const {BlogModel} = require("../../../models/Blog");
 const {isValidObjectId} = require("mongoose");
 const {createTransport} = require("nodemailer");
 const {deleteImageFromPath} = require("../../../utils/imageUtils");
+const {copyObject} = require("../../../utils/functions");
 module.exports = new class AdminBlogController extends DefaultController {
     async createBlog(req, res, next) {
         try {
@@ -40,22 +41,28 @@ module.exports = new class AdminBlogController extends DefaultController {
                     message: "Not a valid id"
                 })
             }
-
+            const blog = await BlogModel.findOne({_id: id}).catch(err => {
+                throw createHttpError.InternalServerError(err)
+            })
+            if (!blog) {
+                throw createHttpError.BadRequest("the blog could not be found")
+            }
             if (req?.body?.fileUploadPath && req?.body?.filename) {
                 req.body.image = path.join(req.body.fileUploadPath, req.body.filename)
                 req.body.image = req.body.image.replace(/\\/g, "/")
             }
-            const data = req.body;
+            const bodyData = copyObject(req.body);
             let nullishData = ["", " ", "0", 0, null, undefined]
             let blackListFields = ["bookmarks", "deslikes", "comments", "likes", "author"]
-            Object.keys(data).forEach(key => {
-                if (blackListFields.includes(key)) delete data[key]
-                if (typeof data[key] == "string") data[key] = data[key].trim();
-                if (Array.isArray(data[key]) && data[key].length > 0) data[key] = data[key].map(item => item.trim())
-                if (nullishData.includes(data[key])) delete data[key];
+            Object.keys(bodyData).forEach(key => {
+                if (blackListFields.includes(key)) delete bodyData[key]
+                if (typeof bodyData[key] == "string") bodyData[key] = bodyData[key].trim();
+                if (Array.isArray(bodyData[key]) && bodyData[key].length > 0) bodyData[key] = bodyData[key].map(item => item.trim())
+                if (nullishData.includes(bodyData[key])) delete bodyData[key];
             })
-            await BlogModel.updateOne({_id: id}, {$set: data}).then(result => {
+            await BlogModel.updateOne({_id: id}, {$set: bodyData}).then(result => {
                 if (result.modifiedCount > 0) {
+                    deleteImageFromPath(blog?.image)
                     return res.status(StatusCodes.OK).json({
                         success: true,
                         message: "Blog has been updated successfully."
