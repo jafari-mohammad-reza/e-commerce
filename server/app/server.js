@@ -26,6 +26,7 @@ module.exports = class ApplicationServer {
         this.#app.use(
             helmet({
                 crossOriginResourcePolicy: false,
+                contentSecurityPolicy: (process.env.Node_ENV === "production"),
             })
         );
         this.#app.use(cors({credentials: true, origin: "http://localhost:3000"}));

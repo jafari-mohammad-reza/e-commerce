@@ -6,11 +6,7 @@ const createBlogValidator = Joi.object({
         "any.required": "the title cannot be empty.",
         "string.max": "the title cannot be more than 50 words"
     }),
-    overView: Joi.string().required().min(20).max(60).messages({
-        "any.required": "the overView cannot be empty.",
-        "string.max": "the overView cannot be more than 50 words",
-        "string.min": "the overView cannot be less than 50 words",
-    }),
+    overView: Joi.string().required().min(20).error(new createError("the overView cannot be less than 20.")).max(60).error(new createError("the overView cannot be empty.")),
     content: Joi.string().required().min(60).max(500).messages({
         "any.required": "the content cannot be empty.",
         "string.max": "the content cannot be more than 500 words",

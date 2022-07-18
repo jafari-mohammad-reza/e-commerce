@@ -24,7 +24,7 @@ module.exports = new (class UserController extends DefaultController {
                 users
             })
         } catch (e) {
-            next(createHttpError.InternalServerError(e))
+            next(e)
         }
     }
 
@@ -60,10 +60,17 @@ module.exports = new (class UserController extends DefaultController {
         try {
             const {id} = req.params
             console.log(req.body)
-
+            const existUser = await UserModel.findOne({_id: id}, {Role: 1, accessToken: 1, refreshToken: 1})
             const body = req.body;
+            if (body.Role) {
+                if (existUser.Role !== "USER" && req.user.Role !== "SUPERADMIN") {
+                    throw createHttpError.BadRequest('you are not able to change the role of this user')
+                }
+            }
             await UserModel.updateOne({_id: id}, {$set: {...body}}).then(result => {
                 if (result.modifiedCount > 0) {
+                    existUser.accessToken = "";
+                    existUser.refreshToken = "";
                     return res.status(StatusCodes.OK).json({
                         success: true,
                         message: "user profile has been updated successfully."
@@ -76,7 +83,7 @@ module.exports = new (class UserController extends DefaultController {
             })
         } catch (e) {
             console.log(e)
-            next(createHttpError.InternalServerError(e))
+            next(e)
         }
     }
 

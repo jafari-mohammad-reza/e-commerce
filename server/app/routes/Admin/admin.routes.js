@@ -8,10 +8,10 @@ const {AdminRoleRoutes} = require("./role.routes");
 const {AdminPermissionRoutes} = require("./permission.routes");
 const {PERMISSIONS} = require("../../conf/constant");
 const router = require("express").Router();
-router.use("/categories", permissionVaidator([PERMISSIONS.CONTENT_MANAGER]), AdminCategoryRoutes)
-router.use("/blogs", permissionVaidator([PERMISSIONS.CONTENT_MANAGER]), AdminBlogRoutes)
-router.use("/products", permissionVaidator([PERMISSIONS.CONTENT_MANAGER, PERMISSIONS.SUPPLIER]), AdminProductRoutes)
-router.use("/users", permissionVaidator([PERMISSIONS.COUNTER]), AdminUserRoutes)
-router.use("/roles", permissionVaidator([]), AdminRoleRoutes)
-router.use("/permissions", permissionVaidator([]), AdminPermissionRoutes)
+router.use("/categories", permissionVaidator([PERMISSIONS.CONTENT_MANAGER, PERMISSIONS.ADMIN]), AdminCategoryRoutes)
+router.use("/blogs", permissionVaidator([PERMISSIONS.CONTENT_MANAGER, PERMISSIONS.ADMIN]), AdminBlogRoutes)
+router.use("/products", permissionVaidator([PERMISSIONS.CONTENT_MANAGER, PERMISSIONS.SUPPLIER], PERMISSIONS.ADMIN), AdminProductRoutes)
+router.use("/users", permissionVaidator([PERMISSIONS.COUNTER, PERMISSIONS.ADMIN]), AdminUserRoutes)
+router.use("/roles", permissionVaidator([PERMISSIONS.ADMIN]), AdminRoleRoutes)
+router.use("/permissions", permissionVaidator([PERMISSIONS.ADMIN]), AdminPermissionRoutes)
 module.exports = {adminRoutes: router};

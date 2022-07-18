@@ -20,30 +20,39 @@ const AdminBlogForm = ({mode = "create", id = null}) => {
 
     async function submitHandler(e) {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("overView", overView);
-        formData.append("content", content);
-        formData.append("tags", tags);
-        formData.append("category", category);
-        formData.append("image", image);
-        const response = mode === "create" ? await create({formData, token}).unwrap() : await update({
-            formData,
-            id,
-            token
-        }).unwrap();
-        if (response.success) {
-            await Swal.fire({
-                icon: "success",
-                title: "Success ✅",
+        try {
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("overView", overView);
+            formData.append("content", content);
+            formData.append("tags", tags);
+            formData.append("category", category);
+            formData.append("image", image);
+            const response = mode === "create" ? await create({formData, token}).unwrap() : await update({
+                formData,
+                id,
+                token
+            }).unwrap().catch(err => {
+                console.log(err)
+                return Swal.fire({
+                    icon: "Error",
+                    title: "Error!",
+                    text: err.message,
+                });
             });
-            return window.location.reload();
-        }
-        if (response.errors) {
+            if (response.success) {
+                await Swal.fire({
+                    icon: "success",
+                    title: "Success ✅",
+                });
+                return window.location.reload();
+            }
+        } catch (error) {
+            console.log(error)
             return await Swal.fire({
-                icon: "Error",
+                icon: "error",
                 title: "Error!",
-                text: response?.errors?.message,
+                text: error.data.errors.message.message,
             });
         }
     }
@@ -75,6 +84,7 @@ const AdminBlogForm = ({mode = "create", id = null}) => {
                 setCategory(res.data.blog.category);
                 setImage(res.data.blog.image);
             }).catch(err => {
+
                 return Swal.fire({
                     icon: "Error",
                     title: "Error!",

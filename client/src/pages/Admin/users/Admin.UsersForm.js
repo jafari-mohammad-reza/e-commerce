@@ -64,37 +64,40 @@ const AdminUsersForm = ({id = null}) => {
     }, [id])
 
     async function submitHandler(e) {
-        e.preventDefault()
-        const body = {
-            firstName,
-            lastName,
-            username,
-            mobileNumber,
-            email,
-            birthday,
-            Role,
-            isPrime,
-            isBanned
-        };
+        try {
+            e.preventDefault()
+            const body = {
+                firstName,
+                lastName,
+                username,
+                mobileNumber,
+                email,
+                birthday,
+                Role,
+                isPrime,
+                isBanned
+            };
 
-        const response = await update({
-            token,
-            body,
-            id
-        }).unwrap()
-        if (response.success) {
-            await Swal.fire({
-                icon: "success",
-                title: "Success"
-            })
-            return window.location.reload()
-        }
-        if (response.error) {
-            return await Swal.fire({
+            const response = await update({
+                token,
+                body,
+                id
+            }).unwrap()
+            if (response.success) {
+                await Swal.fire({
+                    icon: "success",
+                    title: "Success"
+                })
+                return window.location.reload()
+            }
+        } catch (err) {
+            return Swal.fire({
                 icon: "error",
-                title: response.error.data.errors.message
+                title: "Error",
+                text: err.data.errors.message
             })
         }
+
     }
 
     return (

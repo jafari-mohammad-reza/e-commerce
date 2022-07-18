@@ -1,14 +1,14 @@
 import React from 'react';
 import {Route, Routes} from "react-router-dom";
+import AdminSideBar from "../../components/Admin.SideBar";
 import AdminDashboard from "./Admin.Dashboard";
 import AdminCategories from "./categories/Admin.Categories";
-import AdminSideBar from "../../components/Admin.SideBar";
-import styled from "styled-components";
 import AdminProducts from "./Products/Admin.products";
+import AdminBlog from "./Blogs/Admin.Blog";
 import AdminUsers from "./users/Admin.Users";
 import AdminRoles from "./roles/Admin.Roles";
 import AdminPermissions from "./permissions/Admin.Permissions";
-import AdminBlog from "./Blogs/Admin.Blog";
+import styled from "styled-components";
 
 const Wrapper = styled.div`
   display: flex;
