@@ -1,4 +1,4 @@
-const {GraphQLList, GraphQLObjectType, GraphQLInt} = require("graphql");
+const {GraphQLList, GraphQLString, GraphQLInt} = require("graphql");
 const {BlogType} = require("../typeDefs/Blog.type");
 const {BlogModel} = require("../../models/Blog");
 
@@ -9,12 +9,15 @@ const BlogResolver = {
             type: GraphQLInt,
             defaultValue: 10,
         },
+        category: {type: GraphQLString, default: ""},
     },
     resolve: async (_, args) => {
-        return await BlogModel.find({}).limit(args.limit);
-    }
-}
+        const {category, limit} = args;
+        let query = category ? {category: category} : {};
+        return await BlogModel.find(query).limit(limit);
+    },
+};
 
 module.exports = {
-    BlogResolver
-}
+    BlogResolver,
+};

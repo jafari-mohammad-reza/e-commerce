@@ -23,38 +23,41 @@ const AdminProductsForm = ({mode = "create", id = null}) => {
 
     async function submitHandler(e) {
         e.preventDefault();
-        const formData = new FormData();
-        formData.append("title", title);
-        formData.append("overView", overView);
-        formData.append("tags", tags);
-        formData.append("category", category);
-        formData.append("price", price);
-        formData.append("discount", discount);
-        formData.append("stockCount", stockCount);
-        for (let i = 0; i < images.length; i++) {
-            formData.append("images", images[i]);
-        }
-        formData.append("description", description);
-        const response = mode === "create" ? await create({formData, token}).unwrap() : await update({
-            formData,
-            id,
-            token
-        }).unwrap();
-        console.log(response);
-        if (response.success) {
-            await Swal.fire({
-                icon: "success",
-                title: "Success ✅",
-            });
-            return window.location.reload();
-        }
-        if (response.errors) {
+        try {
+            const formData = new FormData();
+            formData.append("title", title);
+            formData.append("overView", overView);
+            formData.append("tags", tags);
+            formData.append("category", category);
+            formData.append("price", price);
+            formData.append("discount", discount);
+            formData.append("stockCount", stockCount);
+            for (let i = 0; i < images.length; i++) {
+                formData.append("images", images[i]);
+            }
+            formData.append("description", description);
+            const response = mode === "create" ? await create({formData, token}).unwrap() : await update({
+                formData,
+                id,
+                token
+            }).unwrap();
+            console.log(response);
+            if (response.success) {
+                await Swal.fire({
+                    icon: "success",
+                    title: "Success ✅",
+                });
+                return window.location.reload();
+            }
+        } catch (e) {
+            console.log(e)
             return await Swal.fire({
                 icon: "Error",
                 title: "Error!",
-                text: response?.errors?.message,
+                text: e?.data.errors.message
             });
         }
+
     }
 
     async function fetchCategories() {

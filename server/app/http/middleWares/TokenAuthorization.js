@@ -88,9 +88,34 @@ function VerifyRefreshToken(req, res, next) {
 
 }
 
+const GraphqlTokenAuth = async (token) => {
+    try {
+
+        if (!token) {
+            console.log("no token")
+            throw  new createHttpError.Unauthorized("Please login first");
+        }
+        
+        const encoded = JWT.verify(token, process.env.JWT_TOKEN);
+        const {email, mobileNumber} = encoded.payload || {};
+        const user = await UserModel.findOne(
+            {mobileNumber, email},
+            {mobileNumber: 1, email: 1, username: 1, Role: 1}
+        );
+        if (!user) {
+            console.log("no user")
+            throw new createHttpError.Unauthorized("no account");
+        }
+        return user;
+
+    } catch (error) {
+        throw new createHttpError.Unauthorized()
+    }
+}
 
 module.exports = {
     VerifyAccessToken,
     VerifyVerificationToken,
-    VerifyRefreshToken
+    VerifyRefreshToken,
+    GraphqlTokenAuth
 };

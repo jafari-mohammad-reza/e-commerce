@@ -111,9 +111,9 @@ module.exports = new class AdminBlogController extends DefaultController {
             const blogs = await BlogModel.find({}, {
 
                 like: 0,
-                dislike: 0,
+                dislikes: 0,
                 bookmarks: 0,
-                comments: 0,
+                
 
             }).catch(err => {
                 throw createHttpError.InternalServerError(err)
