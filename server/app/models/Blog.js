@@ -15,7 +15,7 @@ const BlogSchema = new mongoose.Schema(
         },
         comments: {type: [CommentSchema], default: []},
         likes: {type: [mongoose.Types.ObjectId], ref: "user", default: []},
-        dilikes: {type: [mongoose.Types.ObjectId], ref: "user", default: []},
+        dislikes: {type: [mongoose.Types.ObjectId], ref: "user", default: []},
         bookmarks: {type: [mongoose.Types.ObjectId], ref: "user", default: []},
     },
     {
