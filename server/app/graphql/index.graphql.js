@@ -4,7 +4,7 @@ const {BlogResolver} = require("./queries/Blog.resolver");
 const {ProductResolver} = require("./queries/Product.resolver");
 const {CategoryResolver, CategoryChildResolver} = require("./queries/Category.Resolver");
 const {CreateBlogComment, CreateProductComment} = require("./mutations/Comments.Resolver");
-
+const {RateProduct} = require("./mutations/rating.resolver");
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
@@ -19,7 +19,8 @@ const RootMutation = new GraphQLObjectType({
     name: "RootMutation",
     fields: {
         CreateBlogComment,
-        CreateProductComment
+        CreateProductComment,
+        RateProduct
     }
 })
 

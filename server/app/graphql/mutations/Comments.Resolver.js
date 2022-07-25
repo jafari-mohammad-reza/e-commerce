@@ -29,12 +29,12 @@ const CreateBlogComment = {
 
         const blog = await BlogModel.findById(blogId);
         if (!blog || !isValidObjectId(blogId)) {
-            throw new Error("Blog not found");
+            throw new createHttpError("Blog not found");
         }
         if (parent && isValidObjectId(parent)) {
             const commentDocument = await getComment(BlogModel, parent);
             if (commentDocument && !commentDocument?.ReplyAble) {
-                throw new Error("You can not reply to this comment");
+                throw new createHttpError("You can not reply to this comment");
             }
             const replyResult = await BlogModel.updateOne({
                 "comments._id": parent
@@ -50,7 +50,7 @@ const CreateBlogComment = {
                 }
             });
             if (!replyResult.modifiedCount) {
-                throw new Error("Parent comment not found");
+                throw new createHttpError("Parent comment not found");
             }
             return {
                 StatusCode: StatusCodes.CREATED,
@@ -93,12 +93,12 @@ const CreateProductComment = {
 
         const product = await ProductModel.findById(productId);
         if (!product || !isValidObjectId(productId)) {
-            throw new Error("product not found");
+            throw new createHttpError("product not found");
         }
         if (parent && isValidObjectId(parent)) {
             const commentDocument = await getComment(ProductModel, parent);
             if (commentDocument && !commentDocument?.ReplyAble) {
-                throw new Error("You can not reply to this comment");
+                throw new createHttpError("You can not reply to this comment");
             }
             const replyResult = await ProductModel.updateOne({
                 "comments._id": parent
@@ -114,7 +114,7 @@ const CreateProductComment = {
                 }
             });
             if (!replyResult.modifiedCount) {
-                throw new Error("Parent comment not found");
+                throw new createHttpError("Parent comment not found");
             }
             return {
                 StatusCode: StatusCodes.CREATED,
