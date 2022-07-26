@@ -95,7 +95,7 @@ const GraphqlTokenAuth = async (token) => {
             console.log("no token")
             throw  new createHttpError.Unauthorized("Please login first");
         }
-        
+
         const encoded = JWT.verify(token, process.env.JWT_TOKEN);
         const {email, mobileNumber} = encoded.payload || {};
         const user = await UserModel.findOne(
