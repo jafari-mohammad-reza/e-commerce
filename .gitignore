@@ -128,4 +128,10 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
-uploads/
+server/package-lock.json
+server/public
+client/package-lock.json
+client/public
+server/node_modules
+client/node_modules
+./tags
