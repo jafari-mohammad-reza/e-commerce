@@ -31,8 +31,17 @@ const ResponseType = new GraphQLObjectType({
     }
 })
 
+const RatingType = new GraphQLObjectType({
+    name: "ratingType",
+    fields: {
+        postBy: {type: UserType},
+        stars: {type: GraphQLInt},
+    }
+})
+
 module.exports = {
     UserType,
     AnyType,
-    ResponseType
+    ResponseType,
+    RatingType
 };

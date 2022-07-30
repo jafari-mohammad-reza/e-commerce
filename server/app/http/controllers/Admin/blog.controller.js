@@ -15,10 +15,10 @@ module.exports = new (class AdminBlogController extends DefaultController {
         try {
             const bodyData = await createBlogValidator.validateAsync(req.body);
             const {title, overView, content, tags, category} = bodyData;
-            req.body.image = path
+            const image = path
                 .join(req.body.fileUploadPath, req.body.fileName)
                 .replaceAll(/\\/gi);
-            const image = req.body.image;
+
             const author = req?.user?._id;
             if (await BlogModel.findOne({title})) {
                 throw createHttpError.BadRequest("Blog with this title already exists");
@@ -61,7 +61,7 @@ module.exports = new (class AdminBlogController extends DefaultController {
             if (!blog) {
                 throw createHttpError.BadRequest("the blog could not be found");
             }
-            if (req?.body?.fileUploadPath && req?.body?.filename) {
+            if (req.body.fileUploadPath && req.body.fileName) {
                 req.body.image = path.join(req.body.fileUploadPath, req.body.filename);
                 req.body.image = req.body.image.replace(/\\/g, "/");
             }
@@ -82,7 +82,7 @@ module.exports = new (class AdminBlogController extends DefaultController {
                     bodyData[key] = bodyData[key].map((item) => item.trim());
                 if (nullishData.includes(bodyData[key])) delete bodyData[key];
             });
-            await BlogModel.updateOne({_id: id}, {$set: bodyData})
+            await BlogModel.updateOne({_id: id}, {$set: bodyData, image})
                 .then((result) => {
                     if (result.modifiedCount > 0) {
                         deleteImageFromPath(blog?.image);

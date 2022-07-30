@@ -9,10 +9,13 @@ const {copyObject} = require("../../utils/functions");
 const createHttpError = require("http-errors");
 
 async function getComment(model, id) {
-    const foundedComment = await model.findOne({"comments._id": id}, {"comments.$": 1});
-    const comment = copyObject(foundedComment)
-    if (!comment?.comments?.[0]) throw createHttpError.NotFound("the comment could not be found")
-    return comment?.comments?.[0]
+    const foundedComment = await model.findOne({"comments._id": id}, {"comments.$": 1}).catch(err => {
+        console.log(err)
+        throw new createHttpError.InternalServerError(err.message);
+    });
+    const comment = copyObject(foundedComment.comments)
+    if (!comment) throw createHttpError.NotFound("the comment could not be found")
+    return comment[0]
 }
 
 const CreateBlogComment = {
@@ -23,8 +26,8 @@ const CreateBlogComment = {
         parent: {type: GraphQLString},
     },
     resolve: async (_, args, context) => {
-        const {rawHeaders} = context
-        const author = await GraphqlTokenAuth(rawHeaders[1])
+        const {headers} = context
+        const author = await GraphqlTokenAuth(headers)
         const {blogId, content, parent} = args;
 
         const blog = await BlogModel.findById(blogId);
@@ -33,6 +36,7 @@ const CreateBlogComment = {
         }
         if (parent && isValidObjectId(parent)) {
             const commentDocument = await getComment(BlogModel, parent);
+            console.log(commentDocument)
             if (commentDocument && !commentDocument?.ReplyAble) {
                 throw new createHttpError("You can not reply to this comment");
             }
@@ -87,8 +91,8 @@ const CreateProductComment = {
         parent: {type: GraphQLString},
     },
     resolve: async (_, args, context) => {
-        const {rawHeaders} = context
-        const author = await GraphqlTokenAuth(rawHeaders[1])
+        const {headers} = context
+        const author = await GraphqlTokenAuth(headers)
         const {productId, content, parent} = args;
 
         const product = await ProductModel.findById(productId);

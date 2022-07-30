@@ -31,7 +31,7 @@ module.exports = new (class AdminProductController extends DefaultController {
                 physicalFeatures,
                 additionalFeatures,
             } = bodyData;
-            const supplier = req?.user?._id;
+            const supplier = req.user._id;
             await ProductModel.create({
                 title,
                 overView,
@@ -59,7 +59,7 @@ module.exports = new (class AdminProductController extends DefaultController {
                     };
                 })
                 .catch((err) => {
-                    throw {status: StatusCodes.InternalServerError, message: err};
+                    throw {status: StatusCodes.BadRequest, message: err};
                 });
         } catch (error) {
             next(error);

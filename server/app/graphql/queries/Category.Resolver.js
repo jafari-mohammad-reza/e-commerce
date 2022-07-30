@@ -15,7 +15,7 @@ const CategoryResolver = {
         return await CategoryModel.find({parent: undefined}).limit(limit);
     }
 }
-const CategoryChildResolver = {
+const ChildrenCategoryResolver = {
     type: new GraphQLList(CategoryType),
     args: {
         parent: {type: GraphQLString},
@@ -27,11 +27,11 @@ const CategoryChildResolver = {
     },
     resolve: async (_, args) => {
         const {parent, limit} = args;
-        return await CategoryModel.find({parent}).limit(limit);
+        return await CategoryModel.find({$and: [{parent: parent}, {parent: {$ne: undefined}}]}).limit(limit);
     }
 }
 
 module.exports = {
     CategoryResolver,
-    CategoryChildResolver
+    ChildrenCategoryResolver
 }

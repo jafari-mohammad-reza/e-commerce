@@ -11,12 +11,13 @@ const RateProduct = {
     type: ResponseType,
     args: {
         productId: {type: GraphQLString},
-        star: {type: GraphQLInt},
+        stars: {type: GraphQLInt},
     },
     resolve: async (parent, args, context) => {
-        const user = await GraphqlTokenAuth(context.rawHeaders[1]);
-        const {productId, star} = args;
-        if (star > 5 || star < 1) throw new createHttpError(StatusCodes.BAD_REQUEST, "star must be between 1 and 5");
+        const {headers} = context
+        const user = await GraphqlTokenAuth(headers)
+        const {productId, stars} = args;
+        if (stars > 5 || stars < 1) throw new createHttpError(StatusCodes.BAD_REQUEST, "star must be between 1 and 5");
         if (!isValidObjectId(productId)) {
             throw new createHttpError.BadRequest("Invalid productId");
         }
@@ -24,31 +25,31 @@ const RateProduct = {
         if (!product) {
             throw new createHttpError.BadRequest("Invalid productId");
         }
-        let existRatings = await ProductModel.findOne({_id: productId, "ratings.postedBy": user._id});
-        console.log(existRatings)
-        if (!existRatings) {
-            const addedRating = await ProductModel.updateOne({_id: productId}, {
+        let existRate = await ProductModel.findOne({_id: productId, "ratings.postBy": user._id});
+        if (existRate) {
+            await ProductModel.findByIdAndUpdate(productId, {
+                $set: {
+                    "ratings.$[].stars": stars,
+
+                }
+            })
+            console.log("update rate")
+        } else {
+            console.log(stars)
+            await ProductModel.findByIdAndUpdate(productId, {
                 $push: {
                     ratings: {
-                        postedBy: user._id,
-                        star: star,
+                        postBy: user._id,
+                        stars: stars
                     }
                 }
-            }, {new: true});
-
-        } else {
-            const updatedRating = await ProductModel.updateOne({_id: productId, "ratings.postedBy": user._id}, {
-                $set: {
-
-                    "ratings.$.star": star,
-                }
-            }, {new: true});
-            console.log("updatedRating : ", updatedRating)
+            }, {new: true})
+            console.log("create rate")
         }
         return {
-            statusCode: StatusCodes.OK,
+            status: StatusCodes.OK,
             data: {
-                message: "Rate added successfully"
+                message: "rate success"
             }
         }
     }

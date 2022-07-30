@@ -50,11 +50,16 @@ BlogSchema.virtual("imageURL").get(function () {
 
 function autoPopulate(next) {
     this.populate([
-        {path: "author", select: {username: 1, email: 1, mobile: 1}},
+        {path: "author", select: {username: 1, email: 1}},
         {
             path: "categoryName",
             select: {title: 1, children: 0},
         },
+        {path: "comments.author", select: {username: 1, email: 1}},
+        {path: "comments.Replies.author", select: {username: 1, email: 1}},
+        {path: "likes", select: {username: 1, email: 1}},
+        {path: "dislikes", select: {username: 1, email: 1}},
+        {path: "bookmarks", select: {username: 1, email: 1}},
     ]);
     next();
 }
