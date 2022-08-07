@@ -8,6 +8,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const cluster = require("cluster")
 const os = require("os")
+const limit = require("express-rate-limit")
 const {mainRouter} = require("./routes/router");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
@@ -35,6 +36,17 @@ module.exports = class ApplicationServer {
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extended: true}));
         this.#app.use(express.static(path.join(__dirname, "..", "public")));
+        this.#app.use(limit({
+            windowMs: 5000, // 5 seconds
+            max: 5, // limit each IP to 100 requests per windowMs
+            message: {
+                statusCode: StatusCodes.TOO_MANY_REQUESTS,
+                message: "Too many requests from this IP, please try again later.",
+            },
+            skipFailedRequests: true,
+
+
+        }))
         this.#app.use(
             "/api-docs",
             swaggerUi.serve,
@@ -83,7 +95,7 @@ module.exports = class ApplicationServer {
             cluster.on("exit", (worker, code, signal) => {
                 console.log(`worker ${worker.process.pid} died`)
                 cluster.fork()
-                
+
             })
         } else {
             require("http")
