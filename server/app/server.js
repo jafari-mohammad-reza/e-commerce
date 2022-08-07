@@ -6,6 +6,8 @@ const {StatusCodes} = require("http-status-codes");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
+const cluster = require("cluster")
+const os = require("os")
 const {mainRouter} = require("./routes/router");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
@@ -74,11 +76,22 @@ module.exports = class ApplicationServer {
 
     //? \x1b[36m & \x1b[32m are console color codes to make it more attractive
     configureServer(port) {
-        require("http")
-            .createServer(this.#app)
-            .listen(port, () => {
-                console.log("\x1b[36m", `Running > http://localhost:${port}`);
-            });
+        if (cluster.isMaster) {
+            for (let i = 0; i < os.cpus().length; i++) {
+                cluster.fork()
+            }
+            cluster.on("exit", (worker, code, signal) => {
+                console.log(`worker ${worker.process.pid} died`)
+                cluster.fork()
+                
+            })
+        } else {
+            require("http")
+                .createServer(this.#app)
+                .listen(port, () => {
+                    console.log("\x1b[36m", `Running > http://localhost:${port} , Process : ${process.pid}`);
+                });
+        }
     }
 
     configureDataBases(mongoUrl) {
