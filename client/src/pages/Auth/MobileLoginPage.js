@@ -66,7 +66,8 @@ function MobileLoginPage() {
                     const verificationResult = await verifyOtp({mobile, otp: code}).unwrap()
                     console.log(verificationResult)
                     if (verificationResult?.success) {
-                        dispatch(setCredentials({...verificationResult}))
+                        console.log(verificationResult)
+                        dispatch(setCredentials({...verificationResult.credentials}))
                         await Swal.fire({
                             icon: "success",
                             title: "Logged In ✅",

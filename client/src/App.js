@@ -12,6 +12,8 @@ import ResetPasswordPage from "./pages/Auth/ResetPasswordPage";
 import MobileLoginPage from "./pages/Auth/MobileLoginPage";
 import RequireAuth from "./app/features/auth/RequireAuth";
 import {Roles} from "./conf/constants";
+import OnlineSupport from "./pages/Support/OnlineSupport";
+import SupporterPage from "./pages/Support/SupporterPage";
 
 function App() {
     const {pathname} = useLocation();
@@ -34,7 +36,7 @@ function App() {
                 </title>
             </Helmet>
 
-            {!pathname.includes("/admin") && <Header/>}
+            {!["/admin", "/online-support"].includes(pathname) && <Header/>}
             <Suspense fallback={<LoadingComponent/>}>
                 <Routes>
                     <Route path="/" index element={<HomePage/>}/>
@@ -60,6 +62,10 @@ function App() {
                     </Route>
                     <Route element={<RequireAuth allowedRoutes={Roles.USER}/>}>
                         <Route path="/cart" index element={<CheckoutPage/>}/>
+                        <Route path="/online-support" index element={<OnlineSupport/>}/>
+                    </Route>
+                    <Route element={<RequireAuth allowedRoutes={Roles.SUPPORTER}/>}>
+                        <Route path="/supporter-page" index element={<SupporterPage/>}/>
                     </Route>
                     <Route path="*" element={<NotFound/>}/>
 

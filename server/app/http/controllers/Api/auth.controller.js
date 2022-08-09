@@ -271,7 +271,6 @@ module.exports = new (class AuthController extends DefaultController {
     async validateOTP(req, res, next) {
         try {
             const bodyData = await loginByMobile.validateAsync(req.body);
-            console.log(bodyData)
             const {mobile, otp} = bodyData;
             const user = await UserModel.findOne(
                 {mobileNumber: mobile},
