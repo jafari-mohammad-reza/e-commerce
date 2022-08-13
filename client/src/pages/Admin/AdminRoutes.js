@@ -1,6 +1,6 @@
 import React from 'react';
 import {Route, Routes} from "react-router-dom";
-import AdminSideBar from "../../components/Admin.SideBar";
+import AdminSideBar from "../../components/AdminComponents/Admin.SideBar";
 import AdminDashboard from "./Admin.Dashboard";
 import AdminCategories from "./categories/Admin.Categories";
 import AdminProducts from "./Products/Admin.products";

@@ -52,6 +52,9 @@ ProductSchema.virtual("categoryName", {
     foreignField: "_id",
     justOne: true,
 });
+ProductSchema.virtual("discountedPrice").get(function () {
+    return this.price - (this.price * this.discount) / 100;
+})
 
 function autoPopulate(next) {
     this.populate([
@@ -63,6 +66,7 @@ function autoPopulate(next) {
         {path: "comments.author", select: {username: 1, email: 1}},
         {path: "comments.Replies.author", select: {username: 1, email: 1}},
         {path: "ratings.postBy", select: {username: 1, email: 1}},
+
 
     ]);
     next();

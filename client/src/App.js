@@ -14,6 +14,39 @@ import RequireAuth from "./app/features/auth/RequireAuth";
 import {Roles} from "./conf/constants";
 import OnlineSupport from "./pages/Support/OnlineSupport";
 import SupporterPage from "./pages/Support/SupporterPage";
+import {ApolloClient, ApolloProvider, from, HttpLink, InMemoryCache} from "@apollo/client"
+import {onError} from "@apollo/client/link/error"
+import Swal from "sweetalert2";
+import Profile from "./pages/User/Profile";
+import Blogs from "./pages/Blogs/Blogs";
+import DiscountsPage from "./pages/Products/DiscountsPage";
+import Blog from "./pages/Blogs/BlogById";
+
+const errorLink = onError(({graphQLErrors, networkError}) => {
+    if (graphQLErrors) {
+        graphQLErrors.map(({message, locations, path}) => {
+            console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
+            Swal.fire({
+                title: "Error",
+                text: message,
+                icon: "error"
+            })
+        })
+    }
+
+})
+const link = from([
+    errorLink,
+    new HttpLink({
+        uri: "http://localhost:5000/graphql",
+    })
+])
+
+
+const client = new ApolloClient({
+    cache: new InMemoryCache(),
+    link,
+})
 
 function App() {
     const {pathname} = useLocation();
@@ -22,13 +55,13 @@ function App() {
         setCurrentPage(pathname);
     }, [pathname]);
     const HomePage = lazy(() => import("./pages/HomePage"));
-    const CheckoutPage = lazy(() => import("./pages/CheckoutPage"));
+    const CheckoutPage = lazy(() => import("./pages/User/CheckoutPage"));
     const NotFound = lazy(() => import("./pages/NotFound"));
     const AdminDashboard = lazy(() => import("./pages/Admin/AdminRoutes"));
     axios.defaults.withCredentials = true;
 
     return (
-        <>
+        <ApolloProvider client={client}>
             <Helmet>
                 <title>
                     E-Commerce |{" "}
@@ -36,10 +69,16 @@ function App() {
                 </title>
             </Helmet>
 
-            {!["/admin", "/online-support"].includes(pathname) && <Header/>}
+            {!pathname.includes("/admin") && !pathname.includes("/online-support") && !pathname.includes("/profile") &&
+                <Header/>}
             <Suspense fallback={<LoadingComponent/>}>
                 <Routes>
                     <Route path="/" index element={<HomePage/>}/>
+                    <Route path="/blogs" element={<Blogs/>}/>
+                    <Route path="/blogs/:id" element={<Blog/>}/>
+                    <Route path="/products/:title" element={<DiscountsPage/>}/>
+                    <Route path="/today-discounts" index element={<DiscountsPage/>}/>
+
                     //! Auth Routes
                     <Route path="/register" index element={<RegisterPage/>}/>
                     <Route path="/login" index element={<LoginPage/>}/>
@@ -55,15 +94,17 @@ function App() {
                         index
                         element={<ResetPasswordPage/>}
                     />
-                    //? User Routes
-                    {/*! protected routes */}
+
                     <Route element={<RequireAuth allowedRoutes={Roles.ADMIN}/>}>
                         <Route path={"/admin/*"} element={<AdminDashboard/>}/>
                     </Route>
+
                     <Route element={<RequireAuth allowedRoutes={Roles.USER}/>}>
+                        <Route path={"/profile/*"} element={<Profile/>}/>
                         <Route path="/cart" index element={<CheckoutPage/>}/>
                         <Route path="/online-support" index element={<OnlineSupport/>}/>
                     </Route>
+
                     <Route element={<RequireAuth allowedRoutes={Roles.SUPPORTER}/>}>
                         <Route path="/supporter-page" index element={<SupporterPage/>}/>
                     </Route>
@@ -71,7 +112,7 @@ function App() {
 
                 </Routes>
             </Suspense>
-        </>
+        </ApolloProvider>
     );
 }
 

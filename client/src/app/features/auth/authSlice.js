@@ -1,4 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
+import axios from "../../../conf/axios";
 
 const initialState = {
     user: JSON.parse(localStorage.getItem("userInfo")) || {
@@ -23,13 +24,15 @@ const authSlice = createSlice({
             state.user.mobile = mobile ?? undefined;
             localStorage.setItem("userInfo", JSON.stringify(state.user))
         },
-        logout: (state, action) => {
-            state.user = {
+        logout: async (state, action) => {
+            const user = {
                 email: null,
                 username: null,
                 mobile: null,
                 Role: null,
             }
+            await axios.post(`/api/v1/auth/email/logout/${state.token}`).catch(err => console.log(err))
+            localStorage.setItem("userInfo", JSON.stringify(user))
             state.token = null;
         },
         setToken: (state, action) => {

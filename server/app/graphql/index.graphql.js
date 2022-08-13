@@ -6,7 +6,7 @@ const {
 } = require("graphql");
 const getBlogsQuery = require("./queries/Blog.resolver");
 const {BlogResolver} = require("./queries/Blog.resolver");
-const {ProductResolver} = require("./queries/Product.resolver");
+const {ProductResolver , DiscountedProductResolver} = require("./queries/Product.resolver");
 const {
     CategoryResolver,
     ChildrenCategoryResolver
@@ -40,6 +40,7 @@ const RootQuery = new GraphQLObjectType({
         GetMarkedBlogs,
         GetMarkedProducts,
         GetUserShoppingCart,
+        GetDiscounts : DiscountedProductResolver
     },
 });
 

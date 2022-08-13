@@ -42,6 +42,7 @@ const ProductType = new GraphQLObjectType({
         isTrend: {type: GraphQLBoolean, default: false},
         isPrime: {type: GraphQLBoolean, default: false},
         rate: {type: GraphQLFloat, default: 0},
+        discountedPrice: {type: GraphQLFloat, default: 0},
     },
 });
 

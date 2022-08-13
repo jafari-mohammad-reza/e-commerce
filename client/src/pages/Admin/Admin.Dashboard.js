@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import styled from "styled-components";
-import AdminNavbar from "../../components/Admin.Navbar";
-import AdminWidgets from "../../components/Admin.Widgets";
-import AdminCharts from "../../components/Admin.Chart";
-import AdminFeaturedChart from "../../components/Admin.FeaturedChart";
+import AdminNavbar from "../../components/AdminComponents/Admin.Navbar";
+import AdminWidgets from "../../components/AdminComponents/Admin.Widgets";
+import AdminCharts from "../../components/AdminComponents/Admin.Chart";
+import AdminFeaturedChart from "../../components/AdminComponents/Admin.FeaturedChart";
 import Table from "../../components/Table";
 
 export const AdminWrapper = styled.div`

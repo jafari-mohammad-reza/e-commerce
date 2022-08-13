@@ -9,10 +9,12 @@ const cors = require("cors");
 const cluster = require("cluster")
 const os = require("os")
 const limit = require("express-rate-limit")
+const cron = require("node-cron")
 const {mainRouter} = require("./routes/router");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const configureMongoose = require("./conf/mongooseConfiguration");
+const {ProductModel} = require("./models/Product");
 module.exports = class ApplicationServer {
     #app = express();
 
@@ -22,6 +24,7 @@ module.exports = class ApplicationServer {
         this.configureDataBases(mongoUrl);
         this.configureRoutes();
         this.configureErrorHandlers();
+        this.configureDailyDiscounts()
     }
 
     configureApplication() {
@@ -104,7 +107,49 @@ module.exports = class ApplicationServer {
                     console.log("\x1b[36m", `Running > http://localhost:${port} , Process : ${process.pid}`);
                 });
         }
+
     }
+
+    configureDailyDiscounts() {
+        cluster.isMaster ? cron.schedule("* * */24 * * *", () => {
+            console.log("\x1b[32m", "running cron job")
+            mongoose.model("product").aggregate([
+                {
+                    $match: {
+                        updatedAt: {
+                            $gte: new Date(Date.now() - 1000 * 60 * 60 * 12),
+                        }
+                    },
+
+                    $project: {
+                        _id: 1,
+                        discount: 1,
+                        price: 1,
+                        title: 1,
+                    },
+
+                }
+            ]).limit(30).exec((err, products) => {
+                if (err) {
+                    console.log(err)
+                    throw new Error(err)
+                } else {
+                    products.forEach(product => {
+                        product.discount = Math.floor(Math.random() * 75).toString()
+                        mongoose.model("product").updateOne({_id: product._id}, product, (err, result) => {
+                        })
+
+                    })
+                    console.log("Daily discounts applied")
+                }
+            })
+
+        }, {
+            scheduled: true,
+            timezone: "Asia/Tehran",
+        }) : null;
+    }
+
 
     configureDataBases(mongoUrl) {
         configureMongoose(mongoUrl);

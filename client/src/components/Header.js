@@ -1,7 +1,10 @@
 import React, {useState} from "react";
 import {Link} from "react-router-dom";
 import styled from "styled-components";
-import {AiOutlineHeart, AiOutlineShopping,} from "react-icons/ai";
+import {AiOutlineShopping, AiOutlineUser,} from "react-icons/ai";
+import {useSelector} from "react-redux";
+import {selectCurrentUser} from "../app/features/auth/authSlice";
+import {BsNewspaper} from "react-icons/bs";
 
 const Wrapper = styled.header`
   padding: 1.5rem 5rem;
@@ -35,6 +38,7 @@ const MainItemsWrapper = styled.div`
     margin-right: 4rem;
     transition: all 2s ease-in-out;
   }
+
   @media (max-width: 768px) {
     display: none;
   }
@@ -76,10 +80,12 @@ const IconWrapper = styled.div`
   margin-right: 1.5rem;
   transition: background-color 0.2s ease-in-out;
   cursor: pointer;
+
   &:hover {
     background-color: #c8a267;
     color: #fff;
   }
+
   span {
     border-radius: 50%;
     width: 2rem;
@@ -94,6 +100,7 @@ const IconWrapper = styled.div`
     top: -1rem;
     right: 0.2rem;
   }
+
   @media (max-width: 768px) {
     /* font-size: 2rem; */
     margin-top: 1.5rem;
@@ -103,13 +110,16 @@ const ListItem = styled.li`
   display: flex;
   align-items: center;
   justify-content: center;
+
   a {
     font-size: 2rem;
     font-weight: 600;
     color: #595959;
+
     &:hover::before {
       width: 100%;
     }
+
     &::before {
       content: "";
       display: block;
@@ -123,6 +133,7 @@ const ListItem = styled.li`
 
 export default function Header() {
     const [isClicked, setIsClicked] = useState(false);
+    const user = useSelector(selectCurrentUser)
     return (
         <Wrapper>
             <List>
@@ -131,13 +142,13 @@ export default function Header() {
                 </Link>
                 <MainItemsWrapper isClicked={isClicked}>
                     <ListItem>
-                        <Link to={"/hotItems"}>Hot🔥</Link>
+                        <Link to={"/hot-products"}>Hot🔥</Link>
                     </ListItem>
                     <ListItem>
-                        <Link to={"/hotItems"}>Discounts</Link>
+                        <Link to={"/today-discounts"}>Discounts</Link>
                     </ListItem>
                     <ListItem>
-                        <Link to={"/AdminApies"}>Categories</Link>
+                        <Link to={"/categories"}>Categories</Link>
                     </ListItem>
                     <ListItem>
                         <Link to={"/contact"}>Contact</Link>
@@ -150,22 +161,24 @@ export default function Header() {
                             <AiOutlineShopping/>
                         </IconWrapper>
                     </Link>
-                    <Link to="/liked">
+                    <Link to="/blogs">
                         <IconWrapper>
-                            <AiOutlineHeart/>
+                            <BsNewspaper/>
                         </IconWrapper>
                     </Link>
-                    {/* <Link to="/profile">
-            <IconWrapper>
-              //? show user icon while use ris logged in and show login or register links while nots
-              <AiOutlineUser />
-            </IconWrapper>
-          </Link> */}
-                    <Link to={"/login"}>
+                    {user.email || user.mobile ? (
+                        <Link to={user?.Role?.toLowerCase() !== "user" ? "/admin" : "/profile"}>
+                            <IconWrapper>
+                                <AiOutlineUser/>
+                            </IconWrapper>
+                        </Link>) : (<Link to={"/login"}>
                         <IconWrapper>
                             <h6>Login</h6>
                         </IconWrapper>
-                    </Link>
+                    </Link>)
+                    }
+
+
                 </FlexWrapper>
             </List>
             <SideBarButton onClick={() => setIsClicked(!isClicked)}>

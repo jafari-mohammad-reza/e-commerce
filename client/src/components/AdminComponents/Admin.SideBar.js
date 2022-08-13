@@ -16,8 +16,7 @@ import {ImBlog, ImCreditCard, ImStatsDots} from "react-icons/im";
 import {MdCategory} from "react-icons/md";
 import {Link} from "react-router-dom";
 import {useDispatch, useSelector} from "react-redux";
-import {logout, selectCurrentToken} from "../app/features/auth/authSlice";
-import axios from "../conf/axios";
+import {logout, selectCurrentToken} from "../../app/features/auth/authSlice"
 
 const Wrapper = styled.div`
   flex: 1;
@@ -116,7 +115,10 @@ const AdminSideBar = () => {
     const token = useSelector(selectCurrentToken)
     return (
         <Wrapper>
-            <TopWrapper><img src={'/images/logo.png'} alt={'logo'}/></TopWrapper>
+            <TopWrapper>
+                <Link to={"/"}>
+                    <img src={'/images/logo.png'} alt={'logo'}/></Link>
+            </TopWrapper>
             <CenterWrapper>
                 <ul>
                     <h4>Main</h4>
@@ -163,10 +165,9 @@ const AdminSideBar = () => {
                         <li><RiSettings3Line/><span>Settings</span></li>
                     </Link>
 
-                    <a href={'#'}>
+                    <a href={'/'}>
                         <li onClick={async () => {
                             dispatch(logout())
-                            await axios.post(`/api/v1/auth/email/logout/${token}`).catch(err => console.log(err))
                         }}><RiLogoutBoxRLine/><span>Logout</span></li>
                     </a>
 
@@ -177,7 +178,6 @@ const AdminSideBar = () => {
 
                 </ul>
             </CenterWrapper>
-            <BottomWrapper></BottomWrapper>
         </Wrapper>
     );
 };
