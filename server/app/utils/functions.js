@@ -1,4 +1,5 @@
 const {UserModel} = require("../models/User");
+const {Kind} = require("graphql/language");
 
 function deleteInvalidPropertyInObject(data = {}, blackListFields = []) {
     let nullishData = ["", " ", "0", 0, null, undefined];

@@ -5,7 +5,7 @@ const BlogSchema = new mongoose.Schema(
         title: {type: String, required: true},
         overView: {type: String, required: true, maxLength: 50},
         content: {type: String, required: true},
-        author: {type: mongoose.Types.ObjectId, required: true, ref: "user"},
+        author: {type: mongoose.Types.ObjectId, ref: "user", required: true},
         image: {type: String, required: true},
         tags: {type: [String], default: []},
         category: {
@@ -27,23 +27,7 @@ const BlogSchema = new mongoose.Schema(
     }
 );
 
-BlogSchema.virtual("writer", {
-    ref: "user",
-    localField: "author",
-    foreignField: "_id",
-});
-BlogSchema.virtual("categoryName", {
-    ref: "category",
-    localField: "category",
-    foreignField: "_id",
-    justOne: true,
-    options: {
-        projection: {
-            title: 1,
-            children: 0,
-        },
-    },
-});
+
 BlogSchema.virtual("imageURL").get(function () {
     return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${this.image}`;
 });
@@ -52,7 +36,7 @@ function autoPopulate(next) {
     this.populate([
         {path: "author", select: {username: 1, email: 1}},
         {
-            path: "categoryName",
+            path: "category",
             select: {title: 1, children: 0},
         },
         {path: "comments.author", select: {username: 1, email: 1}},

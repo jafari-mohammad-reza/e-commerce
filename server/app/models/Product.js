@@ -46,19 +46,21 @@ ProductSchema.virtual("imagesURL").get(function () {
             `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${image}`
     );
 });
-ProductSchema.virtual("categoryName", {
-    ref: "category",
-    localField: "category",
-    foreignField: "_id",
-    justOne: true,
-});
+
 ProductSchema.virtual("discountedPrice").get(function () {
     return this.price - (this.price * this.discount) / 100;
+})
+ProductSchema.virtual("averageRating").get(function () {
+    let sum = 0;
+    for (let i = 0; i < this.ratings.length; i++) {
+        sum += this.ratings[i].stars
+    }
+    return sum / this.ratings.length;
 })
 
 function autoPopulate(next) {
     this.populate([
-        {path: "categoryName", select: {__v: 0, id: 0, _id: 0, parent: 0}},
+        {path: "category", select: {__v: 0, id: 0, _id: 0, parent: 0}},
         {path: "bookmarks", select: {__v: 0, id: 0, _id: 0, parent: 0}},
         {path: "ratings", select: {__v: 0, id: 0, _id: 0, parent: 0}},
         {path: "comments", select: {__v: 0, id: 0, _id: 0, parent: 0}},
@@ -66,8 +68,6 @@ function autoPopulate(next) {
         {path: "comments.author", select: {username: 1, email: 1}},
         {path: "comments.Replies.author", select: {username: 1, email: 1}},
         {path: "ratings.postBy", select: {username: 1, email: 1}},
-
-
     ]);
     next();
 }

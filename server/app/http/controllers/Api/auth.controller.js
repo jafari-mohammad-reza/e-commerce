@@ -32,6 +32,7 @@ module.exports = new (class AuthController extends DefaultController {
             const bodyData = await emailLoginValidator.validateAsync(req.body);
             const {email, password, rememberme} = bodyData;
             const user = await UserModel.findOne({email}, {
+                _id: 1,
                 email: 1,
                 username: 1,
                 password: 1,
@@ -66,7 +67,7 @@ module.exports = new (class AuthController extends DefaultController {
                 );
             }
             user.accessToken = generateAccessToken({email: user.email});
-            user.refreshToken = await generateRefreshToken({userId: user._id});
+            user.refreshToken = await generateRefreshToken(user._id);
             await user.save();
             return res
                 .status(StatusCodes.OK)
@@ -318,7 +319,7 @@ module.exports = new (class AuthController extends DefaultController {
         try {
             const user = req.user;
             return res.status(StatusCodes.OK).json({
-                token: user?.accessToken
+                token: user
             })
         } catch (error) {
             next(error)

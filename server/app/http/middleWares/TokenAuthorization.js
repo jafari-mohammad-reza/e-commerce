@@ -2,6 +2,7 @@ const createHttpError = require("http-errors");
 const {UserModel} = require("../../models/User");
 const JWT = require("jsonwebtoken");
 const redisClient = require("../../conf/redisConfiguration")
+const jwt = require("jsonwebtoken");
 
 function getToken(headers, tokenName = "") {
     const {authorization, cookie} = headers;
@@ -68,19 +69,25 @@ function VerifyVerificationToken(req, res, next) {
 
 function VerifyRefreshToken(req, res, next) {
     try {
+        req.user = undefined
         const token = getToken(req.headers, "refresh_token");
-        JWT.verify(token, process.env.JWT_REFRESH_TOKEN, async (err, encoded) => {
-            try {
-                if (err) throw createHttpError.InternalServerError(err)
-                const {userId} = encoded.userId || {};
-                const user = await UserModel.findOne({_id: userId}, {accessToken: 1})
-                if (!user) throw (createHttpError.Unauthorized("Please Login"))
-                req.user = user;
-                return next()
-                throw (createHttpError.Unauthorized("Login again"))
-            } catch (e) {
-                next(e);
-            }
+        JWT.verify(token, process.env.JWT_REFRESH_TOKEN, async (err, payload) => {
+            if (err) throw (createHttpError.Unauthorized("Please login first"))
+            const {email, mobileNumber} = payload || {};
+            const user = await UserModel.findOne({$or: [{email}, {mobileNumber}]}, {
+                email: 1,
+                username: 1,
+                mobileNumber: 1,
+                Role: 1,
+                accessToken: 1,
+                refreshToken: 1
+            });
+            if (!user) throw (createHttpError.Unauthorized("User not found"))
+            const refreshToken = await redisClient.get(String(user?._id));
+            if (!refreshToken) throw (createHttpError.Unauthorized("Login failed"))
+            if (token === refreshToken) req.user = user?.accessToken;
+            return next();
+            throw (createHttpError.Unauthorized("Login failed"))
         })
     } catch (error) {
         next(error);

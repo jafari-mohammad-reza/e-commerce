@@ -39,17 +39,7 @@ module.exports = class ApplicationServer {
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extended: true}));
         this.#app.use(express.static(path.join(__dirname, "..", "public")));
-        this.#app.use(limit({
-            windowMs: 5000, // 5 seconds
-            max: 5, // limit each IP to 100 requests per windowMs
-            message: {
-                statusCode: StatusCodes.TOO_MANY_REQUESTS,
-                message: "Too many requests from this IP, please try again later.",
-            },
-            skipFailedRequests: true,
 
-
-        }))
         this.#app.use(
             "/api-docs",
             swaggerUi.serve,
@@ -96,7 +86,6 @@ module.exports = class ApplicationServer {
                 cluster.fork()
             }
             cluster.on("exit", (worker, code, signal) => {
-                console.log(`worker ${worker.process.pid} died`)
                 cluster.fork()
 
             })
@@ -104,7 +93,6 @@ module.exports = class ApplicationServer {
             require("http")
                 .createServer(this.#app)
                 .listen(port, () => {
-                    console.log("\x1b[36m", `Running > http://localhost:${port} , Process : ${process.pid}`);
                 });
         }
 

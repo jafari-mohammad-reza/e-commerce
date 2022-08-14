@@ -27,7 +27,6 @@ const ProductType = new GraphQLObjectType({
         title: {type: GraphQLString},
         overView: {type: GraphQLString},
         description: {type: GraphQLString},
-        categoryName: {type: CategoryType},
         tags: {type: new GraphQLList(GraphQLString)},
         price: {type: GraphQLFloat},
         discount: {type: GraphQLInt},
@@ -41,8 +40,9 @@ const ProductType = new GraphQLObjectType({
         isActive: {type: GraphQLBoolean, default: true},
         isTrend: {type: GraphQLBoolean, default: false},
         isPrime: {type: GraphQLBoolean, default: false},
-        rate: {type: GraphQLFloat, default: 0},
         discountedPrice: {type: GraphQLFloat, default: 0},
+        averageRating: {type: GraphQLFloat, default: 0},
+        category: {type: CategoryType},
     },
 });
 

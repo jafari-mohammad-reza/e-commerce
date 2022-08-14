@@ -26,11 +26,35 @@ function generateAccessToken(payload) {
 }
 
 async function generateRefreshToken(userId) {
-    const token = jwt.sign({userId}, process.env.JWT_REFRESH_TOKEN, {
-        expiresIn: "1y",
-    });
-    await redisClient.SETEX(String(userId), 365 * 24 * 60 * 60, token);
-    return token;
+    const user = await UserModel.findOne({_id: userId});
+    const payload = {
+        mobileNumber: user.mobileNumber,
+        email: user.email,
+    };
+
+    return new Promise((resolve, reject) => {
+        jwt.sign(payload, process.env.JWT_REFRESH_TOKEN, {
+            expiresIn: "1y",
+        }, async (err, token) => {
+            if (err) reject(createHttpError.InternalServerError("Server error"));
+            await redisClient.SETEX(String(userId), (365 * 24 * 60 * 60), token);
+            resolve(token);
+        })
+    })
+
+}
+
+async function VerifyRefreshToken(token) {
+    jwt.verify(token, process.env.JWT_REFRESH_TOKEN, async (err, payload) => {
+        if (err) throw (createHttpError.Unauthorized("Please login first"))
+        const {mobile} = payload || {};
+        const user = await UserModel.findOne({mobile}, {password: 0, otp: 0})
+        if (!user) throw (createHttpError.Unauthorized("User not found"))
+        const refreshToken = await redisClient.get(String(user?._id));
+        if (!refreshToken) throw (createHttpError.Unauthorized("Login failed"))
+        if (token === refreshToken) return (mobile);
+        throw (createHttpError.Unauthorized("Login failed"))
+    })
 }
 
 function generateOTP() {
@@ -95,4 +119,5 @@ module.exports = {
     validateRefreshToken,
     generateOneCode,
     generateOTP,
+    VerifyRefreshToken
 };

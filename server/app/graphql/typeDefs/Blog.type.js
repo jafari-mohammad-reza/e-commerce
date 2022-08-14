@@ -10,7 +10,7 @@ const BlogType = new GraphQLObjectType({
         title: {type: GraphQLString},
         content: {type: GraphQLString},
         overView: {type: GraphQLString},
-        categoryName: {type: CategoryType},
+        category: {type: CategoryType},
         createdAt: {type: GraphQLString},
         author: {type: UserType},
         imageURL: {type: GraphQLString},
