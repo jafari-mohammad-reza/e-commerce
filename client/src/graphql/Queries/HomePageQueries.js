@@ -12,3 +12,16 @@ export const Get_TodayDiscounts = gql`
         }
     }
 `
+
+export const Get_MostRated = gql`
+    query Get_MostRated($limit : Int) {
+        MostRatedProducts(limit : $limit) {
+            _id
+            title
+            averageRating
+            discountedPrice
+            discount
+            imagesURL
+        }
+    }
+`

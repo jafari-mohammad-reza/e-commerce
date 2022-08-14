@@ -21,6 +21,7 @@ import Profile from "./pages/User/Profile";
 import Blogs from "./pages/Blogs/Blogs";
 import DiscountsPage from "./pages/Products/DiscountsPage";
 import Blog from "./pages/Blogs/BlogById";
+import Product from "./pages/Products/Product";
 
 const errorLink = onError(({graphQLErrors, networkError}) => {
     if (graphQLErrors) {
@@ -76,7 +77,7 @@ function App() {
                     <Route path="/" index element={<HomePage/>}/>
                     <Route path="/blogs" element={<Blogs/>}/>
                     <Route path="/blogs/:id" element={<Blog/>}/>
-                    <Route path="/products/:title" element={<DiscountsPage/>}/>
+                    <Route path="/products/:title" element={<Product/>}/>
                     <Route path="/today-discounts" index element={<DiscountsPage/>}/>
 
                     //! Auth Routes

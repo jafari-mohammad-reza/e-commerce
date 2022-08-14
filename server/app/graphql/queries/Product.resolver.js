@@ -44,14 +44,10 @@ const MostRatedProductResolver = {
     type: new GraphQLList(ProductType),
     args: {
         limit: {type: GraphQLInt, defaultValue: 15},
-        order: {type: GraphQLString, defaultValue: "ascending"}
     },
     resolve: async (parent, args, context) => {
-        const {limit, order} = args;
-        console.log(
-            await ProductModel.find({}).limit(limit).sort()
-        )
-        return ProductModel.find({}).limit(limit).sort();
+        const {limit} = args;
+        return ProductModel.find({ratings: {$ne: []}}).limit(limit);
     }
 
 

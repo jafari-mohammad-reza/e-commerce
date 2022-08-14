@@ -9,7 +9,7 @@ const DiscountsPage = () => {
     const {loading, error, data} = useQuery(Get_TodayDiscounts)
     const TodayDiscountsItem = ({product}) => {
         return (
-            <DiscountProductCard to={`/products/${product._id}`}>
+            <DiscountProductCard to={`/products/${product.title}`}>
                 <img src={product.imagesURL} alt="product"/>
                 <h2>{product.title}</h2>
                 <div>

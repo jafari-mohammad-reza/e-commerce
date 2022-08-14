@@ -2,28 +2,48 @@ import React, {useEffect, useState} from "react";
 import {useQuery} from "@apollo/client";
 import styled from "styled-components";
 import TodayDiscounts from "../components/HomePageComponents/TodayDiscounts";
-import {Get_TodayDiscounts} from "../graphql/Queries/HomePageQueries";
+import {Get_MostRated, Get_TodayDiscounts} from "../graphql/Queries/HomePageQueries";
+import MostRatedProductsContainer from "../components/HomePageComponents/MostRatedProductsContainer";
 
 export default function HomePage() {
-    const [products, setProducts] = useState([])
-    const {loading, error, data} = useQuery(Get_TodayDiscounts, {
+    const [discountedProducts, setDiscountedProducts] = useState([])
+    const [mostRatedProducts, setMostRatedProducts] = useState([])
+    const {loading: discountLoading, data: todayDiscountedProducts} = useQuery(Get_TodayDiscounts, {
         variables: {
             limit: 15
         }
     })
-    useEffect(() => {
-        if (!loading) {
+    const {loading: mostRateLoading, data: MostRatedProducts} = useQuery(Get_MostRated, {
+        variables: {
+            limit: 15
+        }
+    })
 
-            setProducts(data.GetDiscounts)
+    useEffect(() => {
+        if (!discountLoading && !mostRateLoading) {
+            setDiscountedProducts(todayDiscountedProducts.GetDiscounts)
+            setMostRatedProducts(MostRatedProducts.MostRatedProducts)
         }
 
-    }, [data])
+    }, [todayDiscountedProducts])
 
     return <Container>
-        <SectionTitle>
-            Today's Discounts
-        </SectionTitle>
-        {products && <TodayDiscounts products={products}/>}
+        {
+            discountLoading || mostRateLoading ? <h1>Loading...</h1> : <>
+                <section>
+                    <h1>
+                        Today's Discounts
+                    </h1>
+                    {discountedProducts && <TodayDiscounts products={discountedProducts}/>}
+                </section>
+                <section>
+                    <h1>
+                        Most Rated Products
+                    </h1>
+                    {mostRatedProducts && <MostRatedProductsContainer products={mostRatedProducts}/>}
+                </section>
+            </>
+        }
     </Container>
 }
 
@@ -35,12 +55,21 @@ const Container = styled.div`
   flex-direction: column;
   align-items: flex-start;
   padding: 3rem 6rem;
+  overflow-x: hidden;
+
+  section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+
+    h1 {
+      font-size: 3.2rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      margin-left: 4.5rem;
+    }
+  }
 `
 
-const SectionTitle = styled.h1`
-  font-size: 3.5rem;
-  font-weight: bold;
-  margin-left: 4.5rem;
-  margin-bottom: 2.5rem;
-
-`

@@ -7,7 +7,7 @@ const graphQlSchema = require("../graphql/index.graphql");
 const {graphQlConfig} = require("../conf/graphql.config");
 const {DeveloperRouter} = require("./Developer/loadTest");
 const {StatusCodes} = require("http-status-codes");
-
+const limit = require("express-rate-limit");
 const router = require("express").Router();
 // router.all("*", (req, res, next) => {
 //   console.log(req.headers);
@@ -15,8 +15,18 @@ const router = require("express").Router();
 router.use("/admin", VerifyAccessToken, adminRoutes);
 router.use("/api/v1", apiRoutes);
 router.use("/client/", clientRoutes);
-
-router.use("/graphql", graphqlHTTP(graphQlConfig))
+const graphqlLimit = limit({
+    windowMs: 5 * 60 * 1000, // 5 minutes
+    max: 25,
+    message: {
+        statusCode: StatusCodes.TOO_MANY_REQUESTS,
+        message: "Too many requests from this IP, please try again later.",
+    },
+    skipFailedRequests: true,
+})
+router.use("/graphql",
+    graphqlLimit,
+    graphqlHTTP(graphQlConfig))
 router.use("/developer", DeveloperRouter)
 module.exports = {
     mainRouter: router,
