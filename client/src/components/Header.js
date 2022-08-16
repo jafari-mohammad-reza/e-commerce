@@ -1,10 +1,13 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Link} from "react-router-dom";
 import styled from "styled-components";
 import {AiOutlineShopping, AiOutlineUser,} from "react-icons/ai";
 import {useSelector} from "react-redux";
 import {selectCurrentUser} from "../app/features/auth/authSlice";
 import {BsNewspaper} from "react-icons/bs";
+import {useQuery} from "@apollo/client";
+import {Get_Categories} from "../graphql/Queries/GlobalQueries";
+import DropDownNavBar from "./DropDownNavBar";
 
 const Wrapper = styled.header`
   padding: 1.5rem 5rem;
@@ -111,7 +114,7 @@ const ListItem = styled.li`
   align-items: center;
   justify-content: center;
 
-  a {
+  a, div {
     font-size: 2rem;
     font-weight: 600;
     color: #595959;
@@ -131,8 +134,18 @@ const ListItem = styled.li`
   }
 `;
 
+const Dropdown = styled.div`
+`
+
 export default function Header() {
     const [isClicked, setIsClicked] = useState(false);
+    const [categories, setCategories] = useState([]);
+    const {data, loading} = useQuery(Get_Categories);
+    useEffect(() => {
+        if (data && !loading) {
+            setCategories(data.category);
+        }
+    }, [data])
     const user = useSelector(selectCurrentUser)
     return (
         <Wrapper>
@@ -142,14 +155,13 @@ export default function Header() {
                 </Link>
                 <MainItemsWrapper isClicked={isClicked}>
                     <ListItem>
-                        <Link to={"/hot-products"}>Hot🔥</Link>
+
+                        <DropDownNavBar categories={categories}/>
                     </ListItem>
                     <ListItem>
                         <Link to={"/today-discounts"}>Discounts</Link>
                     </ListItem>
-                    <ListItem>
-                        <Link to={"/categories"}>Categories</Link>
-                    </ListItem>
+
                     <ListItem>
                         <Link to={"/contact"}>Contact</Link>
                     </ListItem>

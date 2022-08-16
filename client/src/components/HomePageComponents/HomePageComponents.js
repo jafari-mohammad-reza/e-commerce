@@ -5,20 +5,20 @@ export const Container = styled.div`
   width: 100%;
   height: max-content;
   position: relative;
-  padding: 1.5rem 17rem 1.5rem 5rem;
+  padding: 1.5rem 5rem;
   border-radius: 4rem;
-  background-color: rgba(187, 151, 96, 0.85);
+  background-color: rgba(193, 193, 193, 0.25);
 
-  &::-webkit-scrollbar {
-  }
+
 `
 
 export const SeeMore = styled.div`
   width: max-content;
   height: max-content;
-  padding: 2rem;
+  padding: 1.5rem;
   position: absolute;
-  bottom: 12rem;
+  bottom: 55%;
+  transform: translateY(50%);
   right: 0;
   display: flex;
   align-items: center;
@@ -26,27 +26,26 @@ export const SeeMore = styled.div`
   cursor: pointer;
   z-index: 10;
   border-radius: 4rem;
-  border: 2px solid #fff;
+  border: .25rem solid #d7b174;
   margin: auto 3rem;
 
   a {
     display: flex;
     align-items: center;
     justify-content: center;
+    color: #d7b174;
 
     svg {
-      color: white;
       font-size: 3.5rem;
     }
 
     span {
-      color: white;
-      font-size: 1.5rem;
+      font-size: 1.8rem;
     }
   }
 `
 
-export const DiscountProductCard = styled(Link)`
+export const ProductCard = styled(Link)`
   width: 20rem;
   height: 25rem;
   display: flex;
@@ -55,8 +54,15 @@ export const DiscountProductCard = styled(Link)`
   justify-content: flex-start;
   padding: 0.2rem;
   cursor: pointer;
+  border: .25rem solid #d7b174;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    transform: scale(105%);
+  }
+
   background-color: #f1f1f1;
-  margin: 0;
+  margin: 3.5rem 2rem;
   border-radius: 1.5rem;
   @media (max-width: 768px) {
     margin-right: 10rem;

@@ -6,15 +6,13 @@ const createProductValidator = Joi.object({
         "any.required": "Title cannot be empty",
         "string.min": "Title must be between 5 to 20 characters"
     }),
-    overView: Joi.string().required().min(15).max(100).messages({
+    overView: Joi.string().required().min(15).messages({
         "any.required": "overView  cannot be empty",
         "string.min": "overView must be between 15 to 100 characters",
-        "string.max": "overView must be between 15 to 1000 characters",
     }),
-    description: Joi.string().required().min(50).max(500).messages({
+    description: Joi.string().required().min(50).messages({
         "any.required": "description  cannot be empty",
         "string.min": "description must be between 20 to 500 characters",
-        "string.max": "description must be between 20 to 100 characters",
     }),
     fileName: Joi.string().pattern(/(\.png|\.jpg|\.jpeg|\.webp)/),
     tags: Joi.array()
@@ -28,7 +26,6 @@ const createProductValidator = Joi.object({
     price: Joi.number().required().min(0),
     discount: Joi.number()
         .min(0)
-        .max(100)
         .error(
             createHttpError.BadRequest(
                 "Discount percent must be between 0 to 100 percent"

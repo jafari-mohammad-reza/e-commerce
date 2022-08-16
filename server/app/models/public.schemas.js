@@ -1,4 +1,4 @@
-const {default: mongoose} = require("mongoose");
+const {default: mongoose, Types} = require("mongoose");
 const ProductSchema = new mongoose.Schema({
     productId: {type: mongoose.Types.ObjectId, ref: "product"},
     count: {type: Number, default: 1},
@@ -23,7 +23,7 @@ const CommentSchema = new mongoose.Schema(
     {
         author: {type: mongoose.Types.ObjectId, ref: "user", required: true},
         content: {type: String, required: true},
-        isApproved: {type: Boolean, required: true, default: false},
+        isApproved: {type: Boolean, default: false},
         ReplyAble: {type: Boolean, default: true},
         Replies: {type: [ReplySchema], default: []},
     },
@@ -31,14 +31,7 @@ const CommentSchema = new mongoose.Schema(
         timestamps: {createdAt: true},
     }
 );
-const OrderSchema = new mongoose.Schema({
-    costumer: {type: mongoose.Types.ObjectId, required: true, ref: "user"},
-    products: {type: [ProductSchema], default: []},
-    totalPrice: {type: Number, required: false, default: 0},
-    discount: {type: Number, default: 0, required: false},
-    isCompleted: {type: Boolean, default: false},
-    isCanceled: {type: Boolean, default: false},
-});
+
 const CartSchema = new mongoose.Schema({
     products: {type: [ProductSchema], default: []},
     totalPrice: {type: Number, required: false, default: 0},
@@ -63,7 +56,6 @@ const PhysicalFeatureSchema = new mongoose.Schema({
 module.exports = {
     CommentSchema,
     ReplySchema,
-    OrderSchema,
     CartSchema,
     RatingSchema,
     PhysicalFeatureSchema,

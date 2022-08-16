@@ -2,12 +2,16 @@ import React, {useEffect, useState} from "react";
 import {useQuery} from "@apollo/client";
 import styled from "styled-components";
 import TodayDiscounts from "../components/HomePageComponents/TodayDiscounts";
-import {Get_MostRated, Get_TodayDiscounts} from "../graphql/Queries/HomePageQueries";
+import {Get_MostRated, Get_TodayDiscounts, Latest_Products} from "../graphql/Queries/HomePageQueries";
 import MostRatedProductsContainer from "../components/HomePageComponents/MostRatedProductsContainer";
+import LatestProductsComponents from "./Products/LatestProducts";
+// import {Latest_Products} from "../graphql/Queries/GlobalQueries";
 
 export default function HomePage() {
     const [discountedProducts, setDiscountedProducts] = useState([])
     const [mostRatedProducts, setMostRatedProducts] = useState([])
+    const [latestProducts, setLatestProducts] = useState([])
+    const [loading, setLoading] = useState(true)
     const {loading: discountLoading, data: todayDiscountedProducts} = useQuery(Get_TodayDiscounts, {
         variables: {
             limit: 15
@@ -18,18 +22,31 @@ export default function HomePage() {
             limit: 15
         }
     })
+    const {loading: latestLoading, data: LatestProducts} = useQuery(Latest_Products, {
+        variables: {
+            limit: 5
+        }
+    })
 
     useEffect(() => {
-        if (!discountLoading && !mostRateLoading) {
+        if (!discountLoading && !mostRateLoading && !latestLoading) {
             setDiscountedProducts(todayDiscountedProducts.GetDiscounts)
             setMostRatedProducts(MostRatedProducts.MostRatedProducts)
+            setLatestProducts(LatestProducts.products)
+            setLoading(false)
         }
 
-    }, [todayDiscountedProducts])
+    }, [todayDiscountedProducts, MostRatedProducts, LatestProducts])
 
     return <Container>
         {
-            discountLoading || mostRateLoading ? <h1>Loading...</h1> : <>
+            loading ? <h1>Loading...</h1> : <>
+                <section>
+                    <h1>
+                        Latest Products
+                    </h1>
+                    {discountedProducts && <LatestProductsComponents products={latestProducts}/>}
+                </section>
                 <section>
                     <h1>
                         Today's Discounts

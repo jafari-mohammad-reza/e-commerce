@@ -18,14 +18,15 @@ const ProductResolver = {
         limit: {type: GraphQLInt, defaultValue: 10},
         category: {type: GraphQLString},
         search: {type: GraphQLString},
+        order: {type: GraphQLString, defaultValue: -1},
     },
     resolve: async (parent, args, context) => {
-        const {limit, category, search} = args;
+        const {limit, category, search, order} = args;
         let query = category ? {category: category} : {};
         search && (query = {
             $text: {$search: search},
         });
-        return await ProductModel.find(query).limit(limit);
+        return await ProductModel.find(query).limit(limit).sort({_id: order});
     },
 };
 const DiscountedProductResolver = {
@@ -36,7 +37,7 @@ const DiscountedProductResolver = {
     },
     resolve: async (parent, args, context) => {
         const {limit, order} = args;
-        return await ProductModel.find({$gt: {discount: 0}}).limit(limit).sort({discount: order});
+        return ProductModel.find({discount: {$gt: 0}}).limit(limit).sort({discount: -1});
     }
 }
 
@@ -47,11 +48,28 @@ const MostRatedProductResolver = {
     },
     resolve: async (parent, args, context) => {
         const {limit} = args;
-        return ProductModel.find({ratings: {$ne: []}}).limit(limit);
+        return ProductModel.find({ratings: {$ne: []}}).limit(limit).sort({ratings: -1});
     }
 
 
 }
 
+const GetProductDetailResolver = {
+    type: ProductType,
+    args: {
+        id: {type: GraphQLString, default: ""},
+        title: {type: GraphQLString, default: ""}
+    },
+    resolve: async (parent, args, context) => {
+        let {id, title} = args;
+        if (!id && !title) return null;
+        if (id) {
+            return await ProductModel.findById(id);
+        } else {
+            return ProductModel.findOne({$text: {$search: title, $caseSensitive: false}});
+        }
+    }
+}
 
-module.exports = {ProductResolver, DiscountedProductResolver, MostRatedProductResolver};
+
+module.exports = {ProductResolver, DiscountedProductResolver, MostRatedProductResolver, GetProductDetailResolver};

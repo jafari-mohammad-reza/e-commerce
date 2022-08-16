@@ -22,16 +22,24 @@ import Blogs from "./pages/Blogs/Blogs";
 import DiscountsPage from "./pages/Products/DiscountsPage";
 import Blog from "./pages/Blogs/BlogById";
 import Product from "./pages/Products/Product";
+import Category from "./pages/Products/Category";
 
 const errorLink = onError(({graphQLErrors, networkError}) => {
     if (graphQLErrors) {
-        graphQLErrors.map(({message, locations, path}) => {
-            console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`)
+        graphQLErrors.map(({message, locations, path, statusCode}) => {
+            console.log(`[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path} , StatusCode: ${statusCode}`);
             Swal.fire({
                 title: "Error",
                 text: message,
                 icon: "error"
             })
+        })
+    }
+    if (graphQLErrors.status === 429) {
+        Swal.fire({
+            title: "Error",
+            text: "Too many requests",
+            icon: "error"
         })
     }
 
@@ -79,6 +87,7 @@ function App() {
                     <Route path="/blogs/:id" element={<Blog/>}/>
                     <Route path="/products/:title" element={<Product/>}/>
                     <Route path="/today-discounts" index element={<DiscountsPage/>}/>
+                    <Route path="/categories/:title" element={<Category/>}/>
 
                     //! Auth Routes
                     <Route path="/register" index element={<RegisterPage/>}/>

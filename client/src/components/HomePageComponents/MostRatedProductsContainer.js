@@ -1,8 +1,10 @@
 import 'swiper/css'
 import 'swiper/css/navigation'
 import React from 'react'
-import {Link} from "react-router-dom";
 import styled from "styled-components";
+import {ProductCard} from "./HomePageComponents";
+import {Swiper, SwiperSlide} from "swiper/react";
+import {A11y, Navigation} from "swiper";
 
 const MostRatedProductsContainer = ({products}) => {
     const MostRatedProductsItem = ({product}) => {
@@ -23,10 +25,19 @@ const MostRatedProductsContainer = ({products}) => {
     }
     return (
         <Container>
+            <Swiper
+                spaceBetween={20}
+                slidesPerView={5}
+                navigation
+                modules={[A11y, Navigation]}
+            >
+                {products?.map((product, index) => {
+                    return <SwiperSlide key={index}>
+                        <MostRatedProductsItem key={index} product={product}/>
+                    </SwiperSlide>
+                })}
+            </Swiper>
 
-            {products?.map((product, index) => {
-                return <MostRatedProductsItem key={index} product={product}/>
-            })}
 
         </Container>
     );
@@ -36,71 +47,14 @@ const Container = styled.div`
   width: 100%;
   height: max-content;
   position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: center;
+
   padding: 1.5rem 17rem 1.5rem 5rem;
   border-radius: 4rem;
-  background-color: rgba(187, 151, 96, 0.85);
+  background-color: rgba(193, 193, 193, 0.25);
+
 
   &::-webkit-scrollbar {
   }
-`
-
-const ProductCard = styled(Link)`
-  width: 25rem;
-  height: 25rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  margin: 1.5rem 3rem;
-  padding: 0.2rem;
-  cursor: pointer;
-  background-color: #f1f1f1;
-  border-radius: 1.5rem;
-
-
-  img {
-    width: 18rem;
-    height: 13rem;
-    margin: 1rem 0;
-    object-fit: contain;
-  }
-
-  h2 {
-    font-size: 2rem;
-    font-weight: bold;
-    display: block;
-    margin-bottom: .3rem;
-  }
-
-  div {
-    width: 85%;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    h4 {
-      font-size: 2.2rem;
-    }
-
-    p {
-      font-size: 1.5rem;
-      color: #ff0000;
-    }
-  }
-
-  h3 {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin: 1.5rem 0;
-  }
-
-
-
 `
 
 

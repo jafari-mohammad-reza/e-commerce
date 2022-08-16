@@ -1,11 +1,11 @@
 import React from 'react';
 
-const HotProducts = () => {
+const Category = () => {
     return (
         <div>
-            Hot products
+
         </div>
     );
 };
 
-export default HotProducts;
+export default Category;

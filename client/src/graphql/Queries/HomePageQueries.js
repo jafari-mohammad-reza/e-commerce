@@ -25,3 +25,16 @@ export const Get_MostRated = gql`
         }
     }
 `
+
+export const Latest_Products = gql`
+    query Latest_Products($limit : Int) {
+        products(limit : $limit) {
+            _id
+            title
+            price
+            imagesURL
+            discount
+
+        }
+    }
+`

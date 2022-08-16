@@ -5,12 +5,14 @@ import {Link} from "react-router-dom";
 import {RiArrowRightFill} from "react-icons/ri";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {A11y, Navigation} from "swiper";
-import {Container, DiscountProductCard, SeeMore} from "./HomePageComponents";
+import {ProductCard, SeeMore} from "./HomePageComponents";
+import styled from "styled-components";
+
 
 function TodayDiscounts({products}) {
     const TodayDiscountsItem = ({product}) => {
         return (
-            <DiscountProductCard to={`/products/${product.title}`}>
+            <ProductCard to={`/products/${product.title}`}>
                 <img src={product.imagesURL} alt="product"/>
                 <h2>{product.title}</h2>
                 <div>
@@ -20,7 +22,7 @@ function TodayDiscounts({products}) {
                 <h3>
                     {product.price} $
                 </h3>
-            </DiscountProductCard>
+            </ProductCard>
         )
     }
     return (
@@ -28,8 +30,8 @@ function TodayDiscounts({products}) {
 
             <Swiper
                 modules={[Navigation, A11y]}
-                spaceBetween={30}
-                slidesPerView={7}
+                spaceBetween={0}
+                slidesPerView={5}
                 navigation
             >
                 {products?.map((product, index) => {
@@ -51,5 +53,13 @@ function TodayDiscounts({products}) {
     )
 }
 
+const Container = styled.div`
+  width: 100%;
+  height: max-content;
+  position: relative;
+  padding: 1.5rem 16rem 5rem 1.5rem;
+  border-radius: 4rem;
+  background-color: rgba(193, 193, 193, 0.25);
+`
 
 export default TodayDiscounts

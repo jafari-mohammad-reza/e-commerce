@@ -5,7 +5,9 @@ const CategoryType = new GraphQLObjectType({
     fields: {
         _id: {type: GraphQLString},
         title: {type: GraphQLString},
-        children: {type: new GraphQLList(AnyType)},
+        children: {
+            type: new GraphQLList(AnyType),
+        },
     },
 });
 

@@ -6,10 +6,15 @@ const {
 } = require("graphql");
 const getBlogsQuery = require("./queries/Blog.resolver");
 const {BlogResolver} = require("./queries/Blog.resolver");
-const {ProductResolver, DiscountedProductResolver, MostRatedProductResolver} = require("./queries/Product.resolver");
+const {
+    ProductResolver,
+    DiscountedProductResolver,
+    MostRatedProductResolver,
+    GetProductDetailResolver
+} = require("./queries/Product.resolver");
 const {
     CategoryResolver,
-    ChildrenCategoryResolver
+    ChildrenCategoryResolver, GetCategoryByTitleResolver
 } = require("./queries/Category.Resolver");
 const {
     CreateBlogComment,
@@ -42,6 +47,8 @@ const RootQuery = new GraphQLObjectType({
         GetUserShoppingCart,
         GetDiscounts: DiscountedProductResolver,
         MostRatedProducts: MostRatedProductResolver,
+        GetCategoryByTitle: GetCategoryByTitleResolver,
+        GetProductDetail: GetProductDetailResolver
     },
 });
 

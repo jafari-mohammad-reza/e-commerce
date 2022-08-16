@@ -40,6 +40,7 @@ const ProductSchema = new mongoose.Schema(
     }
 );
 ProductSchema.index({title: "text", overView: "text", description: "text"});
+
 ProductSchema.virtual("imagesURL").get(function () {
     return this.images.map(
         (image) =>
@@ -55,7 +56,8 @@ ProductSchema.virtual("averageRating").get(function () {
     for (let i = 0; i < this.ratings.length; i++) {
         sum += this.ratings[i].stars
     }
-    return sum / this.ratings.length;
+
+    return sum / this.ratings.length || 0;
 })
 
 function autoPopulate(next) {
@@ -72,7 +74,10 @@ function autoPopulate(next) {
     next();
 }
 
-ProductSchema.pre("findOne", autoPopulate).pre("find", autoPopulate);
+ProductSchema.pre("findOne", autoPopulate).pre("find", autoPopulate).pre(
+    "aggregate",
+    autoPopulate
+);
 
 module.exports = {
     ProductSchema,

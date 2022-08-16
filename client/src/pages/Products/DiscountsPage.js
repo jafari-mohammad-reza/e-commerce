@@ -2,14 +2,14 @@ import React, {useEffect} from 'react';
 import styled from "styled-components";
 import {Get_TodayDiscounts} from "../../graphql/Queries/HomePageQueries";
 import {useQuery} from "@apollo/client";
-import {Link} from "react-router-dom";
+import {ProductCard} from "../../components/HomePageComponents/HomePageComponents";
 
 const DiscountsPage = () => {
     const [products, setProducts] = React.useState([]);
     const {loading, error, data} = useQuery(Get_TodayDiscounts)
     const TodayDiscountsItem = ({product}) => {
         return (
-            <DiscountProductCard to={`/products/${product.title}`}>
+            <ProductCard to={`/products/${product.title}`}>
                 <img src={product.imagesURL} alt="product"/>
                 <h2>{product.title}</h2>
                 <div>
@@ -19,7 +19,7 @@ const DiscountsPage = () => {
                 <h3>
                     {product.price} $
                 </h3>
-            </DiscountProductCard>
+            </ProductCard>
         )
     }
     useEffect(() => {
@@ -51,60 +51,6 @@ const Wrapper = styled.div`
   justify-content: space-between;
   align-items: flex-start;
   padding: 3rem 6rem;
-
-`
-
-export const DiscountProductCard = styled(Link)`
-  width: 30rem;
-  height: 35rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  padding: 0.2rem;
-  cursor: pointer;
-  background-color: #c8a267;
-  margin: 2.5rem 5rem;
-  border-radius: 1.5rem;
-
-
-  img {
-    width: 30rem;
-    height: 20rem;
-    margin: 1rem 0;
-    object-fit: contain;
-  }
-
-  h2 {
-    font-size: 2rem;
-    font-weight: bold;
-    display: block;
-    margin-bottom: .3rem;
-  }
-
-  div {
-    width: 85%;
-    height: auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    h4 {
-      font-size: 2.2rem;
-    }
-
-    p {
-      font-size: 1.5rem;
-      color: #ff0000;
-    }
-  }
-
-  h3 {
-    text-decoration: line-through;
-    font-size: 1.7rem;
-    place-self: start;
-    margin: 0 1.6rem;
-  }
 
 `
 

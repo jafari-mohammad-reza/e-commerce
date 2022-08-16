@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema(
             type: Object,
             default: {},
         },
-        orders: {type: [OrderSchema], default: []},
+        orders: {type: [mongoose.Types.objectId], ref: "order", default: []},
         bookMarks: {type: [mongoose.Types.ObjectId], default: []},
         discount: {type: Number, default: 0},
         birthday: {type: Date},

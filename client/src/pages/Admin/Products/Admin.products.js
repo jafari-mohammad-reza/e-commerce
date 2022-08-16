@@ -76,7 +76,7 @@ const AdminProducts = () => {
                       </span>
                                         ))}
                                     </td>
-                                    <td>{product?.categoryName?.title}</td>
+                                    <td>{product?.category?.title}</td>
                                     <td>{product?.price}</td>
                                     <td>{product.stockCount}</td>
                                     <td>

@@ -109,35 +109,45 @@ module.exports = class ApplicationServer {
     }
 
     configureDailyDiscounts() {
-        cluster.isMaster ? cron.schedule("* * */24 * * *", () => {
+        cluster.isMaster ? cron.schedule("* * */24 * * *", async () => {
             console.log("\x1b[32m", "running cron job")
+            const randomSkipNumber = Math.floor(await mongoose.model("product").count().exec().then(count => {
+                return count / 4
+            }))
+
             mongoose.model("product").aggregate([
                 {
                     $match: {
-                        updatedAt: {
-                            $gte: new Date(Date.now() - 1000 * 60 * 60 * 12),
-                        }
-                    },
+                        discount: {$exists: true},
+                        updatedAt: {$lt: new Date() - 1000 * 60 * 60 * 12},
 
+                    }
+                },
+                {
                     $project: {
                         _id: 1,
                         discount: 1,
-                        price: 1,
-                        title: 1,
-                    },
+                        price: 1
+                    }
+                },
+                {
+                    $skip: randomSkipNumber
+                },
+                {
+                    $limit: 30
+                },
 
-                }
-            ]).limit(30).exec((err, products) => {
+
+            ]).exec(async (err, products) => {
                 if (err) {
                     console.log(err)
                     throw new Error(err)
                 } else {
-                    products.forEach(product => {
+                    for (const product of products) {
                         product.discount = Math.floor(Math.random() * 75).toString()
-                        mongoose.model("product").updateOne({_id: product._id}, product, (err, result) => {
+                        await mongoose.model("product").updateOne({_id: product._id}, product, (err, result) => {
                         })
-
-                    })
+                    }
                     console.log("Daily discounts applied")
                 }
             })
