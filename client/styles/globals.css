@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@layer {
+    * {
+        margin: 0;
+        padding: 0;
+        outline: 0;
+        box-sizing: border-box;
+    }
+
+    html {
+        scroll-behavior: smooth;
+        font-size: 62.5%;
+    }
+
+    body {
+        font-size: 16px;
+        font-family: 'Roboto', sans-serif;
+        line-height: 1.5;
+        color: #333;
+        background-color: #fff;
+
+    }
+}
+.auth_eye {
+    @apply text-blue-500 absolute text-4xl top-2/4 -translate-y-2/4 right-7 transition-transform transform cursor-pointer hover:scale-125
+}
+
+.auth_form {
+    @apply w-[90%] md:w-3/6 lg:w-2/6  h-3/4 rounded-lg bg-gray-700 flex flex-col items-center justify-center  pb-10 px-10 md:px-16 lg:px-28
+}
+
+.auth_input {
+    @apply w-full my-8 rounded-md bg-gray-300 transition-all duration-100 focus:border-b-4 border-blue-300 border-0 outline-0 text-black py-5 px-9
+}
+
+.auth_button {
+    @apply bg-stone-300 text-blue-500 rounded-xl text-center font-bold text-2xl py-5 px-7 my-10 transition-all transform duration-300 hover:bg-blue-400 hover:text-stone-300 hover:scale-105
+}
+
+.auth_link {
+    @apply text-2xl text-stone-200 py-4
+}
+
+.auth_link span {
+    @apply text-blue-300 font-bold cursor-pointer
+}
