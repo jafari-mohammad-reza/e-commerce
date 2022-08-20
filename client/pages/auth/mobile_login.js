@@ -3,32 +3,24 @@ import Link from "next/link";
 import Swal from "sweetalert2";
 import axios from "../../axios";
 import {useRouter} from "next/router";
+import {client_authentication, Global_Error} from "../../conf/ConstantFunctions";
 
 const MobileLogin = () => {
     const [loginStage, setLoginStage] = useState("get-otp")
     const mobile = useRef(null)
     const otp = useRef(null)
     const router = useRouter()
-    const Error = ({message}) => {
-        return (
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: message,
-                position: "top-right",
-                timer: 1500
-            })
-        );
-    }
+    client_authentication({router})
+
     const resendCode = async () => {
         if (!mobile.current.value) {
-            return Error({message: "Please insert your mobile number first"})
+            return Global_Error({message: "Please insert your mobile number first"})
         }
     }
     const submitHandler = async (e) => {
         e.preventDefault()
         if (!mobile.current.value) {
-            return Error({message: "Please insert your mobile number first"})
+            return Global_Error({message: "Please insert your mobile number first"})
         }
         if (loginStage === "get-otp") {
             await axios.post("api/v1/auth/mobile/get-otp", {mobile: mobile.current.value}).then(result => {
@@ -37,11 +29,11 @@ const MobileLogin = () => {
                 }
             }).catch(err => {
                 console.log(err)
-                return Error({message: "Something went wong."})
+                return Global_Error({message: "Something went wong."})
             })
         } else if (loginStage === "validate-otp") {
             if (!otp.current.value) {
-                return Error({message: "Please insert the code we have sent yo your phone"})
+                return Global_Error({message: "Please insert the code we have sent yo your phone"})
             }
             await axios.post("/api/v1/auth/mobile/validate-otp", {
                 mobile: mobile.current.value,
@@ -59,9 +51,9 @@ const MobileLogin = () => {
             }).catch(err => {
                 console.log(err)
                 if (err.response.status === 404) {
-                    return Error({message: "Please refresh page and insert you number again"})
+                    return Global_Error({message: "Please refresh page and insert you number again"})
                 }
-                return Error({message: err.response.data.errors.message})
+                return Global_Error({message: err.response.data.errors.message})
             })
         }
     }

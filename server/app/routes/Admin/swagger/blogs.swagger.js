@@ -76,6 +76,9 @@
  *                  multipart/form-data:
  *                      schema:
  *                          $ref: '#/components/schemas/Blog'
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Blog'
  *          responses:
  *              201:
  *                  description: created

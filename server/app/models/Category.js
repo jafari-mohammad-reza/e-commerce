@@ -9,6 +9,7 @@ const CategorySchema = new mongoose.Schema(
             default: undefined,
             required: false
         },
+        image: {type: String, required: false},
     },
     {
         id: false,
@@ -23,6 +24,11 @@ CategorySchema.virtual("children", {
     foreignField: "parent",
     justOne: false,
     projection: {_id: 1, title: 1},
+});
+CategorySchema.virtual("imageURL").get(function () {
+    return this.image
+        ? `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${this.image}`
+        : undefined;
 });
 
 function autoPopulate(next) {

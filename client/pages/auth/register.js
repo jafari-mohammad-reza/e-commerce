@@ -5,6 +5,7 @@ import {useRouter} from "next/router";
 import Link from "next/link";
 import {AiFillEye} from "react-icons/ai";
 import {PASSWORD_PATTERN} from "../../conf/RegexPatterns";
+import {client_authentication, Global_Error} from "../../conf/ConstantFunctions";
 
 const Register = () => {
     const username = useRef(null)
@@ -12,33 +13,24 @@ const Register = () => {
     const password = useRef(null)
     const confirmPassword = useRef(null)
     const router = useRouter()
-    const Error = ({message}) => {
-        return (
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: message,
-                position: "top-right",
-                timer: 1500
-            })
-        );
-    }
+    client_authentication({router})
+
     const submitHandler = async (e) => {
         e.preventDefault()
         if (!username.current.value || !email.current.value || !password.current.value || !confirmPassword.current.value) {
-            return Error({message: "All fields are required"})
+            return Global_Error({message: "All fields are required"})
         }
         if (!email.current.value.endsWith("@gmail.com" || "@yahoo.com" || "@hotmail.com")) {
-            return Error({message: "Please enter a valid email"})
+            return Global_Error({message: "Please enter a valid email"})
         }
         if (username.current.value.length < 3 || username.current.value.length > 16) {
-            return Error({message: "Username must be between 3 and 16 characters"})
+            return Global_Error({message: "Username must be between 3 and 16 characters"})
         }
         if (password.current.value !== confirmPassword.current.value) {
-            return Error({message: "Passwords do not match"})
+            return Global_Error({message: "Passwords do not match"})
         }
         if (!password.current.value.match(PASSWORD_PATTERN)) {
-            return Error({message: "Password must contain at least one lowercase letter, one uppercase letter and one number"})
+            return Global_Error({message: "Password must contain at least one lowercase letter, one uppercase letter and one number"})
         }
         await axios.post("/api/v1/auth/email/register", {
             username: username.current.value,
@@ -61,9 +53,9 @@ const Register = () => {
             }
         }).catch(err => {
             if (err.response.status === 400) {
-                return Error({message: "Email or username already exists"})
+                return Global_Error({message: "Email or username already exists"})
             } else {
-                return Error({message: "Something went wrong"})
+                return Global_Error({message: "Something went wrong"})
             }
         })
 

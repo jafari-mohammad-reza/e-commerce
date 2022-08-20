@@ -12,6 +12,7 @@ const {GraphQLScalarType} = require("graphql/type");
 const {Kind} = require('graphql/language')
 
 const {convertTOObject} = require("../../utils/functions");
+const {CategoryModel} = require("../../models/Category");
 const ProductResolver = {
     type: new GraphQLList(ProductType),
     args: {
@@ -26,7 +27,7 @@ const ProductResolver = {
         search && (query = {
             $text: {$search: search},
         });
-        return await ProductModel.find(query).limit(limit).sort({_id: order});
+        return ProductModel.find(query).limit(limit).sort({_id: order});
     },
 };
 const DiscountedProductResolver = {
@@ -73,5 +74,24 @@ const GetProductDetailResolver = {
     }
 }
 
+const GetProductByCategoryResolver = {
+    type: new GraphQLList(ProductType),
+    args: {
+        title: {type: GraphQLString},
+    },
+    resolve: async (parent, args, context) => {
+        let {title} = args;
+        title = title.replace("_", " ");
+        const category = await CategoryModel.findOne({title: title});
+        return ProductModel.find({category: category._id});
+    }
+}
 
-module.exports = {ProductResolver, DiscountedProductResolver, MostRatedProductResolver, GetProductDetailResolver};
+
+module.exports = {
+    ProductResolver,
+    DiscountedProductResolver,
+    MostRatedProductResolver,
+    GetProductDetailResolver,
+    GetProductByCategoryResolver
+};

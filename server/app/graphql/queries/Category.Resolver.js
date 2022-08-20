@@ -45,38 +45,36 @@ const GetCategoryByTitleResolver = {
         title = title.replace("_", " ");
         return await CategoryModel.aggregate(
             [
-                {
-                    $match: {title: title}
-                },
+                {$match: {title: {$regex: title, $options: "i"}}},
+                {$project: {_id: 1, title: 1}},
                 {
                     $lookup: {
                         from: "products",
                         localField: "_id",
                         foreignField: "category",
-                        as: "products"
+                        as: "products",
                     }
                 },
+
+                {$unwind: "$products"},
                 {
-                    _id: 1,
-                    title: 1,
-                    products: {
-                        title: 1,
-                        price: 1,
+                    $project: {
                         _id: 1,
-                        discount: 1,
-                        discountedPrice: {$subtract: [{$multiples: [{$divide: ["$price", 100]}, {$divide: ["$discount", 100]}]}, "$price"]},
+                        title: 1,
+                        products: {
+                            _id: 1,
+                            title: 1,
+                            price: 1,
+                            discount: 1,
+                            discountedPrice: {$subtract: ["$products.price", {$divide: [{$multiply: ["$products.price", "$products.discount"]}, 100]}]},
+                            imagesURL: {$concat: ["http://localhost:5000/", {$arrayElemAt: ["$products.images", 0]}]},
+                        },
+
+
                     }
                 },
-                {
-                    $unwind: "$products"
-                },
-                {
-                    $group: {
-                        _id: "$_id",
-                        title: {$first: "$title"},
-                        products: {$push: "$products"}
-                    }
-                }
+                {$group: {_id: "$_id", title: {$first: "$title"}, products: {$push: "$products"}}},
+
             ]
         )
     }

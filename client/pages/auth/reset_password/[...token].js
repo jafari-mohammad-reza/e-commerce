@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import axios from "../../../axios";
 import {AiFillEye} from "react-icons/ai";
 import {PASSWORD_PATTERN} from "../../../conf/RegexPatterns";
+import {Global_Error} from "../../../conf/ConstantFunctions";
 
 const ResetPassword = () => {
     const router = useRouter()
@@ -13,17 +14,12 @@ const ResetPassword = () => {
     useEffect(() => {
         setToken(router.query.token)
     }, [router.query]);
-    const Error = ({message}) => {
-        return (Swal.fire({
-            icon: "error", title: "Oops...", text: message, position: "top-right", timer: 1500
-        }));
-    }
     const submitHandler = async (e) => {
         e.preventDefault()
         if (!password.current.value.match(PASSWORD_PATTERN)) {
-            return Error({message: "Password must contain at least one lowercase letter, one uppercase letter and one number"})
+            return Global_Error({message: "Password must contain at least one lowercase letter, one uppercase letter and one number"})
         } else if (password.current.value !== confirmPassword.current.value) {
-            return Error({message: "Make sure that the new password and its confirmation are the same"})
+            return Global_Error({message: "Make sure that the new password and its confirmation are the same"})
         }
         await axios.post(`/api/v1/auth/email/reset-password/${token[0]}`, {
             password: password.current.value,
@@ -40,7 +36,7 @@ const ResetPassword = () => {
                 router.push("/auth/login")
             }
         }).catch(err => {
-            return Error({message: err.response.data.errors.message})
+            return Global_Error({message: err.response.data.errors.message})
         })
     }
     return (

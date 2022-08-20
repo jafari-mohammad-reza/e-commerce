@@ -1,5 +1,4 @@
 import React, {useRef, useState} from 'react';
-import {useRouter} from "next/router";
 import Swal from "sweetalert2";
 import {PASSWORD_PATTERN} from "../../conf/RegexPatterns";
 import axios from "../../axios";
@@ -7,23 +6,22 @@ import {AiFillEye, AiOutlineArrowLeft} from "react-icons/ai";
 import Link from "next/link";
 import {useDispatch} from "react-redux";
 import {setCredits} from "../../app/features/authSlice";
+import {useRouter} from "next/router";
+import {client_authentication, Global_Error} from "../../conf/ConstantFunctions";
 
 const Login = () => {
+
+    const router = useRouter()
+    client_authentication({router})
     const email = useRef(null)
     const password = useRef(null)
     const rememberme = useRef(null)
     const dispatch = useDispatch()
-    const router = useRouter()
     const [isForgotPass, setIsForgotPass] = useState(false)
-    const Error = ({message}) => {
-        return (Swal.fire({
-            icon: "error", title: "Oops...", text: message, position: "top-right", timer: 1500
-        }));
-    }
     const forgotPassHandler = async (e) => {
         e.preventDefault()
         if (!email.current.value || !email.current.value.endsWith("@gmail.com" || "@yahoo.com" || "@hotmail.com")) {
-            return Error({message: "Make sure to insert a valid email"})
+            return Global_Error({message: "Make sure to insert a valid email"})
         }
         await axios.post("/api/v1/auth/email/forgot-password", {email: email.current.value}).then(result => {
             if (result.status === 200) {
@@ -38,23 +36,23 @@ const Login = () => {
             }
         }).catch(err => {
             if (err.response.scale === 404 || err.response.scale === 400) {
-                return Error({message: "Make sure to insert correct email address"})
+                return Global_Error({message: "Make sure to insert correct email address"})
             } else {
-                return Error({message: err.response.data.errors.message})
+                return Global_Error({message: err.response.data.errors.message})
             }
         })
     }
     const submitHandler = async (e) => {
         e.preventDefault()
         if (!email.current.value || !password.current.value) {
-            return Error({message: "All fields are required"})
+            return Global_Error({message: "All fields are required"})
         }
         if (!email.current.value.endsWith("@gmail.com" || "@yahoo.com" || "@hotmail.com")) {
-            return Error({message: "Please enter a valid email"})
+            return Global_Error({message: "Please enter a valid email"})
         }
 
         if (!password.current.value.match(PASSWORD_PATTERN)) {
-            return Error({message: "Password must contain at least one lowercase letter, one uppercase letter and one number"})
+            return Global_Error({message: "Password must contain at least one lowercase letter, one uppercase letter and one number"})
         }
         await axios.post("/api/v1/auth/email/login", {
             email: email.current.value, password: password.current.value, rememberme: rememberme.current.checked,
@@ -81,16 +79,16 @@ const Login = () => {
         }).catch(err => {
             console.log(err)
             if (err.response.status === 404) {
-                return Error({message: "Email or password is incorrect"})
+                return Global_Error({message: "Email or password is incorrect"})
             }
             if (err.response.status === 400) {
-                return Error({message: "Your account is not verified yet. Please check your email"})
+                return Global_Error({message: "Your account is not verified yet. Please check your email"})
             }
             if (err.response.status === 403) {
-                return Error({message: "Your account is blocked. Contact admin"})
+                return Global_Error({message: "Your account is blocked. Contact admin"})
             } else {
 
-                return Error({message: err.response.data.message})
+                return Global_Error({message: err.response.data.message})
             }
         })
 

@@ -99,7 +99,7 @@ const MyComponent = () => {
                 <HeaderOptions/>
             </div>
             <AiOutlineMenu
-                className={'w-16 h-16 bg-blue-500 text-sky-50 rounded-full p-2.5 text-3xl cursor-pointer transition-all transform hover:scale-110'}
+                className={'w-16 h-16 bg-blue-500 sm:hidden text-sky-50 rounded-full p-2.5 text-3xl cursor-pointer transition-all transform hover:scale-110'}
                 onClick={() => {
                     setIsMenuOpen(true)
                 }}/>

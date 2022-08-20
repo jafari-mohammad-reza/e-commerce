@@ -10,7 +10,7 @@ const {
     ProductResolver,
     DiscountedProductResolver,
     MostRatedProductResolver,
-    GetProductDetailResolver
+    GetProductDetailResolver, GetProductByCategoryResolver
 } = require("./queries/Product.resolver");
 const {
     CategoryResolver,
@@ -48,7 +48,8 @@ const RootQuery = new GraphQLObjectType({
         GetDiscounts: DiscountedProductResolver,
         MostRatedProducts: MostRatedProductResolver,
         GetCategoryByTitle: GetCategoryByTitleResolver,
-        GetProductDetail: GetProductDetailResolver
+        GetProductDetail: GetProductDetailResolver,
+        GetProductByCategory: GetProductByCategoryResolver
     },
 });
 

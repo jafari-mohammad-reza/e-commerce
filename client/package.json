@@ -6,15 +6,18 @@
     "start": "next start"
   },
   "dependencies": {
+    "@apollo/client": "^3.6.9",
     "@reduxjs/toolkit": "^1.8.4",
     "axios": "^0.27.2",
-    "next": "latest",
-    "react": "18.1.0",
+    "graphql": "^16.6.0",
+    "next": "^12.2.5",
+    "react": "^18.1.0",
     "react-cookie": "^4.1.1",
-    "react-dom": "18.1.0",
+    "react-dom": "^18.1.0",
     "react-icons": "^4.4.0",
     "react-redux": "^8.0.2",
-    "sweetalert2": "^11.4.28"
+    "sweetalert2": "^11.4.28",
+    "swiper": "^8.3.2"
   },
   "devDependencies": {
     "@types/node": "17.0.35",

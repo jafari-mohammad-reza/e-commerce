@@ -3,22 +3,14 @@ import {useRouter} from "next/router";
 import Swal from "sweetalert2";
 import axios from "../../axios";
 import {useCookies} from "react-cookie";
+import {client_authentication, Global_Error} from "../../conf/ConstantFunctions";
 
 const VerifyAccount = () => {
     const code = useRef(null)
     const [cookies, setCookie, removeCookie] = useCookies(['verificationToken']);
-    const Error = ({message}) => {
-        return (
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: message,
-                position: "top-right",
-                showConfirmButton: true,
-            })
-        );
-    }
+
     const router = useRouter()
+    client_authentication({router})
 
     const resendCode = async () => {
         await axios.post("/api/v1/auth/email/resend-code/", {},).then(result => {
@@ -35,9 +27,9 @@ const VerifyAccount = () => {
         }).catch(err => {
             console.log(err)
             if (err.response.status === 400 || err.response.status === 404) {
-                return Error({message: "There is no verification code"})
+                return Global_Error({message: "There is no verification code"})
             } else {
-                return Error({message: err.response.data.errors.message})
+                return Global_Error({message: err.response.data.errors.message})
             }
         })
 
@@ -45,10 +37,10 @@ const VerifyAccount = () => {
     const submitHandler = async (e) => {
         e.preventDefault()
         if (!code.current.value) {
-            return Error({message: "Please insert the code we have sent you"})
+            return Global_Error({message: "Please insert the code we have sent you"})
         }
         if (code.current.value.length !== 10) {
-            return Error({message: "Make sure to insert exact same code we have sent you."})
+            return Global_Error({message: "Make sure to insert exact same code we have sent you."})
         }
         await axios.post("/api/v1/auth/email/verify-account", {code: code.current.value}).then(result => {
             if (result.status === 200) {
@@ -65,9 +57,9 @@ const VerifyAccount = () => {
             }
         }).catch(err => {
             if (err.response.status === 400 || err.response.status === 404) {
-                return Error({message: "Make sure to insert a valid code. click on resend link if you need a new code"})
+                return Global_Error({message: "Make sure to insert a valid code. click on resend link if you need a new code"})
             } else {
-                return Error({message: err.response.data.errors.message})
+                return Global_Error({message: err.response.data.errors.message})
             }
 
         })

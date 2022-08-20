@@ -5,11 +5,11 @@ const redisClient = redis.createClient({
     retry_strategy: function (options) {
         if (options.error && options.error.code === "ECONNREFUSED") {
             // End reconnecting on a specific error and flush all commands
-            // with a individual error
+            // with an individual error
             return new Error("The server refused the connection");
         }
         if (options.attempt > 10) {
-            // End reconnecting with built in error
+            // End reconnecting with  error
             return undefined;
         }
     },

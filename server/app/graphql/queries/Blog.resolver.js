@@ -14,7 +14,7 @@ const BlogResolver = {
     resolve: async (_, args) => {
         const {category, limit} = args;
         let query = category ? {category: category} : {};
-        return await BlogModel.find(query).limit(limit);
+        return BlogModel.find(query).limit(limit);
     },
 };
 

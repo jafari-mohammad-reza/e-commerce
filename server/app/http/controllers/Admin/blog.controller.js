@@ -65,6 +65,7 @@ module.exports = new (class AdminBlogController extends DefaultController {
                 req.body.image = path.join(req.body.fileUploadPath, req.body.filename);
                 req.body.image = req.body.image.replace(/\\/g, "/");
             }
+            const image = req.body.image || blog.image;
             const bodyData = copyObject(req.body);
             let nullishData = ["", " ", "0", 0, null, undefined];
             let blackListFields = [

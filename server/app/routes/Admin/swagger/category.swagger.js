@@ -13,6 +13,9 @@
  *                  parent:
  *                      type: string
  *                      description: the title of category
+ *                  image:
+ *                      type: string
+ *                      description: the index picture of category
  */
 /**
  * @swagger
@@ -23,7 +26,7 @@
  *          requestBody:
  *              required: true
  *              content:
- *                  application/x-www-form-urlencoded:
+ *                  multipart/form-data:
  *                      schema:
  *                          $ref: '#/components/schemas/Category'
  *                  application/json:

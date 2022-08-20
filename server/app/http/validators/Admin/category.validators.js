@@ -7,7 +7,9 @@ const modifyCategory = Joi.object({
             "string.min": "Title cannot be less than 3 words",
             "string.max": "Title cannot be more than 20 words"
         }),
-        parent: Joi.string().allow('').allow("").error(createHttpError.BadRequest("not a valid parent id"))
+        parent: Joi.string().allow('').allow("").error(createHttpError.BadRequest("not a valid parent id")),
+        fileUploadPath: Joi.string().empty(), fileName: Joi.string().pattern(/(\.png|\.jpg|\.jpeg|\.webp)/),
+
     }
 )
 module.exports = {
