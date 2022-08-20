@@ -10,13 +10,12 @@ function getToken(headers, tokenName = "") {
         throw createHttpError.Unauthorized("Please login first");
     }
     if (authorization) {
-
         const [bearer, token] = authorization?.split(" ") || [];
         if (token && ["Bearer", "bearer"].includes(bearer)) return token;
         throw createHttpError.Unauthorized("Please login first");
     } else if (cookie) {
-
-        const token = cookie.split(`${tokenName}=`)[1];
+        const token = cookie.split(`${tokenName}=`)[1].split(";")[0];
+        console.log(token)
         if (token) return token;
         throw createHttpError.Unauthorized("Please login first");
     }
@@ -32,7 +31,7 @@ function VerifyAccessToken(req, res, next) {
                 const {email, mobileNumber} = encoded.payload || {};
                 const user = await UserModel.findOne(
                     {mobileNumber, email},
-                    {mobileNumber: 1, email: 1, username: 1, Role: 1}
+                    {mobileNumber: 1, email: 1, username: 1, Role: 1, accessToken: 1, refreshToken: 1}
                 );
                 if (!user) throw createHttpError.Unauthorized("no account");
                 req.user = user;

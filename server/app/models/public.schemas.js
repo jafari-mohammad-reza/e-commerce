@@ -1,4 +1,4 @@
-const {default: mongoose} = require("mongoose");
+const {default: mongoose, Types} = require("mongoose");
 const ProductSchema = new mongoose.Schema({
     productId: {type: mongoose.Types.ObjectId, ref: "product"},
     count: {type: Number, default: 1},
@@ -31,14 +31,7 @@ const CommentSchema = new mongoose.Schema(
         timestamps: {createdAt: true},
     }
 );
-const OrderSchema = new mongoose.Schema({
-    costumer: {type: mongoose.Types.ObjectId, required: true, ref: "user"},
-    products: {type: [ProductSchema], default: []},
-    totalPrice: {type: Number, required: false, default: 0},
-    discount: {type: Number, default: 0, required: false},
-    isCompleted: {type: Boolean, default: false},
-    isCanceled: {type: Boolean, default: false},
-});
+
 const CartSchema = new mongoose.Schema({
     products: {type: [ProductSchema], default: []},
     totalPrice: {type: Number, required: false, default: 0},
@@ -51,19 +44,18 @@ const RatingSchema = new mongoose.Schema({
 });
 
 const PhysicalFeatureSchema = new mongoose.Schema({
-    width: {type: Number, required: true},
-    height: {type: Number, required: true},
-    depth: {type: Number, required: true},
-    weight: {type: Number, required: true},
-    colors: {type: [String], required: true},
-    materials: {type: [String], required: true},
-    manufacturer: {type: String, required: true},
+    width: {type: Number, required: false, default: 0},
+    height: {type: Number, required: false, default: 0},
+    depth: {type: Number, required: false, default: 0},
+    weight: {type: Number, required: false, default: 0},
+    colors: {type: [String], required: false, default: []},
+    materials: {type: [String], required: false, default: []},
+    manufacturer: {type: String, required: false, default: ""},
 });
 
 module.exports = {
     CommentSchema,
     ReplySchema,
-    OrderSchema,
     CartSchema,
     RatingSchema,
     PhysicalFeatureSchema,

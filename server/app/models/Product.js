@@ -55,7 +55,7 @@ ProductSchema.virtual("averageRating").get(function () {
     for (let i = 0; i < this.ratings.length; i++) {
         sum += this.ratings[i].stars
     }
-    return sum / this.ratings.length;
+    return sum / this.ratings.length || 0;
 })
 
 function autoPopulate(next) {

@@ -1,6 +1,7 @@
 import React, {Fragment, useEffect} from 'react';
 import {useRouter} from "next/router";
 import Head from "next/head";
+import NavBar from "./NavBar";
 
 const Layout = ({children}) => {
     const {pathname} = useRouter()
@@ -14,6 +15,9 @@ const Layout = ({children}) => {
             <Head>
                 <title>e-shop | {currentPage === "" ? "Home" : currentPage}</title>
             </Head>
+            <header>
+                <NavBar/>
+            </header>
             <main>
                 {children}
             </main>

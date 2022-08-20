@@ -21,6 +21,8 @@ CategorySchema.virtual("children", {
     ref: "category",
     localField: "_id",
     foreignField: "parent",
+    justOne: false,
+    projection: {_id: 1, title: 1},
 });
 
 function autoPopulate(next) {

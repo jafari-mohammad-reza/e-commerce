@@ -46,3 +46,24 @@
 .auth_link span {
     @apply text-blue-300 font-bold cursor-pointer
 }
+
+.nav_link_container {
+    @apply flex flex-col items-center justify-center
+}
+
+.nav_link {
+    @apply text-blue-500 text-2xl lg:text-3xl transition  font-bold cursor-pointer
+}
+
+.nav_link_smallScreen {
+    @apply text-sky-50 text-4xl transition transition-all  font-bold cursor-pointer
+}
+
+.nav_span {
+    @apply w-0 transition-all group-hover:w-full bg-blue-500 h-1
+}
+
+
+.position-center {
+    @apply absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4
+}

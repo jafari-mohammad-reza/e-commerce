@@ -56,13 +56,13 @@ module.exports = new (class AuthController extends DefaultController {
                 await user.save();
                 // await SendAccountVerification(user.email, user.verificationToken);
                 throw createHttpError(
-                    401,
+                    400,
                     "you have not verify your account yet,do it by the link we sent to your email."
                 );
             }
             if (user.isBanned === true) {
                 throw createHttpError(
-                    401,
+                    403,
                     "you have been banned from the system, please contact our support for more info."
                 );
             }
@@ -71,10 +71,22 @@ module.exports = new (class AuthController extends DefaultController {
             await user.save();
             return res
                 .status(StatusCodes.OK)
-                .cookie("refresh_token", user.refreshToken, {httpOnly: true})
+                .cookie("access_token", user.accessToken, {
+                    httpOnly: true,
+                    expires: rememberme ? new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) : new Date(Date.now() + 1000 * 60 * 60 * 24)
+                })
+                .cookie("refresh_token", user.refreshToken, {
+                    httpOnly: true,
+                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 356)
+                })
                 .json({
                     success: true,
-                    credentials: {email: user.email, username: user.username, token: user.accessToken, Role: user.Role},
+                    credentials: {
+                        email: user.email,
+                        username: user.username,
+                        mobileNumber: user.mobileNumber,
+                        role: user.Role
+                    },
                 });
         } catch (error) {
             next(error);
@@ -162,7 +174,7 @@ module.exports = new (class AuthController extends DefaultController {
             }
             const user = await UserModel.findOne({email});
             if (!user) {
-                throw createHttpError.BadRequest("make sure to insert a valid email");
+                throw createHttpError.NotFound("make sure to insert a valid email");
             } else if (user.resetPasswordAttempt >= 3) {
                 throw createHttpError.NotAcceptable(
                     `you have reached the maximum chance to changePassword, contact our support for more info`
@@ -188,13 +200,9 @@ module.exports = new (class AuthController extends DefaultController {
 
     async logOut(req, res, next) {
         try {
-            const {accessToken} = req.params;
-            const verifiedAccessToken = validateToken(accessToken);
-            if (!verifiedAccessToken)
-                throw createHttpError.BadRequest("Not a valid token");
-            if (verifiedAccessToken.exp > Date.now())
-                throw createHttpError.BadRequest("Not a valid token");
-            const user = await UserModel.findOne({accessToken});
+
+            const user = req?.user
+            console.log(user)
             if (!user) throw createHttpError.Unauthorized("Not a valid token");
             user.accessToken = "";
             user.refreshToken = "";
@@ -214,7 +222,11 @@ module.exports = new (class AuthController extends DefaultController {
 
             const {password, confirmPassword} = bodyData;
             const {resetPasswordToken} = req.params;
-            console.log(resetPasswordToken)
+            if (password !== confirmPassword) {
+                throw createHttpError.BadRequest(
+                    "both passwords must be same"
+                );
+            }
             const user = await UserModel.findOne({resetPasswordToken});
             if (!user) {
                 throw createHttpError.Unauthorized("Invalid token");
@@ -262,7 +274,7 @@ module.exports = new (class AuthController extends DefaultController {
                     });
                 })
                 .catch((err) => {
-                    throw createError.InternalServerError(err);
+                    throw createHttpError.InternalServerError(err);
                 });
         } catch (error) {
             next(error);
@@ -292,7 +304,7 @@ module.exports = new (class AuthController extends DefaultController {
             }
             if (user.otp.code !== +otp) {
                 throw createHttpError.BadRequest(
-                    "not a correct code ,make sure to use the exactly code we  have sent for you."
+                    "Not a correct code ,make sure to use the exactly code we  have sent for you."
                 );
             }
             user.otp = {};
@@ -301,14 +313,15 @@ module.exports = new (class AuthController extends DefaultController {
             user.accessToken = generateAccessToken({
                 mobileNumber: user?.mobileNumber,
             });
-            user.refreshToken = await generateRefreshToken({userId: user._id});
+            user.refreshToken = await generateRefreshToken(user._id);
             await user.save();
             return res
                 .status(StatusCodes.OK)
+                .cookie("access_token", user.accessToken, {httpOnly: true})
                 .cookie("refresh_token", user.refreshToken, {httpOnly: true})
                 .json({
                     success: true,
-                    credentials: {mobile: user.mobileNumber, token: user.accessToken, Role: user.Role},
+                    credentials: {mobile: user.mobileNumber, Role: user.Role},
                 });
         } catch (e) {
             next(e);

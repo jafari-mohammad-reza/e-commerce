@@ -42,7 +42,7 @@ router.post(
     "/email/reset-password/:resetPasswordToken",
     authController.resetPassword
 );
-router.post("/email/logout/:accessToken", authController.logOut);
+router.post("/email/logout/", VerifyAccessToken, authController.logOut);
 
 //? Mobile Authentication
 router.post("/mobile/get-otp", otpLimiter, authController.getOTP);
