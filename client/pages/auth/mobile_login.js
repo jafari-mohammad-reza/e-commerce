@@ -3,14 +3,13 @@ import Link from "next/link";
 import Swal from "sweetalert2";
 import axios from "../../axios";
 import {useRouter} from "next/router";
-import {client_authentication, Global_Error} from "../../conf/ConstantFunctions";
+import {Global_Error} from "../../conf/ConstantFunctions";
 
 const MobileLogin = () => {
     const [loginStage, setLoginStage] = useState("get-otp")
     const mobile = useRef(null)
     const otp = useRef(null)
     const router = useRouter()
-    client_authentication({router})
 
     const resendCode = async () => {
         if (!mobile.current.value) {

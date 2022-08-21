@@ -32,6 +32,7 @@ export const GetMostRatedProducts_Query = gql`
             discountedPrice
             discount
             imagesURL
+            price
             category {
                 title
             }
@@ -45,6 +46,7 @@ export const GetLatestProducts_Query = gql`
             _id
             title
             price
+            discountedPrice
             imagesURL
             discount
             category {

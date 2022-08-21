@@ -25,12 +25,7 @@ const MyComponent = () => {
                 onClick={() => setIsMenuOpen(false)}
             >
                 {/* Links   */}
-                <Link href={'/'}>
-                    <div className={'nav_link_container group'}>
-                        <span className={`${isSmallScreen ? "hidden" : "nav_span"}`}/>
-                        <h4 className={` ${isSmallScreen ? "nav_link_smallScreen" : "nav_link"}`}>Home</h4>
-                    </div>
-                </Link>
+
                 <Link href={'/categories'}>
                     <div className={'nav_link_container group'}>
                         <span className={`${isSmallScreen ? "hidden" : "nav_span"}`}/>
@@ -90,10 +85,12 @@ const MyComponent = () => {
     }
     return (
         <nav className={'w-full h-max py-4 px-8 flex items-center justify-between'}>
-            <div className={'w-max flex-grow'}>
-                <Image src={'/images/shopping-bag.svg'} alt={'logo'} width={90} height={90} objectFit={'contain'}
-                       prefix={'responsive'}/>
-            </div>
+            <Link href={"/"}>
+                <div className={'w-max flex-grow cursor-pointer'}>
+                    <Image src={'/images/shopping-bag.svg'} alt={'logo'} width={90} height={90} objectFit={'contain'}
+                           prefix={'responsive'}/>
+                </div>
+            </Link>
             {/* Navbar Links and options */}
             <div className="hidden sm:flex items-center justify-between flex-grow">
                 <HeaderOptions/>

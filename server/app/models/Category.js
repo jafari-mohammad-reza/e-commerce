@@ -18,6 +18,7 @@ const CategorySchema = new mongoose.Schema(
         },
     }
 );
+CategorySchema.index({title: "text"});
 CategorySchema.virtual("children", {
     ref: "category",
     localField: "_id",

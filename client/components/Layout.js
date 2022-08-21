@@ -13,7 +13,7 @@ const Layout = ({children}) => {
     return (
         <Fragment>
             <Head>
-                <title>e-shop | {currentPage === "" ? "Home" : currentPage}</title>
+                <title>e-shop | {currentPage === "" ? "Home" : currentPage.split("/")[0]}</title>
             </Head>
             <header>
                 <NavBar/>

@@ -82,8 +82,9 @@ const GetProductByCategoryResolver = {
     resolve: async (parent, args, context) => {
         let {title} = args;
         title = title.replace("_", " ");
-        const category = await CategoryModel.findOne({title: title});
-        return ProductModel.find({category: category._id});
+        const category = await CategoryModel.findOne({$text: {$search: title, $caseSensitive: false}});
+        console.log(category)
+        return ProductModel.find({category: category});
     }
 }
 

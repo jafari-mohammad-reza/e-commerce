@@ -5,7 +5,7 @@ import {useRouter} from "next/router";
 import Link from "next/link";
 import {AiFillEye} from "react-icons/ai";
 import {PASSWORD_PATTERN} from "../../conf/RegexPatterns";
-import {client_authentication, Global_Error} from "../../conf/ConstantFunctions";
+import {Global_Error} from "../../conf/ConstantFunctions";
 
 const Register = () => {
     const username = useRef(null)
@@ -13,7 +13,6 @@ const Register = () => {
     const password = useRef(null)
     const confirmPassword = useRef(null)
     const router = useRouter()
-    client_authentication({router})
 
     const submitHandler = async (e) => {
         e.preventDefault()

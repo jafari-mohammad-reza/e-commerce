@@ -10,18 +10,16 @@ import ProductSwiper from "../components/ProductSwiper";
 const Home = ({discountedProducts, latestProducts, mostRateProducts, loading}) => {
     const [isLoading, setIsLoading] = useState(loading)
 
-    if (isLoading) {
-        return <div className={'flex justify-center items-center h-screen'}>
-            <div className={'spinner-border text-blue-500'} role="status">
-                <span className={'sr-only'}>Loading...</span>
-            </div>
-        </div>
-    }
+
     return (
         <div className={'flex flex-col items-start justify-start px-20 '}>
-            {discountedProducts && <ProductSwiper products={discountedProducts} title={"Today's Discounts"}/>}
-            {latestProducts && <ProductSwiper products={latestProducts} title={"Latest Products"}/>}
-            {mostRateProducts && <ProductSwiper products={mostRateProducts} title={"Most Rate Products"}/>}
+            {isLoading ? <h1>Loading...</h1> : (
+                <>
+                    {discountedProducts && <ProductSwiper products={discountedProducts} title={"Today's Discounts"}/>}
+                    {latestProducts && <ProductSwiper products={latestProducts} title={"Latest Products"}/>}
+                    {mostRateProducts && <ProductSwiper products={mostRateProducts} title={"Most Rate Products"}/>}
+                </>
+            )}
         </div>
     );
 };

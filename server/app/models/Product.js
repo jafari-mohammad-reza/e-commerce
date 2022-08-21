@@ -27,7 +27,7 @@ const ProductSchema = new mongoose.Schema(
         discount: {type: Number, default: 0},
         stockCount: {type: Number, default: 0},
         supplier: {type: mongoose.Types.ObjectId, ref: "user", required: true},
-        physicalFeatures: {type: [PhysicalFeatureSchema], required: false},
+        physicalFeatures: {type: [Object], required: false},
         isActive: {type: Boolean, default: true},
         isTrend: {type: Boolean, default: false},
         isPrime: {type: Boolean, default: false},

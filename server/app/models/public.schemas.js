@@ -43,20 +43,10 @@ const RatingSchema = new mongoose.Schema({
     postBy: {type: mongoose.Types.ObjectId, ref: "user", required: true},
 });
 
-const PhysicalFeatureSchema = new mongoose.Schema({
-    width: {type: Number, required: false, default: 0},
-    height: {type: Number, required: false, default: 0},
-    depth: {type: Number, required: false, default: 0},
-    weight: {type: Number, required: false, default: 0},
-    colors: {type: [String], required: false, default: []},
-    materials: {type: [String], required: false, default: []},
-    manufacturer: {type: String, required: false, default: ""},
-});
 
 module.exports = {
     CommentSchema,
     ReplySchema,
     CartSchema,
     RatingSchema,
-    PhysicalFeatureSchema,
 };

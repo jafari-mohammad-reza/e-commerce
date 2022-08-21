@@ -7,12 +7,12 @@ import Link from "next/link";
 import {useDispatch} from "react-redux";
 import {setCredits} from "../../app/features/authSlice";
 import {useRouter} from "next/router";
-import {client_authentication, Global_Error} from "../../conf/ConstantFunctions";
+import {Global_Error} from "../../conf/ConstantFunctions";
 
 const Login = () => {
 
     const router = useRouter()
-    client_authentication({router})
+    // client_authentication({router})
     const email = useRef(null)
     const password = useRef(null)
     const rememberme = useRef(null)

@@ -8,6 +8,7 @@ export const GetProducts_Query = gql`
             price
             imagesURL
             discount
+            discountedPrice
         }
     }
 `
@@ -33,10 +34,22 @@ export const GetCategories_Query = gql`
 `
 export const GetCategoryProductsByTitle_Query = gql`
     query GetProductByCategory($title : String) {
-        GetProductByCategory(title : $title) {
+        GetProductByCategory(title: $title) {
             _id
             title
+            category {
+                title
+            }
+            price
+            tags
             imagesURL
+            averageRating
+            price
+            discount
+            discountedPrice
+            stockCount
+
+
         }
     }
 `
@@ -61,6 +74,8 @@ export const GetProductDetail_Query = gql`
                     mobileNumber
                 }
                 content
+                isApproved
+                ReplyAble
                 Replies {
                     _id
                     isApproved
@@ -77,12 +92,8 @@ export const GetProductDetail_Query = gql`
             averageRating
 
             physicalFeatures {
-                length
-                height
-                width
-                weight
-                colors
-                Manufacturer
+                name
+                value
             }
             category {
                 title

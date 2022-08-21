@@ -3,14 +3,13 @@ import {useRouter} from "next/router";
 import Swal from "sweetalert2";
 import axios from "../../axios";
 import {useCookies} from "react-cookie";
-import {client_authentication, Global_Error} from "../../conf/ConstantFunctions";
+import {Global_Error} from "../../conf/ConstantFunctions";
 
 const VerifyAccount = () => {
     const code = useRef(null)
     const [cookies, setCookie, removeCookie] = useCookies(['verificationToken']);
 
     const router = useRouter()
-    client_authentication({router})
 
     const resendCode = async () => {
         await axios.post("/api/v1/auth/email/resend-code/", {},).then(result => {

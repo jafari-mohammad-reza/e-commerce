@@ -18,7 +18,9 @@ module.exports = new (class AdminProductController extends DefaultController {
                 req?.files || [],
                 req.body.fileUploadPath
             );
+            console.log(Array.isArray(req.body.physicalFeatures));
             const bodyData = await createProductValidator.validateAsync(req.body);
+
             const {
                 title,
                 overView,
@@ -29,7 +31,7 @@ module.exports = new (class AdminProductController extends DefaultController {
                 discount,
                 price,
                 physicalFeatures,
-                additionalFeatures,
+
             } = bodyData;
             const supplier = req.user._id;
             await ProductModel.create({
@@ -42,7 +44,6 @@ module.exports = new (class AdminProductController extends DefaultController {
                 stockCount,
                 price,
                 physicalFeatures,
-                additionalFeatures,
                 supplier,
                 images,
             })
