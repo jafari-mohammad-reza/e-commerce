@@ -10,21 +10,43 @@ import Image from "next/image";
 import {A11y, Autoplay, Navigation, Zoom} from "swiper";
 import Link from "next/link";
 import {AiOutlineUser} from "react-icons/ai";
+import {useSelector} from "react-redux";
+import {selectCurrentUser} from "../../app/features/authSlice";
 
 const ProductByTitle = () => {
     const {query} = useRouter();
     const [product, setProduct] = React.useState(null);
     const title = query.title && query.title[0];
+    const commentRef = React.useRef(null);
+    const [isReply, setIsReply] = React.useState(false);
+    const [replyComment, setReplyComment] = React.useState(null);
+    const [user, setUser] = React.useState(null);
+    const selector = useSelector(selectCurrentUser)
     const {data, loading} = useQuery(GetProductDetail_Query, {
         variables: {
             title: title
         }
     })
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setUser(selector)
+        }
+    }, [selector])
     useEffect(() => {
         if (data && !loading) {
             setProduct(data.GetProductDetail);
         }
     }, [data])
+    const handleComment = (e) => {
+        e.preventDefault()
+        if (isReply) {
+
+        } else {
+
+        }
+
+    }
     return (
         <Fragment>
             {!loading && product && (
@@ -122,8 +144,6 @@ const ProductByTitle = () => {
                                     )}
 
                             </div>
-
-
                         </div>
                     </div>
                     <div className={'w-full h-max px-10 mt-32 '}>
@@ -159,6 +179,29 @@ const ProductByTitle = () => {
                                 </div>
                             </div>
                         }) : <h3 className={'text-4xl text-center my-24'}>No Comment yet</h3>}
+                        {
+                            user ? (
+                                <form className={'w-auto  mx-auto flex flex-col space-y-4 items-center justify-center'}
+                                      onSubmit={handleComment}
+                                >
+                            <textarea className={'px-10 py-8 border-black border-2 '} name={'content'}
+                                      rows={10}
+                                      cols={100}
+                                      ref={commentRef}
+                                      placeholder={'Share your opinion with us'}/>
+                                    <button className={'px-10 py-8 bg-blue-500 text-white font-bold'}
+                                            type={"submit"}>
+                                        Comment
+                                    </button>
+
+                                </form>
+                            ) : (
+                                <div className={'w-3/5  mx-auto   border-2 border-black '}>
+                                    <h3 className={'text-center my-24'}>
+                                        Please login to share your opinion
+                                    </h3>
+                                </div>)
+                        }
                     </div>
                 </div>
             )}
