@@ -102,7 +102,7 @@ module.exports = new (class AdminCategoryController extends DefaultController {
             const categories = await CategoryModel.find({});
             return res.status(StatusCodes.OK).json({
                 success: true,
-                data: categories,
+                 categories,
             });
         } catch (error) {
             console.log(error);

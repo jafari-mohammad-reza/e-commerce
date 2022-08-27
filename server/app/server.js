@@ -39,17 +39,7 @@ module.exports = class ApplicationServer {
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extended: true}));
         this.#app.use(express.static(path.join(__dirname, "..", "public")));
-        // this.#app.use(limit({
-        //     windowMs: 5 * 60 * 1000, // 5 minutes
-        //     max: 25,
-        //     message: {
-        //         statusCode: StatusCodes.TOO_MANY_REQUESTS,
-        //         message: "Too many requests from this IP, please try again later.",
-        //     },
-        //     skipFailedRequests: true,
-        //
-        //
-        // }))
+
         this.#app.use(
             "/api-docs",
             swaggerUi.serve,
@@ -109,7 +99,7 @@ module.exports = class ApplicationServer {
     }
 
     configureDailyDiscounts() {
-        cluster.isMaster ? cron.schedule("* * * */24 * *", async () => {
+        cluster.isMaster ? cron.schedule("* * */24 * * *", async () => {
             console.log("\x1b[32m", "running cron job")
             const randomSkipNumber = Math.floor(await mongoose.model("product").count().exec().then(count => {
                 return count / 4

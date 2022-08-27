@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 
 function getToken(headers, tokenName = "") {
     const {authorization, cookie} = headers;
-    if (!authorization && !cookie) {
+            if (!authorization && !cookie) {
         throw createHttpError.Unauthorized("Please login first");
     }
     if (authorization) {
@@ -27,7 +27,7 @@ function VerifyAccessToken(req, res, next) {
         const token = getToken(req.headers, "access_token");
         JWT.verify(token, process.env.JWT_TOKEN, async (err, encoded) => {
             try {
-                if (err) throw createHttpError.InternalServerError(err)
+                if (err) throw createHttpError.InternalServerError(`JWT error : ${ err}` )
                 const {email, mobileNumber} = encoded.payload || {};
                 const user = await UserModel.findOne(
                     {mobileNumber, email},

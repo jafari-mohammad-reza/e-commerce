@@ -85,7 +85,7 @@ module.exports = new (class AuthController extends DefaultController {
                         email: user.email,
                         username: user.username,
                         mobileNumber: user.mobileNumber,
-                        role: user.Role
+                        Role: user.Role
                     },
                 });
         } catch (error) {
@@ -120,6 +120,7 @@ module.exports = new (class AuthController extends DefaultController {
                         "you've been registered successfully, make sure to verify your account by the link send to your email.",
                 });
         } catch (error) {
+            console.log(error)
             next(error);
         }
     }
@@ -207,7 +208,10 @@ module.exports = new (class AuthController extends DefaultController {
             user.accessToken = "";
             user.refreshToken = "";
             await user.save();
-            return res.json({
+            return res
+                .clearCookie("access_token")
+                .clearCookie("refresh_token")
+                .json({
                 success: true,
                 message: "logged out successfully",
             });
@@ -317,8 +321,14 @@ module.exports = new (class AuthController extends DefaultController {
             await user.save();
             return res
                 .status(StatusCodes.OK)
-                .cookie("access_token", user.accessToken, {httpOnly: true})
-                .cookie("refresh_token", user.refreshToken, {httpOnly: true})
+                .cookie("access_token", user.accessToken, {
+                    httpOnly: true,
+                    expires:new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+                })
+                .cookie("refresh_token", user.refreshToken, {
+                    httpOnly: true,
+                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 356)
+                })
                 .json({
                     success: true,
                     credentials: {mobile: user.mobileNumber, Role: user.Role},

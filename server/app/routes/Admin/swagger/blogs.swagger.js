@@ -17,19 +17,19 @@
  *                      description: the title of category
  *                  overView:
  *                      type: string
- *                      description: the overView of blog
+ *                      description: the overView of blogs
  *                  content:
  *                      type: string
- *                      description: the content of blog
+ *                      description: the content of blogs
  *                  tags:
  *                      type: string
  *                      description: the list of tags for example(tag1#tag2#tag_foo)
  *                  category:
  *                      type: string
- *                      description: the id of category for foreign field in blog
+ *                      description: the id of category for foreign field in blogs
  *                  image:
  *                      type: file
- *                      description: the index picture of blog
+ *                      description: the index picture of blogs
  *          BlogUpdate:
  *              type: object
  *              properties:
@@ -38,19 +38,19 @@
  *                      description: the title of category
  *                  overView:
  *                      type: string
- *                      description: the overView of blog
+ *                      description: the overView of blogs
  *                  content:
  *                      type: string
- *                      description: the content of blog
+ *                      description: the content of blogs
  *                  tags:
  *                      type: string
  *                      description: the list of tags for example(tag1#tag2#tag_foo)
  *                  category:
  *                      type: string
- *                      description: the id of category for foreign Field in blog
+ *                      description: the id of category for foreign Field in blogs
  *                  image:
  *                      type: file
- *                      description: the index picture of blog
+ *                      description: the index picture of blogs
  */
 
 
@@ -111,7 +111,7 @@
  * @swagger
  *  /admin/blogs/{id}:
  *      get:
- *          summary: get blog by ID and populate this field
+ *          summary: get blogs by ID and populate this field
  *          tags: [ Blog(AdminPanel) ]
  *          parameters:
  *              -   in: path
@@ -126,7 +126,7 @@
  * @swagger
  *  /admin/blogs/{id}:
  *      delete:
- *          summary: remove blog by ID
+ *          summary: remove blogs by ID
  *          tags: [ Blog(AdminPanel) ]
  *          parameters:
  *              -   in: path

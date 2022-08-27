@@ -13,7 +13,7 @@ const createBlogValidator = Joi.object({
     }),
     fileUploadPath: Joi.string().allow(),
     fileName: Joi.string().required(),
-    tags: Joi.array().min(0).max(20).error(createError.BadRequest("cannot assign more than 20 tags to a blog.")),
+    tags: Joi.array().min(0).max(20).error(createError.BadRequest("cannot assign more than 20 tags to a blogs.")),
     category: Joi.string().required().pattern(MONGO_OBJECT_ID_PATTERN).error(createError.BadRequest("not a valid category"))
 })
 module.exports = {
