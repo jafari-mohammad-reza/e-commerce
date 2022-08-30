@@ -13,6 +13,7 @@ export function client_authentication({router}) {
 }
 
 export const Global_Error = ({message}) => {
+
     return (
         Swal.fire({
             icon: "error",
@@ -32,6 +33,16 @@ export const Global_Success = ({message}) => {
             text: message,
             position: "top-right",
             showConfirmButton: true,
+        })
+    );
+}
+export const Global_Message = ({message}) => {
+    return (
+        Swal.fire({
+            icon: "info",
+            text :message,
+            position: "top-right",
+            timer:1500
         })
     );
 }

@@ -8,7 +8,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const cluster = require("cluster")
 const os = require("os")
-const limit = require("express-rate-limit")
+require("express-rate-limit");
 const cron = require("node-cron")
 const {mainRouter} = require("./routes/router");
 const swaggerUi = require("swagger-ui-express");
@@ -33,13 +33,31 @@ module.exports = class ApplicationServer {
             helmet({
                 crossOriginResourcePolicy: false,
                 contentSecurityPolicy: (process.env.Node_ENV === "production"),
+                dnsPrefetchControl: true,
+                frameguard: {action: "DENY"},
+                expectCt: {
+                    enforce: true,
+                    maxAge: 94600
+                },
+                hidePoweredBy: true,
+                hsts: {
+                    maxAge: 31104000,
+                    includeSubDomains: false
+                },
+                ieNoOpen: true,
+                noSniff: true,
+                referrerPolicy: {policy: ["origin", "unsafe-url"]},
+                xssFilter: true,
+                originAgentCluster :true,
+
             })
         );
+
         this.#app.use(cors({credentials: true, origin: "http://localhost:3000"}));
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extended: true}));
         this.#app.use(express.static(path.join(__dirname, "..", "public")));
-
+        this.#app.disable('x-powered-by')
         this.#app.use(
             "/api-docs",
             swaggerUi.serve,

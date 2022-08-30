@@ -7,7 +7,7 @@ import {IoCartOutline} from "react-icons/io5";
 import {FaUser} from "react-icons/fa";
 import {AiOutlineClose, AiOutlineMenu} from "react-icons/ai";
 
-const MyComponent = () => {
+const NavBar = () => {
     const selector = useSelector(selectCurrentUser)
     const [user, setUser] = useState(undefined)
     const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -61,7 +61,7 @@ const MyComponent = () => {
                     user ? (
                         <div
                             className={`flex ${isSmallScreen ? "flex-col mt-12 space-y-10" : "space-x-5"} items-center justify-center w-max  lg:space-x-10`}>
-                            <Link href={user?.role === "USER" ? "/user/profile" : "/admin"}>
+                            <Link href={user?.Role === "USER" ? "/user/profile" : "/admin"}>
                                 <FaUser
                                     className={`text-6xl ${isMenuOpen ? "w-20 h-20 text-sky-50 border-wky-50" : "w-16 h-16  border-black"}  border-black rounded-lg p-2 cursor-pointer transition-all transform hover:scale-110`}/>
                             </Link>
@@ -87,7 +87,7 @@ const MyComponent = () => {
         <nav className={'w-full h-max py-4 px-8 flex items-center justify-between'}>
             <Link href={"/"}>
                 <div className={'w-max flex-grow cursor-pointer'}>
-                    <Image src={'/images/shopping-bag.svg'} alt={'logo'} width={90} height={90} objectFit={'contain'}
+                    <Image src={'/images/cartLogo.svg'} alt={'logo'} width={90} height={90} objectFit={'contain'}
                            prefix={'responsive'}/>
                 </div>
             </Link>
@@ -117,4 +117,4 @@ const MyComponent = () => {
     );
 };
 
-export default MyComponent;
+export default NavBar;

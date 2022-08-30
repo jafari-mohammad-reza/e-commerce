@@ -62,7 +62,7 @@ module.exports = new (class AdminBlogController extends DefaultController {
                 throw createHttpError.BadRequest("the blogs could not be found");
             }
             if (req.body.fileUploadPath && req.body.fileName) {
-                req.body.image = path.join(req.body.fileUploadPath, req.body.filename);
+                req.body.image = path.join(req.body.fileUploadPath, req.body.fileName);
                 req.body.image = req.body.image.replace(/\\/g, "/");
             }
             const image = req.body.image || blog.image;

@@ -2,8 +2,7 @@ const createHttpError = require("http-errors");
 const {UserModel} = require("../../models/User");
 const JWT = require("jsonwebtoken");
 const redisClient = require("../../conf/redisConfiguration")
-const jwt = require("jsonwebtoken");
-
+require("jsonwebtoken");
 function getToken(headers, tokenName = "") {
     const {authorization, cookie} = headers;
             if (!authorization && !cookie) {
@@ -15,7 +14,6 @@ function getToken(headers, tokenName = "") {
         throw createHttpError.Unauthorized("Please login first");
     } else if (cookie) {
         const token = cookie.split(`${tokenName}=`)[1].split(";")[0];
-        console.log(token)
         if (token) return token;
         throw createHttpError.Unauthorized("Please login first");
     }
@@ -104,7 +102,6 @@ const GraphqlTokenAuth = async (headers) => {
             {mobileNumber: 1, email: 1, username: 1, Role: 1}
         );
         if (!user) {
-            console.log("no user")
             throw new createHttpError.Unauthorized("no account");
         }
         return user;

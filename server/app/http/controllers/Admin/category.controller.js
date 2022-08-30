@@ -11,9 +11,12 @@ const {deleteImageFromPath} = require("../../../utils/imageUtils");
 module.exports = new (class AdminCategoryController extends DefaultController {
     async createCategory(req, res, next) {
         try {
-            const image = path
-                .join(req.body.fileUploadPath, req.body.fileName)
-                .replaceAll(/\\/gi);
+            let image = undefined
+            if(req?.body?.fileUploadPath && req?.body?.fileName){
+                 image = path
+                    .join(req?.body?.fileUploadPath, req?.body?.fileName)
+                    .replaceAll(/\\/gi);
+            }
             const bodyData = await modifyCategory.validateAsync(req.body);
 
             const {title, parent} = bodyData;
@@ -22,7 +25,7 @@ module.exports = new (class AdminCategoryController extends DefaultController {
                     "there is already one category with this title."
                 );
             }
-            await CategoryModel.create({title, parent, image})
+            await CategoryModel.create({title, parent, image : image || undefined})
                 .then((result) => {
                     return res.status(StatusCodes.OK).json({
                         success: true,

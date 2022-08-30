@@ -1,23 +1,17 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector} from "react-redux";
 import {selectCurrentUser} from "../../app/features/authSlice";
+import Link from "next/link";
+import UserLayout from "../../components/UserLayout";
 
 const Profile = () => {
-    const selector = useSelector(selectCurrentUser)
-    const [user, setUser] = useState(undefined)
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            setUser(selector)
-        }
-    }, [])
+
     return (
-        <div>
-            <h2 className="text-7xl">
-                Hello {
-                user ? user.username : "Guest"
-            }
-            </h2>
-        </div>
+        <UserLayout>
+            <p>
+                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Alias architecto eius eveniet voluptate. Blanditiis dolore doloremque error iure nobis odio, odit officia praesentium saepe similique tempora, temporibus ut velit, voluptates!
+            </p>
+        </UserLayout>
     );
 };
 

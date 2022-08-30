@@ -12,7 +12,7 @@ const CategorySchema = new mongoose.Schema(
         image: {type: String, required: false},
     },
     {
-        id: false,
+        id: true,
         toJSON: {
             virtuals: true,
         },

@@ -1,9 +1,28 @@
 import {gql} from "@apollo/client";
 
-const AddComment_Mutation = gql`
-    mutation AddComment($comment: CommentInput!){
-        addComment(comment: $comment){
-            id
+export const ProductParentComment = gql`
+    mutation CreateProductComment($productId : String! ,$content: String!) {
+        CreateProductComment(
+            productId: $productId,
+            content: $content
+        ) {
+            statusCode
+            data
         }
     }
+
+`
+
+export const ProductReplyComment = gql`
+    mutation CreateProductComment($productId : String! ,$content: String!, $parent:String!) {
+        CreateProductComment(
+            productId: $productId,
+            content: $content
+            parent:$parent
+        ) {
+            
+            data
+        }
+    }
+
 `

@@ -21,7 +21,7 @@ const AuthSlice = createSlice({
                         title: "Logged out",
                         timer: 800
                     })
-                    document.cookie = null
+                    localStorage.removeItem("user_info")
                     state.user = {}
                 }
             })

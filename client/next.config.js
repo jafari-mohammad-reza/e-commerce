@@ -5,5 +5,5 @@ module.exports = {
         domains: [
             "localhost"
         ]
-    }
+    },
 }

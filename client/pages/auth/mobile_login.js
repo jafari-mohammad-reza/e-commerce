@@ -4,13 +4,15 @@ import Swal from "sweetalert2";
 import axios from "../../axios";
 import {useRouter} from "next/router";
 import {Global_Error} from "../../conf/ConstantFunctions";
+import {setCredits} from "../../app/features/authSlice";
+import {useDispatch} from "react-redux";
 
 const MobileLogin = () => {
     const [loginStage, setLoginStage] = useState("get-otp")
     const mobile = useRef(null)
     const otp = useRef(null)
     const router = useRouter()
-
+    const dispatch = useDispatch()
     const resendCode = async () => {
         if (!mobile.current.value) {
             return Global_Error({message: "Please insert your mobile number first"})
@@ -38,6 +40,10 @@ const MobileLogin = () => {
                 mobile: mobile.current.value,
                 otp: otp.current.value
             }).then(result => {
+                if (typeof window !== "undefined") {
+                    localStorage.setItem("user_info", JSON.stringify(result.data.credentials))
+                }
+                dispatch(setCredits(result.data.credentials))
                 if (result.status === 200) {
                     Swal.fire({
                         icon: "success",
