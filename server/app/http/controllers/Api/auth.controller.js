@@ -141,7 +141,7 @@ module.exports = new (class AuthController extends DefaultController {
             user.verificationCode = "";
             user.isVerified = true;
             await user.save();
-            return res.status(StatusCodes.OK).json({
+            return res.status(StatusCodes.OK).clearCookie("verificationToken").json({
                 success: true,
                 message: "user has been verified successfully",
             });
@@ -212,9 +212,9 @@ module.exports = new (class AuthController extends DefaultController {
                 .clearCookie("access_token")
                 .clearCookie("refresh_token")
                 .json({
-                success: true,
-                message: "logged out successfully",
-            });
+                    success: true,
+                    message: "logged out successfully",
+                });
         } catch (error) {
             next(error);
         }
@@ -323,7 +323,7 @@ module.exports = new (class AuthController extends DefaultController {
                 .status(StatusCodes.OK)
                 .cookie("access_token", user.accessToken, {
                     httpOnly: true,
-                    expires:new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
                 })
                 .cookie("refresh_token", user.refreshToken, {
                     httpOnly: true,

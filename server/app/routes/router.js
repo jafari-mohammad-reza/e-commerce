@@ -16,7 +16,7 @@ router.use("/admin", VerifyAccessToken, adminRoutes);
 router.use("/api/v1", apiRoutes);
 router.use("/client/", clientRoutes);
 const graphqlLimit = limit({
-    windowMs:3000000, // 5 minutes
+    windowMs: 3000000, // 5 minutes
     max: 25,
     message: {
         statusCode: StatusCodes.TOO_MANY_REQUESTS,

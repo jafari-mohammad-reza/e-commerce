@@ -3,7 +3,7 @@ const {RoleModel} = require("../../models/Role");
 const {PermissionsModel} = require("../../models/Permission");
 const {PERMISSIONS} = require("../../conf/constant");
 
-function permissionVaidator(requiredPermissions = []) {
+function permissionValidator(requiredPermissions = []) {
     return async function (req, res, next) {
         try {
             const allPermissions = requiredPermissions.flat(2)
@@ -25,4 +25,4 @@ function permissionVaidator(requiredPermissions = []) {
     }
 }
 
-module.exports = permissionVaidator
+module.exports = permissionValidator

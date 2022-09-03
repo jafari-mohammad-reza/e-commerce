@@ -34,7 +34,7 @@ module.exports = class ApplicationServer {
                 crossOriginResourcePolicy: false,
                 contentSecurityPolicy: (process.env.Node_ENV === "production"),
                 dnsPrefetchControl: true,
-                frameguard: {action: "DENY"},
+                frameguard: {action: "deny"},
                 expectCt: {
                     enforce: true,
                     maxAge: 94600
@@ -48,10 +48,11 @@ module.exports = class ApplicationServer {
                 noSniff: true,
                 referrerPolicy: {policy: ["origin", "unsafe-url"]},
                 xssFilter: true,
-                originAgentCluster :true,
+                originAgentCluster: true,
 
             })
         );
+
 
         this.#app.use(cors({credentials: true, origin: "http://localhost:3000"}));
         this.#app.use(express.json());
@@ -68,7 +69,7 @@ module.exports = class ApplicationServer {
                         info: {
                             title: "E-Commerce Api",
                             version: "1.0.0",
-                            description: "E-Commerce server api documntations",
+                            description: "E-Commerce server api documentations",
                             contact: {
                                 name: "mohammadreza jafari",
                                 url: "https://mohammadrezajafari.info",

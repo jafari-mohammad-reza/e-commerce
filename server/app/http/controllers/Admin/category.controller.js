@@ -12,8 +12,8 @@ module.exports = new (class AdminCategoryController extends DefaultController {
     async createCategory(req, res, next) {
         try {
             let image = undefined
-            if(req?.body?.fileUploadPath && req?.body?.fileName){
-                 image = path
+            if (req?.body?.fileUploadPath && req?.body?.fileName) {
+                image = path
                     .join(req?.body?.fileUploadPath, req?.body?.fileName)
                     .replaceAll(/\\/gi);
             }
@@ -25,7 +25,7 @@ module.exports = new (class AdminCategoryController extends DefaultController {
                     "there is already one category with this title."
                 );
             }
-            await CategoryModel.create({title, parent, image : image || undefined})
+            await CategoryModel.create({title, parent, image: image || undefined})
                 .then((result) => {
                     return res.status(StatusCodes.OK).json({
                         success: true,
@@ -105,7 +105,7 @@ module.exports = new (class AdminCategoryController extends DefaultController {
             const categories = await CategoryModel.find({});
             return res.status(StatusCodes.OK).json({
                 success: true,
-                 categories,
+                categories,
             });
         } catch (error) {
             console.log(error);

@@ -153,8 +153,8 @@ module.exports = new (class AdminProductController extends DefaultController {
                         $search: search,
                     },
                 });
-            }else{
-                products = await ProductModel.find({} );
+            } else {
+                products = await ProductModel.find({});
             }
 
             return res.status(StatusCodes.OK).json({

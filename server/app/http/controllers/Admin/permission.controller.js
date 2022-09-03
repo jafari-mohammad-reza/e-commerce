@@ -9,7 +9,6 @@ module.exports = new (class PermissionController extends DefaultController {
         try {
             await PermissionsModel.find({})
                 .then((result) => {
-                    console.log(result)
                     return res.status(StatusCodes.OK).json({
                         success: true,
                         permissions: result,

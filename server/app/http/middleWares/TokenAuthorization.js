@@ -3,9 +3,10 @@ const {UserModel} = require("../../models/User");
 const JWT = require("jsonwebtoken");
 const redisClient = require("../../conf/redisConfiguration")
 require("jsonwebtoken");
+
 function getToken(headers, tokenName = "") {
     const {authorization, cookie} = headers;
-            if (!authorization && !cookie) {
+    if (!authorization && !cookie) {
         throw createHttpError.Unauthorized("Please login first");
     }
     if (authorization) {
@@ -25,11 +26,11 @@ function VerifyAccessToken(req, res, next) {
         const token = getToken(req.headers, "access_token");
         JWT.verify(token, process.env.JWT_TOKEN, async (err, encoded) => {
             try {
-                if (err) throw createHttpError.InternalServerError(`JWT error : ${ err}` )
+                if (err) throw createHttpError.InternalServerError(`JWT error : ${err}`)
                 const {email, mobileNumber} = encoded.payload || {};
                 const user = await UserModel.findOne(
-                    {mobileNumber, email},
-                    {mobileNumber: 1, email: 1, username: 1, Role: 1, accessToken: 1, refreshToken: 1}
+                    {$or: [{mobileNumber}, {email}]},
+                    {mobileNumber: 1, email: 1, username: 1, Role: 1, accessToken: 1, refreshToken: 1 , _id:1}
                 );
                 if (!user) throw createHttpError.Unauthorized("no account");
                 req.user = user;
