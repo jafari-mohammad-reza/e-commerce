@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   mongodb:
-    image: mongo:4.0.28-xenial
+    image: mongo:5.0.0-focal
     container_name: mondodb
     ports:
       - '27017:27017'

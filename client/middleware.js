@@ -1,5 +1,3 @@
-import {NextResponse} from "next/server";
-
 export default async function middleware(req) {
     let user = req.cookies.get("access_token");
 

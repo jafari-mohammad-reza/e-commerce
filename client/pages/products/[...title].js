@@ -25,8 +25,16 @@ const ProductByTitle = () => {
     const [replyComment, setReplyComment] = React.useState(null);
     const [user, setUser] = React.useState(null);
     const selector = useSelector(selectCurrentUser)
-    const [mutateFunction, { data : commentData, loading:commentLoading, error:commentError }] = useMutation(ProductParentComment);
-    const [ReplyMutateFunction, { data : ReplyCommentData, loading:ReplyCommentLoading, error:ReplyCommentError }] = useMutation(ProductReplyComment);
+    const [mutateFunction, {
+        data: commentData,
+        loading: commentLoading,
+        error: commentError
+    }] = useMutation(ProductParentComment);
+    const [ReplyMutateFunction, {
+        data: ReplyCommentData,
+        loading: ReplyCommentLoading,
+        error: ReplyCommentError
+    }] = useMutation(ProductReplyComment);
     const {data, loading} = useQuery(GetProductDetail_Query, {
         variables: {
             title: title
@@ -46,20 +54,26 @@ const ProductByTitle = () => {
     const handleComment = (e) => {
         e.preventDefault()
         if (isReply) {
-            ReplyMutateFunction({variables: {productId: product._id, content: commentRef.current.value , parent : replyComment}}).then(r =>{
+            ReplyMutateFunction({
+                variables: {
+                    productId: product._id,
+                    content: commentRef.current.value,
+                    parent: replyComment
+                }
+            }).then(r => {
                 if (ReplyCommentLoading) return Global_Message('Submitting...');
                 else if (ReplyCommentError) return Global_Error(`${ReplyCommentError.message}`);
                 else return Global_Success("Your comment has been submitted and will be approved soon.")
             })
         } else {
-            mutateFunction({variables: {productId: product._id, content: commentRef.current.value}}).then(r =>{
+            mutateFunction({variables: {productId: product._id, content: commentRef.current.value}}).then(r => {
                 if (commentLoading) return Global_Message('Submitting...');
                 else if (commentError) return Global_Error(`${commentError.message}`);
                 else return Global_Success("Your comment has been submitted and will be approved soon.")
             })
         }
         setReplyComment(null)
-        commentRef.current.value =""
+        commentRef.current.value = ""
 
     }
     return (
@@ -173,16 +187,18 @@ const ProductByTitle = () => {
                                     <h3>
                                         {comment.author.username || "User"}
                                     </h3>
-                                    <BsFillReplyFill className={'text-2xl transition-all hover:scale-125 cursor-pointer'} onClick={() => {
-                                        if(comment.ReplyAble){
-                                            setIsReply(true)
-                                            setReplyComment(comment._id)
-                                            commentRef.current.focus()
-                                        }else{
-                                            return Global_Message("This comment is not reply able")
+                                    <BsFillReplyFill
+                                        className={'text-2xl transition-all hover:scale-125 cursor-pointer'}
+                                        onClick={() => {
+                                            if (comment.ReplyAble) {
+                                                setIsReply(true)
+                                                setReplyComment(comment._id)
+                                                commentRef.current.focus()
+                                            } else {
+                                                return Global_Message("This comment is not reply able")
+                                            }
                                         }
-                                    }
-                                    }/>
+                                        }/>
                                 </div>
                                 <h3 className={'text-2xl md:text-3xl px-24 '}>
                                     {comment.content}

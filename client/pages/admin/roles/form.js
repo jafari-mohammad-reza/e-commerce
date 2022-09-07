@@ -2,18 +2,19 @@ import React, {Fragment, useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import axios from "../../../axios";
 import {Global_Error, Global_Message, Global_Success} from "../../../conf/ConstantFunctions";
+import {AiOutlinePlus, AiTwotoneDelete} from "react-icons/ai";
 
 const Form = () => {
     const [isLoading, setIsLoading] = useState(false)
     const router = useRouter()
     const titleRef = useRef(null)
-    const parentRef = useRef(null)
-    const [allCategories, setAllCategories] = useState([])
-    const [image, setImage] = useState(null)
+    const [permissions,setPermissions] = useState([])
+    const [allPermissions, setAllPermissions] = useState([])
+
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/categories", {withCredentials: true}).then((result) => {
+        axios.get("http://localhost:5000/admin/permissions", {withCredentials: true}).then((result) => {
             if (result.status === 200) {
-                setAllCategories(result.data.categories)
+                setAllPermissions(result.data.permissions)
                 setIsLoading(false)
             }
         })
@@ -21,26 +22,27 @@ const Form = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        try {
-            const formData = new FormData()
-            formData.append("title", titleRef.current.value);
-            formData.append("parent", parentRef.current.value || undefined);
-            for (let i = 0; i < image.length; i++) {
-                formData.append("image", image[i]);
-            }
 
-            await axios.post(`http://localhost:5000/admin/categories/`, formData, {withCredentials: true}).then(result => {
+
+        try {
+            const bodyData = {
+                title : titleRef.current.value,
+                permissions : [...new Set(permissions.map(permission => permission._id))]
+            }
+            console.log(bodyData)
+            await axios.post(`http://localhost:5000/admin/roles/`, bodyData, {withCredentials: true}).then(result => {
+                console.log(result)
                 if (result.status === 201) {
-                    Global_Success("category has been created successfully");
+                    Global_Success("role has been created successfully");
                     return setInterval(() => {
-                        router.push("/admin/categories")
+                        router.push("/admin/roles")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")
                 }
             })
         } catch (error) {
-            console.log(error?.response.data.errors.message)
+            console.log(error)
             return Global_Error(`${error.response.data.errors.message}`)
         }
     }
@@ -49,22 +51,41 @@ const Form = () => {
             {
                 isLoading ? <h1>Loading</h1> : (
                     <form
-                        className={'flex flex-row w-full h-max flex-wrap px-6 md:px-12 lg:px-24 md:justify-between py-10 items-center'}
+                        className={'flex flex-row w-full h-max flex-wrap px-6 md:px-12 lg:px-24   py-10 items-center'}
                         encType="multipart/form-data" onSubmit={(e) => handleSubmit(e)}>
-                        <input type="text" className={'admin_input'} placeholder={'category title....'} required={true}
+                        <input type="text" className={'admin_input'} placeholder={'role title....'} required={true}
                                ref={titleRef}/>
-                        <select name="parent" className={'admin_input'} ref={parentRef}>
-                            <option value={undefined} disabled={false} defaultChecked={true}>Select One category
+
+
+                        <select name="permission" className={'admin_input '} onChange={(e) => {
+                            setPermissions([...permissions , allPermissions[e.target.options.selectedIndex -1]])
+                            e.target.options.selectedIndex=0
+                        }
+                        }>
+                            <option value={undefined} disabled={false} defaultChecked={true}>Select One role
                             </option>
-                            {allCategories && allCategories.map(category => (
-                                <option value={category._id} key={category._id}>{category.title}</option>
+                            {allPermissions && allPermissions.map(permission => (
+                                <option value={permission._id} key={permission._id}>{permission.title}</option>
                             ))}
                         </select>
-                        <input type="file" className={' admin_input'} required={false}
-                               onChange={(e) => setImage(e.target.files)}/>
+
+
                         <button className={'auth_button'} type={'submit'}>
-                            Create category
+                            Create role
                         </button>
+                        {
+                            permissions.length > 0 && <div className=" flex items-center justify-start space-x-20 w-full block mt-20">
+                                <h3 className={'text-2xl md:text-3xl lg:text-4xl font-semibold'}>Selected permissions:</h3>
+                                { permissions.map(permission => {
+                                    return <div key={permission._id} className={'flex items-center justify-center space-x-6'}>
+                                        <h4 className={'text-xl md:text-3xl font-semibold'}>{permission.title}</h4>
+                                        <button onClick={() => setPermissions([...permissions.filter(per => per._id !== permission._id)])} className={'flex items-center justify-center py-4 px-8 bg-red-500 text-white rounded-xl'}>
+                                            <AiTwotoneDelete/>
+                                        </button>
+                                    </div>
+                                })}
+                            </div>
+                        }
                     </form>
                 )
             }

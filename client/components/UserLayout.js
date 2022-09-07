@@ -14,10 +14,11 @@ const UserLayout = ({children}) => {
         }
     }, [])
     const dispatch = useDispatch()
-    const [currentPage , setCurrentPage] = useState("Profile")
-    const UserLink = ({ title}) => {
+    const [currentPage, setCurrentPage] = useState("Profile")
+    const UserLink = ({title}) => {
         return <Link href={`/user/${title.toLowerCase()}`}>
-            <a className={`font-semibold text-xl lg:text-2xl ${currentPage === title && "text-blue-500"} hover:text-blue-300`} onClick={() =>setCurrentPage(title)}>
+            <a className={`font-semibold text-xl lg:text-2xl ${currentPage === title && "text-blue-500"} hover:text-blue-300`}
+               onClick={() => setCurrentPage(title)}>
                 {title}
             </a>
         </Link>

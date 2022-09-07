@@ -3,8 +3,15 @@ import Image from "next/image";
 import Link from "next/link";
 import {Swiper, SwiperSlide} from "swiper/react";
 import {Autoplay} from "swiper";
+import {addItemToBasket} from "../app/features/cartSlice";
+import {useDispatch} from "react-redux";
+import {useMutation} from "@apollo/client";
+import {AddProductToCart} from "../graphql/Mutations/GlobalMutations";
+import {Global_Error} from "../conf/ConstantFunctions";
+import Swal from "sweetalert2";
 
 const ProductCard = ({product}) => {
+    const dispatch = useDispatch()
     const {
         title,
         price,
@@ -18,6 +25,8 @@ const ProductCard = ({product}) => {
         averageRating,
         ratings
     } = product
+    const [mutateFunction , {data  ,error}] = useMutation(AddProductToCart)
+
     return (
         <div
             className={'flex flex-col items-start justify-start space-y-4 w-max h-[50rem] bg-sky-600 rounded-xl text-cyan-50 py-10   '}>
@@ -50,9 +59,28 @@ const ProductCard = ({product}) => {
                 <h6 className={'text-red-600'}>{discount}% off</h6>
 
             </div>
-           
+
             <button
-                className={'bg-sky-200 outline-0 border-0 rounded-lg px-6 py-3.5  text:xl md:text-3xl font-semibold text-blue-500 place-self-center '}>
+                className={'bg-sky-200 outline-0 border-0 rounded-lg px-6 py-3.5  text:xl md:text-3xl font-semibold text-blue-500 place-self-center '}
+                onClick={ () => {
+                     mutateFunction({
+                         variables : {
+                             productId :product._id
+                         }
+                     }).then(() => {
+                         Swal.fire({
+                             icon: "success",
+                             text: "Product added successfully.",
+                             timer: 700,
+                             position: "bottom-right",
+                             showConfirmButton:false
+                         }).then( () => { dispatch(addItemToBasket(product))})
+
+                     }).catch(error => {
+                         return Global_Error(error.message)
+                     })
+                }}
+            >
                 Add to cart
             </button>
 

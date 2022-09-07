@@ -53,42 +53,80 @@ async function getUserCart(userID) {
                 from: "products",
                 localField: "cart.products.productId",
                 foreignField: "_id",
-                as: "productDetail",
+                as: "productsDetail",
             },
         },
 
+
         {
-            $addFields: {
-                productDetail: {
-                    $function: {
-                        body: function (productDetail, products) {
-                            return productDetail.map(function (product) {
-                                const count = products.find(
-                                    (item) => item.productId.valueOf() == product._id.valueOf()
-                                ).count;
-                                const totalPrice = count * product.price;
-                                return {
-                                    ...product,
-                                    cartCount: count,
-                                    totalPrice,
-                                    finalPrice:
-                                        totalPrice - (product.discount / 100) * totalPrice,
-                                };
-                            });
-                        },
-                        args: ["$productDetail", "$cart.products"],
-                        lang: "js",
-                    },
-                },
-            },
+          $addFields : {
+              "productsDetail" : {
+                  $function: {
+                      body: function(productsDetail, products){
+
+                          return productsDetail.map(function(product){
+                              const count = products.find(item => item.productId.valueOf() === product._id.valueOf()).count;
+                              const totalPrice = count * product.price
+                              const imagesURL = product.images.map(image  => `http://localhost:5000/${image}`)
+                              return {
+                                  ...product,
+                                  imagesURL ,
+                                  basketCount: count,
+                                  totalPrice,
+                                  finalPrice: totalPrice - ((product.discount / 100) * totalPrice)
+                              }
+                          })
+                      },
+                      args: ["$productsDetail", "$cart.products"],
+                      lang: "js"
+                  }
+              },
+              "paymentDetail" : {
+                  $function: {
+                      body: function( productsDetail, products){
+
+                          const productDiscountedAmount =  productsDetail.reduce(function(total, product){
+                              const count = products.find(item => item.productId.valueOf() === product._id.valueOf()).count
+                              const totalPrice = count * product.price;
+                              return total + (totalPrice - ((product.discount / 100) * totalPrice))
+                          }, 0)
+                          const productActualAmount =  productsDetail.reduce(function(total, product){
+                              const count = products.find(item => item.productId.valueOf() === product._id.valueOf()).count
+                              return count * product.price;
+                          }, 0)
+                          return {
+                             DiscountedPaymentAmount : productDiscountedAmount,
+                                 ActualPaymentAmount  : productActualAmount,
+                          }
+                      },
+                      args: ["$productsDetail", "$cart.products"],
+                      lang: "js"
+                  }
+              },
+          }
         },
+        {
+            $project : {
+                "productsDetail.title":1,
+                "productsDetail._id":1,
+                "productsDetail.price":1,
+                "productsDetail.discount":1,
+                "productsDetail.category":1,
+                "productsDetail.basketCount":1,
+                "productsDetail.finalPrice":1,
+                "productsDetail.totalPrice":1,
+                "productsDetail.imagesURL":1,
+                "paymentDetail" :1
+            }
+        },
+
         {
             $project: {
                 cart: 0,
             },
         },
     ]);
-    return copyObject(userDetail);
+    return copyObject(userDetail[0]);
 }
 
 module.exports = {

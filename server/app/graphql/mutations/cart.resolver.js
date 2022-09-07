@@ -3,11 +3,15 @@ const {ResponseType} = require("../typeDefs/Public.type");
 const {
     GraphqlTokenAuth,
 } = require("../../http/middleWares/TokenAuthorization");
-const {isValidObjectId} = require("mongoose");
+const {isValidObjectId, Types} = require("mongoose");
 const createHttpError = require("http-errors");
 const {UserModel} = require("../../models/User");
 const {copyObject} = require("../../utils/functions");
 const {StatusCodes} = require("http-status-codes");
+const {GraphQLList} = require("graphql/type");
+const {ProductModel} = require("../../models/Product");
+const {default : mongoose} = require("mongoose");
+
 const AddProductToCart = {
     type: ResponseType,
     args: {
@@ -114,10 +118,10 @@ const findProductInBasket = async (productId, userId) => {
         {"cart.products.$": 1}
     );
     const userDetail = copyObject(findResult);
-    console.log(userDetail?.cart?.products?.[0]);
     return userDetail?.cart?.products?.[0];
 };
 module.exports = {
     AddProductToCart,
     RemoveProductFromCart,
+
 };

@@ -15,10 +15,11 @@ const AdminLayout = ({children}) => {
         }
     }, [])
     const dispatch = useDispatch()
-    const [currentPage , setCurrentPage] = useState("Dashboard")
-    const UserLink = ({ title}) => {
+    const [currentPage, setCurrentPage] = useState("Dashboard")
+    const UserLink = ({title}) => {
         return <Link href={`/admin/${title.toLowerCase()}`}>
-            <a className={`font-semibold text-xl lg:text-2xl ${currentPage === title && "text-blue-500"} hover:text-blue-300`} onClick={() =>setCurrentPage(title)}>
+            <a className={`font-semibold text-xl lg:text-2xl ${currentPage === title && "text-blue-500"} hover:text-blue-300`}
+               onClick={() => setCurrentPage(title)}>
                 {title}
             </a>
         </Link>
@@ -33,7 +34,6 @@ const AdminLayout = ({children}) => {
                 <UserLink title={"Blogs"}/>
                 <UserLink title={"Roles"}/>
                 <UserLink title={"Permissions"}/>
-                <UserLink title={"Discounts"}/>
                 <UserLink title={"Orders"}/>
                 <hr/>
                 <button className={'auth_button'} onClick={() => {

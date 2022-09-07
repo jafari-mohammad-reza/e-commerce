@@ -6,35 +6,36 @@ import {Global_Error, Global_Message, Global_Success} from "../../../conf/Consta
 const EditForm = () => {
     const [isLoading, setIsLoading] = useState(false)
     const router = useRouter()
-    const titleRef = useRef(null)
-    const tagsRef = useRef(null)
-    const overViewRef = useRef(null)
-    const categoryRef = useRef(null)
-    const priceRef = useRef(null)
-    const discountRef = useRef(null)
-    const stockCountRef = useRef(null)
-    const descriptionRef = useRef(null)
-    const [images, setImages] = useState([])
-    const [allCategories, setAllCategories] = useState([])
+    const firstNameRef = useRef(null)
+    const lastNameRef = useRef(null)
+    const usernameRef = useRef(null)
+    const mobileNumberRef = useRef(null)
+    const emailRef = useRef(null)
+    const birthdayRef = useRef(null)
+    const RoleRef = useRef(null)
+    const isPrimeRef = useRef(null)
+    const isBannedRef = useRef(null)
+    const [allRoles, setAllRoles] = useState([])
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/categories", {withCredentials: true}).then((result) => {
+        axios.get("http://localhost:5000/admin/roles", {withCredentials: true}).then((result) => {
             if (result.status === 200) {
-                setAllCategories(result.data.categories)
+                setAllRoles(result.data.roles)
             }
         })
     }, [])
     useEffect(() => {
-        router.query.id && axios.get(`http://localhost:5000/admin/products/${router?.query?.id}`).then(result => {
+        router.query.id && axios.get(`http://localhost:5000/admin/users/${router?.query?.id}`).then(result => {
             if (result.status === 200) {
-                const product = result.data.product
-                titleRef.current.value = product.title
-                tagsRef.current.value = product.tags
-                overViewRef.current.value = product.overView
-                categoryRef.current.value = product.category
-                priceRef.current.value = product.price
-                discountRef.current.value = product.discount
-                stockCountRef.current.value = product.stockCount
-                descriptionRef.current.value = product.description
+                const user = result.data.user
+                firstNameRef.current.value = user.firstName;
+                lastNameRef.current.value = user.lastName;
+                usernameRef.current.value = user.username;
+                emailRef.current.value = user.email;
+                mobileNumberRef.current.value = user.mobileNumber;
+                birthdayRef.current.value = user.birthday;
+                RoleRef.current.value = user.Role;
+                isBannedRef.current.value = user.isBanned;
+                isPrimeRef.current.value = user.isPrime;
                 setIsLoading(false)
             } else {
                 setIsLoading(true)
@@ -44,30 +45,31 @@ const EditForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            const formData = new FormData()
-            formData.append("title", titleRef.current.value);
-            formData.append("overView", overViewRef.current.value);
-            formData.append("tags", tagsRef.current.value);
-            formData.append("category", categoryRef.current.value);
-            formData.append("price", priceRef.current.value);
-            formData.append("discount", discountRef.current.value);
-            formData.append("stockCount", stockCountRef.current.value);
-            formData.append("description", descriptionRef.current.value);
-            for (let i = 0; i < images.length; i++) {
-                formData.append("images", images[i]);
+
+            const bodyData = {
+                firstName : firstNameRef.current.value || undefined,
+                lastName : lastNameRef.current.value || undefined,
+                username : usernameRef.current.value || undefined,
+                email : emailRef.current.value || undefined,
+                mobileNumber : mobileNumberRef.current.value || undefined,
+                birthday : birthdayRef.current.value || undefined,
+                Role : RoleRef.current.value || undefined,
+                isBanned : isBannedRef.current.value || undefined,
+                isPrime : isPrimeRef.current.value || undefined,
             }
-            router?.query?.id && await axios.put(`http://localhost:5000/admin/products/${router?.query?.id}`, formData, {withCredentials: true}).then(result => {
+            router?.query?.id && await axios.put(`http://localhost:5000/admin/users/${router?.query?.id}`, bodyData, {withCredentials: true}).then(result => {
+                console.log(result)
                 if (result.status === 200) {
-                    Global_Success("Product has been Updated successfully");
+                    Global_Success("user has been Updated successfully");
                     return setInterval(() => {
-                        router.push("/admin/products")
+                        router.push("/admin/users")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")
                 }
             })
         } catch (error) {
-            console.log(error?.response.data.errors.message)
+            console.log(error.response.data.errors.message)
             return Global_Error(`${error.response.data.errors.message}`)
         }
     }
@@ -78,30 +80,37 @@ const EditForm = () => {
                     <form
                         className={'flex flex-row w-full h-max flex-wrap px-6 md:px-12 lg:px-24 md:justify-between py-10 items-center'}
                         encType="multipart/form-data" onSubmit={(e) => handleSubmit(e)}>
-                        <input type="text" className={'admin_input'} placeholder={'Product title....'} required={true}
-                               ref={titleRef}/>
-                        <input type="text" className={'admin_input'} placeholder={'Product overView ....'}
-                               required={true} ref={overViewRef}/>
-                        <input type="text" className={'admin_input'} placeholder={'Tag1,Tag2,Tag3'} required={true}
-                               ref={tagsRef}/>
-                        <select name="category" className={'admin_input'} ref={categoryRef}>
-                            {allCategories && allCategories.map(category => (
-                                <option value={category._id} key={category._id}>{category.title}</option>
+                        <input type="text" className={'admin_input'} placeholder={'user firstname ....'} required={false}
+                               ref={firstNameRef}/>
+                        <input type="text" className={'admin_input'} placeholder={'user lastname ....'} required={false}
+                               ref={lastNameRef}/>
+                        <input type="text" className={'admin_input'} placeholder={'user username....'} required={false}
+                               ref={usernameRef}/>
+                        <input type="text" className={'admin_input'} placeholder={'user email ....'} required={false}
+                               ref={emailRef}/>
+                        <input type="text" className={'admin_input'} placeholder={'user mobileNumber ....'} required={false}
+                               ref={mobileNumberRef}/>
+
+                        <input type="date" className={'admin_input'} placeholder={'user mobileNumber ....'} required={false}
+                               ref={birthdayRef}/>
+                        <select name="Role" className={'admin_input'} ref={RoleRef}>
+                            {RoleRef?.current?.value && <option value={RoleRef?.current?.value} disabled={false} defaultChecked={true}>Select One Role</option>}
+                            {allRoles && allRoles.map(category => (
+                                <option value={category.title} key={category._id}>{category.title}</option>
                             ))}
                         </select>
-                        <input type="text" className={' admin_input'} placeholder={'Product price....'} required={true}
-                               ref={priceRef}/>
-                        <input type="text" className={' admin_input'} placeholder={'Product discount...'}
-                               required={true} ref={discountRef}/>
-                        <input type="text" className={' admin_input'} placeholder={'stock count'} required={true}
-                               ref={stockCountRef}/>
-                        <input type="file" multiple={true} className={' admin_input'} required={true}
-                               onChange={(e) => setImages([...images, ...e.target.files])}/>
-                        <textarea rows={10} cols={15}
-                                  className={'w-full my-10 mx-5 bg-sky-50  border-0 outline-none transition-all duration-100 shadow  shadow-3xl focus:border-b-4 border-gray-600 py-6 px-12 rounded-2xl'}
-                                  placeholder={'Product description'} required={true} ref={descriptionRef}/>
+                        <div className={'flex items-center justify-start space-x-20'}>
+                            <div className={'flex items-center space-x-3.5 my-3 place-self-start w-max'}>
+                                <span className={'text-2xl text-blue-500'}>isPrime</span>
+                                <input type="checkbox" name={'isPrime'} ref={isPrimeRef} className={'w-8 h-8 rounded-lg  '}/>
+                            </div>
+                            <div className={'flex items-center space-x-3.5 my-3 place-self-start w-max'}>
+                                <span className={'text-2xl text-blue-500'}>isBanned</span>
+                                <input type="checkbox" name={'isBanned'} ref={isBannedRef} className={'w-8 h-8 rounded-lg  '}/>
+                            </div>
+                        </div>
                         <button className={'auth_button'} type={'submit'}>
-                            Update product
+                            Update user
                         </button>
                     </form>
                 )

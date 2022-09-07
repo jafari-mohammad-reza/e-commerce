@@ -26,3 +26,19 @@ export const ProductReplyComment = gql`
     }
 
 `
+
+export const AddProductToCart = gql`
+    mutation AddProductToCart($productId:String!){
+        AddProductToCart(productId : $productId){
+            data
+        }
+    }
+`
+
+export const RemoveProductFromCart = gql`
+    mutation AddProductToCart($productId:String!){
+        AddProductToCart(productId : $productId){
+            data
+        }
+    }
+`

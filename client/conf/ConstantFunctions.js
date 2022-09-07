@@ -12,7 +12,7 @@ export function client_authentication({router}) {
     }, [])
 }
 
-export const Global_Error = ({message}) => {
+export const Global_Error = (message) => {
 
     return (
         Swal.fire({
@@ -40,9 +40,9 @@ export const Global_Message = ({message}) => {
     return (
         Swal.fire({
             icon: "info",
-            text :message,
+            text: message,
             position: "top-right",
-            timer:1500
+            timer: 1500
         })
     );
 }

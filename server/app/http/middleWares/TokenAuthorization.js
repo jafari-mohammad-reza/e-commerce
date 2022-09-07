@@ -95,11 +95,11 @@ function VerifyRefreshToken(req, res, next) {
 
 const GraphqlTokenAuth = async (headers) => {
     try {
-        const token = await getToken(headers)
+        const token = await getToken(headers , "access_token")
         const encoded = JWT.verify(token, process.env.JWT_TOKEN);
         const {email, mobileNumber} = encoded.payload || {};
         const user = await UserModel.findOne(
-            {mobileNumber, email},
+            {$or : [{email} , {mobileNumber}]},
             {mobileNumber: 1, email: 1, username: 1, Role: 1}
         );
         if (!user) {

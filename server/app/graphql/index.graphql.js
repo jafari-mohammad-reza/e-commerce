@@ -49,7 +49,8 @@ const RootQuery = new GraphQLObjectType({
         MostRatedProducts: MostRatedProductResolver,
         GetCategoryByTitle: GetCategoryByTitleResolver,
         GetProductDetail: GetProductDetailResolver,
-        GetProductByCategory: GetProductByCategoryResolver
+        GetProductByCategory: GetProductByCategoryResolver,
+
     },
 });
 

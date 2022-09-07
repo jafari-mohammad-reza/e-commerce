@@ -58,7 +58,6 @@ const Login = () => {
             email: email.current.value, password: password.current.value, rememberme: rememberme.current.checked,
         }).then(result => {
             if (result.status === 200) {
-                console.log(result)
                 if (typeof window !== "undefined") {
                     localStorage.setItem("user_info", JSON.stringify(result.data.credentials))
                 }
@@ -72,23 +71,22 @@ const Login = () => {
                     timer: 1500
                 })
                 return setInterval(() => {
-                     router.push("/")
+                    router.push("/")
                 }, 700)
             }
 
 
         }).catch(err => {
-            console.log(err)
             if (err?.response?.status === 404) {
-                return Global_Error({message: "Email or password is incorrect"})
+                return Global_Error("Email or password is incorrect")
             }
-            if ( err?.response?.status=== 400) {
-                return Global_Error({message: "Your account is not verified yet. Please check your email"})
+            else if (err?.response?.status === 400) {
+                return Global_Error("Your account is not verified yet. Please check your email")
             }
-            if (err?.response?.status === 403) {
-                return Global_Error({message: "Your account is blocked. Contact admin"})
+            else if (err?.response?.status === 403) {
+                return Global_Error("Your account is blocked. Contact admin")
             } else {
-                return Global_Error({message: err?.response?.data?.message})
+                return Global_Error(err?.response?.data?.message)
             }
         })
 

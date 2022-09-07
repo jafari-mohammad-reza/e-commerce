@@ -45,9 +45,8 @@ const GetUserShoppingCart = {
     resolve: async (_, args, context) => {
         const {headers} = context
         const user = await GraphqlTokenAuth(headers)
-        const userDetail = await getUserCart(user._id);
-        console.log(userDetail)
-        return userDetail;
+        return await getUserCart(user._id);
+
     },
 };
 

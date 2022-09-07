@@ -102,3 +102,10 @@ export const GetProductDetail_Query = gql`
         }
     }
 `
+
+
+export const GetUserShoppingCart_Query = gql`
+    query GetUserShoppingCart {
+        GetUserShoppingCart 
+    }
+`
