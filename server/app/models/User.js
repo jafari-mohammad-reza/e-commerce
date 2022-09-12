@@ -1,5 +1,5 @@
 const {default: mongoose} = require("mongoose");
-const {OrderSchema, CartSchema} = require("./public.schemas");
+const {OrderSchema, CartSchema, DiscountSchema} = require("./public.schemas");
 const {RoleSchema} = require("./Role");
 
 const UserSchema = new mongoose.Schema(
@@ -30,7 +30,8 @@ const UserSchema = new mongoose.Schema(
         lastResetPassword: {type: Date, required: false},
         refreshToken: {type: String, default: ""},
         cart: {type: CartSchema , default : {"products" : []}},
-        walletCredit : {type:Number ,default:0}
+        walletCredit : {type:Number ,default:0},
+        discounts : {type:[DiscountSchema] , default : [] ,required:false   }
     },
     {
         timestamps: true,

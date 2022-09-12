@@ -142,7 +142,7 @@ const ProductByTitle = () => {
                             }
                             <hr className={'w-3/4 bg-gray-300'}/>
                             <div className={'w-3/4 break-words flex flex-col items-start justify-start'}>
-                                <p className="text-xl md:text-2xl leading-6 md:leading-loose">
+                                <p className="text-xl md:text-2xl leading-6 md:leading-loose max-w-7    xl">
                                     {product.description}
                                 </p>
                                 {

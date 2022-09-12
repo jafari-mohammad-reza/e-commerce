@@ -66,7 +66,7 @@ const BookMarkProduct = {
         await ProductModel.updateOne({_id: productId}, updateQuery);
         let message;
         if (bookMarkedProduct) {
-            message = "Product unbookmarked successfully";
+            message = "Product Unbookmarked successfully";
         } else {
             message = "Product bookmarked successfully";
         }

@@ -87,9 +87,24 @@ const GetUserDashboard = {
     },
 };
 
+const GetUserDiscounts = {
+    type: ResponseType,
+    resolve: async (_, args, context) => {
+        const {headers} = context
+        const user = await GraphqlTokenAuth(headers)
+        const data = await UserModel.findById(user._id , {discounts: 1})
+
+        return {
+            statusCode :StatusCodes.OK,
+            data :data.discounts
+        }
+    },
+}
+
 module.exports = {
     GetMarkedBlogs,
     GetMarkedProducts,
     GetUserShoppingCart,
-    GetUserDashboard
+    GetUserDashboard,
+    GetUserDiscounts
 };

@@ -106,7 +106,7 @@ export const GetProductDetail_Query = gql`
 
 export const GetUserShoppingCart_Query = gql`
     query GetUserShoppingCart {
-        GetUserShoppingCart
+        GetUserShoppingCart 
     }
 `
 
@@ -119,4 +119,47 @@ export const GetUserDashboard_Query = gql`
     }
     }
     
+`
+
+export const GetUserOrders_Query  = gql`
+    query UserOrders{
+        GetUserOrders {
+            data
+        }
+    }
+`
+export const GetUserOrderDetail_Query = gql`
+    query OrderDetail($orderId : Int!){
+        GetUserOrderdetail(orderId : $orderId){
+            data
+        }   
+    }
+`
+
+export const GetUserDiscounts_Query = gql`
+    query UserDiscounts{
+        GetUserDiscounts {
+            data
+        }
+    }
+        
+`
+
+
+export const GetMarkedProducts_Query = gql`
+    query MarkedProducts {
+        GetMarkedProducts {
+            _id
+            title
+            averageRating
+            discountedPrice
+            discount
+            imagesURL
+            price
+            category {
+                title
+            }
+        }
+    }
+
 `

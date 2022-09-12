@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+    import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {logout, selectCurrentUser} from "../app/features/authSlice";
 import Link from "next/link";
@@ -32,7 +32,6 @@ const UserLayout = ({children}) => {
                 <UserLink title={"Discounts"}/>
                 <UserLink title={"Messages"}/>
                 <UserLink title={"BookMarks"}/>
-                <UserLink title={"WishList"}/>
                 <hr/>
                 <button className={'auth_button'} onClick={() => {
                     dispatch(logout())

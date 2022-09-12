@@ -9,7 +9,7 @@ const {copyObject} = require("../../utils/functions");
 const createHttpError = require("http-errors");
 
 async function getComment(model, id) {
-    const foundedComment = await model.findOne({"comments._id": id}, {"comments.$": 1}).catch(err => {
+    const foundedComment = await model.findOne({"$comments._id": id}, {"comments.$": 1}).catch(err => {
         console.log(err)
         throw new createHttpError.InternalServerError(err.message);
     });

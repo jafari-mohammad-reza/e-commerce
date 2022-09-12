@@ -29,13 +29,14 @@ const {
 const {
     GetMarkedBlogs,
     GetMarkedProducts,
-    GetUserShoppingCart, GetUserDashboard,
+    GetUserShoppingCart, GetUserDashboard, GetUserDiscounts,
 } = require("./queries/userProfile-Queries.resolver");
 const {
     AddProductToCart,
     RemoveProductFromCart,
 } = require("./mutations/cart-Mutations.resolver");
 const {UpdateProfile} = require("./mutations/userProfile-Mutations.resolver");
+const {GetUserOrders, GetUserOrderDetail} = require("./queries/Order-Queries.resolver");
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
@@ -51,7 +52,10 @@ const RootQuery = new GraphQLObjectType({
         GetCategoryByTitle: GetCategoryByTitleResolver,
         GetProductDetail: GetProductDetailResolver,
         GetProductByCategory: GetProductByCategoryResolver,
-        GetUserDashboard
+        GetUserDashboard,
+        GetUserOrders,
+        GetUserOrderDetail,
+        GetUserDiscounts
     },
 });
 
