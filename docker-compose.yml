@@ -16,7 +16,7 @@ services:
     volumes:
       - ./server:/app
   mongodb:
-    image: mongo:4.0-xenial
+    image: mongo:5.0.0-focal
     ports:
       - "27018:27017"
     volumes:

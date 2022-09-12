@@ -27,9 +27,8 @@ const ProductSchema = new mongoose.Schema(
         discount: {type: Number, default: 0},
         stockCount: {type: Number, default: 0},
         supplier: {type: mongoose.Types.ObjectId, ref: "user", required: true},
-        physicalFeatures: {type: [PhysicalFeatureSchema], required: false},
+        physicalFeatures: {type: [Object], required: false},
         isActive: {type: Boolean, default: true},
-        isTrend: {type: Boolean, default: false},
         isPrime: {type: Boolean, default: false},
         bookmarks: {type: [mongoose.Types.ObjectId], ref: "user", default: []},
     },
@@ -40,7 +39,6 @@ const ProductSchema = new mongoose.Schema(
     }
 );
 ProductSchema.index({title: "text", overView: "text", description: "text"});
-
 ProductSchema.virtual("imagesURL").get(function () {
     return this.images.map(
         (image) =>
@@ -56,7 +54,6 @@ ProductSchema.virtual("averageRating").get(function () {
     for (let i = 0; i < this.ratings.length; i++) {
         sum += this.ratings[i].stars
     }
-
     return sum / this.ratings.length || 0;
 })
 
@@ -74,10 +71,7 @@ function autoPopulate(next) {
     next();
 }
 
-ProductSchema.pre("findOne", autoPopulate).pre("find", autoPopulate).pre(
-    "aggregate",
-    autoPopulate
-);
+ProductSchema.pre("findOne", autoPopulate).pre("find", autoPopulate);
 
 module.exports = {
     ProductSchema,

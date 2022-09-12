@@ -33,20 +33,10 @@ const createProductValidator = Joi.object({
         ),
     stockCount: Joi.number().required().min(0),
     fileUploadPath: Joi.string().empty(),
-    physicalFeatures: Joi.object({
-        length: Joi.string().empty(),
-        height: Joi.string().empty(),
-        width: Joi.string().empty(),
-        weight: Joi.string().empty(),
-        colors: Joi.object().keys({
-            type: Joi.object().valid({
-                blue: {title: "blue", hex: "#0055FF"},
-                violet: {title: "violet", hex: "#aaaaff"},
-                green: {title: "violet", hex: "#00FF00"},
-                black: {title: "violet", hex: "#000"}
-            })
-        })
-    }).empty(),
+    physicalFeatures: Joi.array().items(Joi.object({
+        name: Joi.string().required(),
+        value: Joi.string().required()
+    })).empty(),
     additionalFeatured: Joi.object().empty()
 });
 module.exports = {

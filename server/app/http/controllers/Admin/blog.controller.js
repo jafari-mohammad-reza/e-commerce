@@ -59,12 +59,13 @@ module.exports = new (class AdminBlogController extends DefaultController {
                 throw createHttpError.InternalServerError(err);
             });
             if (!blog) {
-                throw createHttpError.BadRequest("the blog could not be found");
+                throw createHttpError.BadRequest("the blogs could not be found");
             }
             if (req.body.fileUploadPath && req.body.fileName) {
-                req.body.image = path.join(req.body.fileUploadPath, req.body.filename);
+                req.body.image = path.join(req.body.fileUploadPath, req.body.fileName);
                 req.body.image = req.body.image.replace(/\\/g, "/");
             }
+            const image = req.body.image || blog.image;
             const bodyData = copyObject(req.body);
             let nullishData = ["", " ", "0", 0, null, undefined];
             let blackListFields = [
@@ -91,7 +92,7 @@ module.exports = new (class AdminBlogController extends DefaultController {
                             message: "Blog has been updated successfully.",
                         });
                     }
-                    throw createHttpError.BadRequest("the blog could not be updated");
+                    throw createHttpError.BadRequest("the blogs could not be updated");
                 })
                 .catch((err) => {
                     throw createHttpError.InternalServerError(err);
@@ -111,7 +112,7 @@ module.exports = new (class AdminBlogController extends DefaultController {
                 throw createHttpError.InternalServerError(err);
             });
             if (!blog) {
-                throw createHttpError.BadRequest("the blog could not be found");
+                throw createHttpError.BadRequest("the blogs could not be found");
             }
             await BlogModel.deleteOne({_id: id})
                 .then((result) => {
@@ -119,10 +120,10 @@ module.exports = new (class AdminBlogController extends DefaultController {
                         deleteImageFromPath(blog.image);
                         return res.status(StatusCodes.OK).json({
                             success: true,
-                            message: "blog has been deleted successfully.",
+                            message: "blogs has been deleted successfully.",
                         });
                     }
-                    throw createHttpError.BadRequest("the blog could not be deleted");
+                    throw createHttpError.BadRequest("the blogs could not be deleted");
                 })
                 .catch((err) => {
                     throw createHttpError.InternalServerError(err);

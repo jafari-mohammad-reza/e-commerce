@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 const express = require("express");
 const {default: mongoose, mongo} = require("mongoose");
 const path = require("path");
@@ -8,7 +9,7 @@ const morgan = require("morgan");
 const cors = require("cors");
 const cluster = require("cluster")
 const os = require("os")
-const limit = require("express-rate-limit")
+require("express-rate-limit");
 const cron = require("node-cron")
 const {mainRouter} = require("./routes/router");
 const swaggerUi = require("swagger-ui-express");
@@ -33,23 +34,32 @@ module.exports = class ApplicationServer {
             helmet({
                 crossOriginResourcePolicy: false,
                 contentSecurityPolicy: (process.env.Node_ENV === "production"),
+                dnsPrefetchControl: true,
+                frameguard: {action: "deny"},
+                expectCt: {
+                    enforce: true,
+                    maxAge: 94600
+                },
+                hidePoweredBy: true,
+                hsts: {
+                    maxAge: 31104000,
+                    includeSubDomains: false
+                },
+                ieNoOpen: true,
+                noSniff: true,
+                referrerPolicy: {policy: ["origin", "unsafe-url"]},
+                xssFilter: true,
+                originAgentCluster: true,
+
             })
         );
+
+
         this.#app.use(cors({credentials: true, origin: "http://localhost:3000"}));
         this.#app.use(express.json());
         this.#app.use(express.urlencoded({extended: true}));
         this.#app.use(express.static(path.join(__dirname, "..", "public")));
-        // this.#app.use(limit({
-        //     windowMs: 5 * 60 * 1000, // 5 minutes
-        //     max: 25,
-        //     message: {
-        //         statusCode: StatusCodes.TOO_MANY_REQUESTS,
-        //         message: "Too many requests from this IP, please try again later.",
-        //     },
-        //     skipFailedRequests: true,
-        //
-        //
-        // }))
+        this.#app.disable('x-powered-by')
         this.#app.use(
             "/api-docs",
             swaggerUi.serve,
@@ -60,7 +70,7 @@ module.exports = class ApplicationServer {
                         info: {
                             title: "E-Commerce Api",
                             version: "1.0.0",
-                            description: "E-Commerce server api documntations",
+                            description: "E-Commerce server api documentations",
                             contact: {
                                 name: "mohammadreza jafari",
                                 url: "https://mohammadrezajafari.info",
@@ -95,7 +105,7 @@ module.exports = class ApplicationServer {
             for (let i = 0; i < os.cpus().length; i++) {
                 cluster.fork()
             }
-            cluster.on("exit", (worker, code, signal) => {
+            cluster.on("exit", (_worker, _code, _signal) => {
                 cluster.fork()
 
             })
@@ -145,7 +155,7 @@ module.exports = class ApplicationServer {
                 } else {
                     for (const product of products) {
                         product.discount = Math.floor(Math.random() * 75).toString()
-                        await mongoose.model("product").updateOne({_id: product._id}, product, (err, result) => {
+                        await mongoose.model("product").updateOne({_id: product._id}, product, (_err, _result) => {
                         })
                     }
                     console.log("Daily discounts applied")
@@ -169,10 +179,10 @@ module.exports = class ApplicationServer {
     }
 
     configureErrorHandlers() {
-        this.#app.use((req, res, next) => {
+        this.#app.use((_req, _res, next) => {
             next(createError.NotFound("the route you looking for is not available."));
         });
-        this.#app.use((error, req, res, next) => {
+        this.#app.use((error, _req, res, _next) => {
             const serverError = createError.InternalServerError();
             const statusCode = error.status || serverError.status;
             const message = error.message || serverError.message;

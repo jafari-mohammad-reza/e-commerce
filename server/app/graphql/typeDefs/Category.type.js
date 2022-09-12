@@ -8,6 +8,7 @@ const CategoryType = new GraphQLObjectType({
         children: {
             type: new GraphQLList(AnyType),
         },
+        imageURL: {type: GraphQLString},
     },
 });
 

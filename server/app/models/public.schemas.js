@@ -42,21 +42,16 @@ const RatingSchema = new mongoose.Schema({
     stars: {type: Number, required: true, maximum: 5, minimum: 0},
     postBy: {type: mongoose.Types.ObjectId, ref: "user", required: true},
 });
-
-const PhysicalFeatureSchema = new mongoose.Schema({
-    width: {type: Number, required: true},
-    height: {type: Number, required: true},
-    depth: {type: Number, required: true},
-    weight: {type: Number, required: true},
-    colors: {type: [String], required: true},
-    materials: {type: [String], required: true},
-    manufacturer: {type: String, required: true},
-});
+const DiscountSchema = new mongoose.Schema({
+    code : {type:String ,required:true , unique:true},
+    percentage : {type:Number , min :0 , max:100 , required:true},
+    expirationTime : {type:Date , required:true}
+})
 
 module.exports = {
     CommentSchema,
     ReplySchema,
     CartSchema,
     RatingSchema,
-    PhysicalFeatureSchema,
+    DiscountSchema
 };

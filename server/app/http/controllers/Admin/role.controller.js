@@ -19,7 +19,6 @@ module.exports = new (class RoleController extends DefaultController {
                 req.body
             );
             title = title.toUpperCase();
-            console.log(title, permissions);
             if (await RoleModel.findOne({title})) {
                 throw createHttpError.BadRequest(
                     "there is already one role available with this title."
@@ -97,7 +96,6 @@ module.exports = new (class RoleController extends DefaultController {
             }
             let bodyData = copyObject(req.body);
             bodyData.title = bodyData?.title?.toUpperCase();
-            // deleteInvalidPropertyInObject(bodyData, []);
             await RoleModel.findByIdAndUpdate(id, {$set: bodyData})
                 .then((result) => {
                     if (!result) {

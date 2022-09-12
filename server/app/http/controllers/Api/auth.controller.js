@@ -22,7 +22,7 @@ const {
 } = require("../../../utils/Security");
 const {
     SendAccountVerification,
-    SendResetPasswordEmail,
+    SendResetPasswordEmail, SendSms,
 } = require("../../../utils/Senders");
 const {copyObject} = require("../../../utils/functions");
 module.exports = new (class AuthController extends DefaultController {
@@ -52,17 +52,17 @@ module.exports = new (class AuthController extends DefaultController {
                 );
             }
             if (!user.isVerified) {
-                user.verificationToken = generateToken(user.email, "30 minutes");
+                user.verificationCode = generateOneCode(10);
                 await user.save();
-                // await SendAccountVerification(user.email, user.verificationToken);
+                SendAccountVerification(user.email, user.verificationCode)
                 throw createHttpError(
-                    401,
+                    400,
                     "you have not verify your account yet,do it by the link we sent to your email."
                 );
             }
             if (user.isBanned === true) {
                 throw createHttpError(
-                    401,
+                    403,
                     "you have been banned from the system, please contact our support for more info."
                 );
             }
@@ -71,10 +71,22 @@ module.exports = new (class AuthController extends DefaultController {
             await user.save();
             return res
                 .status(StatusCodes.OK)
-                .cookie("refresh_token", user.refreshToken, {httpOnly: true})
+                .cookie("access_token", user.accessToken, {
+                    httpOnly: true,
+                    expires: rememberme ? new Date(Date.now() + 1000 * 60 * 60 * 24 * 30) : new Date(Date.now() + 1000 * 60 * 60 * 24)
+                })
+                .cookie("refresh_token", user.refreshToken, {
+                    httpOnly: true,
+                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 356)
+                })
                 .json({
                     success: true,
-                    credentials: {email: user.email, username: user.username, token: user.accessToken, Role: user.Role},
+                    credentials: {
+                        email: user.email,
+                        username: user.username,
+                        mobileNumber: user.mobileNumber,
+                        Role: user.Role
+                    },
                 });
         } catch (error) {
             next(error);
@@ -98,7 +110,7 @@ module.exports = new (class AuthController extends DefaultController {
                 verificationToken: generateToken({email: email}),
                 verificationCode: generateOneCode(10),
             });
-            await SendAccountVerification(user.email, user.verificationCode);
+            SendAccountVerification(user.email, user.verificationCode)
             return res
                 .status(StatusCodes.CREATED)
                 .cookie("verificationToken", user.verificationToken)
@@ -128,7 +140,7 @@ module.exports = new (class AuthController extends DefaultController {
             user.verificationCode = "";
             user.isVerified = true;
             await user.save();
-            return res.status(StatusCodes.OK).json({
+            return res.status(StatusCodes.OK).clearCookie("verificationToken").json({
                 success: true,
                 message: "user has been verified successfully",
             });
@@ -140,8 +152,8 @@ module.exports = new (class AuthController extends DefaultController {
     async resendOTPToEmail(req, res, next) {
         try {
             const user = req?.user;
-            console.log(user);
             user.verificationCode = generateOneCode(10);
+            SendAccountVerification(user.email, user.verificationCode)
             await user.save();
             return res.status(StatusCodes.OK).json({
                 success: true,
@@ -162,7 +174,7 @@ module.exports = new (class AuthController extends DefaultController {
             }
             const user = await UserModel.findOne({email});
             if (!user) {
-                throw createHttpError.BadRequest("make sure to insert a valid email");
+                throw createHttpError.NotFound("make sure to insert a valid email");
             } else if (user.resetPasswordAttempt >= 3) {
                 throw createHttpError.NotAcceptable(
                     `you have reached the maximum chance to changePassword, contact our support for more info`
@@ -188,21 +200,20 @@ module.exports = new (class AuthController extends DefaultController {
 
     async logOut(req, res, next) {
         try {
-            const {accessToken} = req.params;
-            const verifiedAccessToken = validateToken(accessToken);
-            if (!verifiedAccessToken)
-                throw createHttpError.BadRequest("Not a valid token");
-            if (verifiedAccessToken.exp > Date.now())
-                throw createHttpError.BadRequest("Not a valid token");
-            const user = await UserModel.findOne({accessToken});
+
+            const user = req?.user
+            console.log(user)
             if (!user) throw createHttpError.Unauthorized("Not a valid token");
             user.accessToken = "";
             user.refreshToken = "";
             await user.save();
-            return res.json({
-                success: true,
-                message: "logged out successfully",
-            });
+            return res
+                .clearCookie("access_token")
+                .clearCookie("refresh_token")
+                .json({
+                    success: true,
+                    message: "logged out successfully",
+                });
         } catch (error) {
             next(error);
         }
@@ -214,7 +225,11 @@ module.exports = new (class AuthController extends DefaultController {
 
             const {password, confirmPassword} = bodyData;
             const {resetPasswordToken} = req.params;
-            console.log(resetPasswordToken)
+            if (password !== confirmPassword) {
+                throw createHttpError.BadRequest(
+                    "both passwords must be same"
+                );
+            }
             const user = await UserModel.findOne({resetPasswordToken});
             if (!user) {
                 throw createHttpError.Unauthorized("Invalid token");
@@ -246,8 +261,9 @@ module.exports = new (class AuthController extends DefaultController {
     //! Mobile Authentication
     async getOTP(req, res, next) {
         try {
-            const bodyData = await mobileNumber.validateAsync(req.body);
-            const {mobile} = bodyData;
+            const {mobile} = await mobileNumber.validateAsync(req.body);
+
+
             let otp = generateOTP();
             await UserModel.updateOne(
                 {mobileNumber: mobile},
@@ -255,6 +271,7 @@ module.exports = new (class AuthController extends DefaultController {
                 {upsert: true}
             )
                 .then((result) => {
+                    SendSms(mobile , `Your verification code ${otp.code}, this code will expire in next 2 minutes`)
                     return res.status(StatusCodes.OK).json({
                         success: true,
                         message:
@@ -262,7 +279,7 @@ module.exports = new (class AuthController extends DefaultController {
                     });
                 })
                 .catch((err) => {
-                    throw createError.InternalServerError(err);
+                    throw createHttpError.InternalServerError(err);
                 });
         } catch (error) {
             next(error);
@@ -271,8 +288,7 @@ module.exports = new (class AuthController extends DefaultController {
 
     async validateOTP(req, res, next) {
         try {
-            const bodyData = await loginByMobile.validateAsync(req.body);
-            const {mobile, otp} = bodyData;
+            const  {mobile, otp} = await loginByMobile.validateAsync(req.body);
             const user = await UserModel.findOne(
                 {mobileNumber: mobile},
                 {otp: 1, mobileNumber: 1, Role: 1}
@@ -292,23 +308,29 @@ module.exports = new (class AuthController extends DefaultController {
             }
             if (user.otp.code !== +otp) {
                 throw createHttpError.BadRequest(
-                    "not a correct code ,make sure to use the exactly code we  have sent for you."
+                    "Not a correct code ,make sure to use the exactly code we  have sent for you."
                 );
             }
             user.otp = {};
-            user.isMobileVerified = true;
             user.isVerified = true;
             user.accessToken = generateAccessToken({
                 mobileNumber: user?.mobileNumber,
             });
-            user.refreshToken = await generateRefreshToken({userId: user._id});
+            user.refreshToken = await generateRefreshToken(user._id);
             await user.save();
             return res
                 .status(StatusCodes.OK)
-                .cookie("refresh_token", user.refreshToken, {httpOnly: true})
+                .cookie("access_token", user.accessToken, {
+                    httpOnly: true,
+                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7)
+                })
+                .cookie("refresh_token", user.refreshToken, {
+                    httpOnly: true,
+                    expires: new Date(Date.now() + 1000 * 60 * 60 * 24 * 356)
+                })
                 .json({
                     success: true,
-                    credentials: {mobile: user.mobileNumber, token: user.accessToken, Role: user.Role},
+                    credentials: {mobile: user.mobileNumber, Role: user.Role},
                 });
         } catch (e) {
             next(e);
