@@ -36,9 +36,9 @@ const Login = () => {
             }
         }).catch(err => {
             if (err?.response === 404 || err?.response === 400) {
-                return Global_Error({message: "Make sure to insert correct email address"})
+                return Global_Error("Make sure to insert correct email address")
             } else {
-                return Global_Error({message: err.response.data.errors.message})
+                return Global_Error("Something went wrong")
             }
         })
     }
@@ -79,11 +79,9 @@ const Login = () => {
         }).catch(err => {
             if (err?.response?.status === 404) {
                 return Global_Error("Email or password is incorrect")
-            }
-            else if (err?.response?.status === 400) {
+            } else if (err?.response?.status === 400) {
                 return Global_Error("Your account is not verified yet. Please check your email")
-            }
-            else if (err?.response?.status === 403) {
+            } else if (err?.response?.status === 403) {
                 return Global_Error("Your account is blocked. Contact admin")
             } else {
                 return Global_Error(err?.response?.data?.message)

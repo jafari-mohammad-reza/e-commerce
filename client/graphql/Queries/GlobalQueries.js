@@ -106,6 +106,17 @@ export const GetProductDetail_Query = gql`
 
 export const GetUserShoppingCart_Query = gql`
     query GetUserShoppingCart {
-        GetUserShoppingCart 
+        GetUserShoppingCart
     }
+`
+
+
+export const GetUserDashboard_Query = gql`
+    query GetUserDashboard{
+    GetUserDashboard {
+    statusCode
+    data
+    }
+    }
+    
 `

@@ -81,9 +81,7 @@ const isEmailValid = Joi.object({
 })
 const mobileNumber = Joi.object({
     mobile: Joi.string()
-        .required()
-        .length(11)
-        .pattern(/^09[0-9]{9}$/)
+        .required().pattern(/^(\+98|0)?9\d{9}$/)
         .trim().messages({
             "any.required": "Mobile cannot be empty",
             "any.pattern": "Not a valid mobile number  "
@@ -91,9 +89,7 @@ const mobileNumber = Joi.object({
 });
 const loginByMobile = Joi.object({
     mobile: Joi.string()
-        .required()
-        .length(11)
-        .pattern(/^09[0-9]{9}$/)
+        .required().pattern(/^(\+98|0)?9\d{9}$/)
         .trim().messages({
             "any.required": "Mobile cannot be empty",
             "any.pattern": "Not a valid mobile number  "

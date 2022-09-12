@@ -15,6 +15,7 @@
   "license": "ISC",
   "dependencies": {
     "auto-bind": "^4.0.0",
+    "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "cluster": "^0.7.7",
     "cors": "^2.8.5",
@@ -41,6 +42,7 @@
     "redis": "^4.1.0",
     "swagger-jsdoc": "^6.2.1",
     "swagger-ui-express": "^4.4.0",
+    "twilio": "^3.82.0",
     "uuid": "^8.3.2"
   }
 }

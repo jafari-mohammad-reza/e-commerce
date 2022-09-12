@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import axios from "../../../axios";
-import {Global_Error, Global_Message, Global_Success} from "../../../conf/ConstantFunctions";
+import {Global_Message, Global_Success} from "../../../conf/ConstantFunctions";
 
 const Form = () => {
     const [isLoading, setIsLoading] = useState(false)
@@ -25,7 +25,7 @@ const Form = () => {
             const formData = new FormData()
             formData.append("title", titleRef.current.value);
             formData.append("parent", parentRef.current.value || null);
-            if(image) {
+            if (image) {
                 for (let i = 0; i < image.length; i++) {
                     formData.append("image", image[i]);
                 }
@@ -43,7 +43,7 @@ const Form = () => {
             })
         } catch (error) {
             console.log(error)
-             // return Global_Error(`${error.response.data.errors.message }`)
+            // return Global_Error(`${error.response.data.errors.message }`)
         }
     }
     return (

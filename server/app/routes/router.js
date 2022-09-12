@@ -1,6 +1,5 @@
 const {adminRoutes} = require("./Admin/admin.routes");
 const {apiRoutes} = require("./Api/api.routes");
-const {clientRoutes} = require("./Client/client.routes");
 const {VerifyAccessToken} = require("../http/middleWares/TokenAuthorization");
 const {graphqlHTTP} = require("express-graphql");
 const graphQlSchema = require("../graphql/index.graphql");
@@ -14,7 +13,6 @@ const router = require("express").Router();
 // });
 router.use("/admin", VerifyAccessToken, adminRoutes);
 router.use("/api/v1", apiRoutes);
-router.use("/client/", clientRoutes);
 const graphqlLimit = limit({
     windowMs: 3000000, // 5 minutes
     max: 25,

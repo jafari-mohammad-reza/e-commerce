@@ -1,14 +1,13 @@
 import React, {useMemo} from 'react';
 import axios from "../../../axios";
-import {Global_Error, Global_Success} from "../../../conf/ConstantFunctions";
+import {Global_Success} from "../../../conf/ConstantFunctions";
 import {AiFillDelete, AiFillEdit, AiFillPrinter, AiOutlinePlus} from "react-icons/ai";
 import Link from "next/link";
-import Image from "next/image";
 import AdminLayout from "../../../components/AdminLayout";
 import {useRouter} from "next/router";
 
 const Users = ({users}) => {
-    const data = useMemo(() => users , [users])
+    const data = useMemo(() => users, [users])
     const router = useRouter();
     return (
         <AdminLayout>
@@ -52,7 +51,7 @@ const Users = ({users}) => {
                             <td scope="row"
                                 className="py-4 px-6 ">{user.mobileNumber ? user.mobileNumber : "🚫"}</td>
                             <td scope="row"
-                                className="py-4 px-6 ">{user.Role }</td>
+                                className="py-4 px-6 ">{user.Role}</td>
 
                             <td scope="row"
                                 className="py-4 px-6 ">{user.isBanned ? "Banned" : "Active"}</td>
@@ -65,10 +64,10 @@ const Users = ({users}) => {
                                 <button
                                     className="w-max h-max py-5 px-7 rounded-2xl text-2xl bg-red-600 text-center text-white flex space-x-3 items-center"
                                     onClick={() => {
-                                        axios.put(`http://localhost:5000/admin/users/${user._id}` , {isBanned :true}).then(result => {
+                                        axios.put(`http://localhost:5000/admin/users/${user._id}`, {isBanned: true}).then(result => {
                                             if (result.status === 200) {
                                                 Global_Success("user banned successfully.")
-                                                setInterval(() => router.reload() , 2000)
+                                                setInterval(() => router.reload(), 2000)
                                             }
                                         })
                                     }}
@@ -83,6 +82,7 @@ const Users = ({users}) => {
         </AdminLayout>
     );
 };
+
 export async function getServerSideProps(context) {
     const {data} = await axios.get(`http://localhost:5000/admin/users`, {
         headers: {
@@ -91,10 +91,11 @@ export async function getServerSideProps(context) {
     })
     const users = data.users
     return {
-        props :{
+        props: {
             users
         }
     }
 
 }
+
 export default Users;

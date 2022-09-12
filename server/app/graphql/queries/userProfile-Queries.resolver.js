@@ -8,6 +8,10 @@ const {ProductModel} = require("../../models/Product");
 const {ProductType} = require("../typeDefs/Product.type");
 const {AnyType, ResponseType} = require("../typeDefs/Public.type");
 const {getUserCart} = require("../../utils/functions");
+const {GraphQLNonNull, GraphQLString} = require("graphql/type");
+const {UserModel} = require("../../models/User");
+const {StatusCodes} = require("http-status-codes");
+
 const GetMarkedBlogs = {
     type: new GraphQLList(BlogType),
     args: {
@@ -50,8 +54,42 @@ const GetUserShoppingCart = {
     },
 };
 
+const GetUserDashboard = {
+    type: ResponseType,
+    resolve: async (_, args, context) => {
+        const {headers} = context
+        const user = await GraphqlTokenAuth(headers)
+        const data  = await UserModel.aggregate([
+            {
+                $match: {
+                    _id: user._id,
+                }
+            },
+            {
+                $project : {
+                    email :true,
+                    username:true,
+                    mobileNumber:true,
+                    orders:true,
+                    walletCredit:true,
+                    address:true,
+                    birthday:true
+                }
+            },
+
+        ]);
+
+        return {
+            statusCode :StatusCodes.OK,
+            data : data[0]
+        }
+
+    },
+};
+
 module.exports = {
     GetMarkedBlogs,
     GetMarkedProducts,
     GetUserShoppingCart,
+    GetUserDashboard
 };

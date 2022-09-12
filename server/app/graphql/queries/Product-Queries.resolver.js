@@ -13,7 +13,7 @@ const {Kind} = require('graphql/language')
 
 const {convertTOObject} = require("../../utils/functions");
 const {CategoryModel} = require("../../models/Category");
-const ProductResolver = {
+const ProductQueriesResolver = {
     type: new GraphQLList(ProductType),
     args: {
         limit: {type: GraphQLInt, defaultValue: 10},
@@ -90,7 +90,7 @@ const GetProductByCategoryResolver = {
 
 
 module.exports = {
-    ProductResolver,
+    ProductResolver: ProductQueriesResolver,
     DiscountedProductResolver,
     MostRatedProductResolver,
     GetProductDetailResolver,

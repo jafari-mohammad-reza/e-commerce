@@ -5,6 +5,6 @@ import cartSlice from "./features/cartSlice";
 export const store = configureStore({
     reducer: {
         Auth: authSlice,
-        Cart : cartSlice
+        Cart: cartSlice
     },
 })

@@ -4,7 +4,6 @@ import {AiFillDelete, AiFillEdit, AiFillPrinter, AiOutlinePlus} from "react-icon
 import axios from "../../../axios";
 import {Global_Error, Global_Success} from "../../../conf/ConstantFunctions";
 import AdminLayout from "../../../components/AdminLayout";
-import Image from "next/image";
 import 'swiper/css';
 
 const permissions = ({permissions}) => {

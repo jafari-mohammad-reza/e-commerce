@@ -52,9 +52,9 @@ const Register = () => {
             }
         }).catch(err => {
             if (err.response.status === 400) {
-                return Global_Error({message: "Email or username already exists"})
+                return Global_Error( "Email or username already exists")
             } else {
-                return Global_Error({message: "Something went wrong"})
+                return Global_Error( "Something went wrong")
             }
         })
 

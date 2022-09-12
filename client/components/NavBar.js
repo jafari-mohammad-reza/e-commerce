@@ -61,7 +61,7 @@ const NavBar = () => {
                     user ? (
                         <div
                             className={`flex ${isSmallScreen ? "flex-col mt-12 space-y-10" : "space-x-5"} items-center justify-center w-max  lg:space-x-10`}>
-                            <Link href={user?.Role === "USER" ? "/user/profile" : "/admin"}>
+                            <Link href={user?.Role === "USER" ? "/user" : "/admin"}>
                                 <FaUser
                                     className={`text-6xl ${isMenuOpen ? "w-20 h-20 text-sky-50 border-wky-50" : "w-16 h-16  border-black"}  border-black rounded-lg p-2 cursor-pointer transition-all transform hover:scale-110`}/>
                             </Link>

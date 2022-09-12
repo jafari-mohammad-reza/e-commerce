@@ -10,7 +10,7 @@ const {copyObject} = require("../../utils/functions");
 const {StatusCodes} = require("http-status-codes");
 const {GraphQLList} = require("graphql/type");
 const {ProductModel} = require("../../models/Product");
-const {default : mongoose} = require("mongoose");
+const {default: mongoose} = require("mongoose");
 
 const AddProductToCart = {
     type: ResponseType,

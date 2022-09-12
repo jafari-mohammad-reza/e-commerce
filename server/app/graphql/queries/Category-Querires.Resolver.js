@@ -4,7 +4,7 @@ const {CategoryModel} = require("../../models/Category");
 const {AnyType} = require("../typeDefs/Public.type");
 const {ProductModel} = require("../../models/Product");
 const {ProductType} = require("../typeDefs/Product.type");
-const CategoryResolver = {
+const CategoryQueriresResolver = {
     type: new GraphQLList(CategoryType),
     args: {
         limit: {
@@ -92,6 +92,6 @@ const GetCategoryByTitleResolver = {
 
 
 module.exports = {
-    CategoryResolver,
+    CategoryResolver: CategoryQueriresResolver,
     ChildrenCategoryResolver, GetCategoryByTitleResolver
 }

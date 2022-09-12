@@ -22,7 +22,7 @@ const {
 } = require("../../../utils/Security");
 const {
     SendAccountVerification,
-    SendResetPasswordEmail,
+    SendResetPasswordEmail, SendSms,
 } = require("../../../utils/Senders");
 const {copyObject} = require("../../../utils/functions");
 module.exports = new (class AuthController extends DefaultController {
@@ -52,9 +52,9 @@ module.exports = new (class AuthController extends DefaultController {
                 );
             }
             if (!user.isVerified) {
-                user.verificationToken = generateToken(user.email, "30 minutes");
+                user.verificationCode = generateOneCode(10);
                 await user.save();
-                // await SendAccountVerification(user.email, user.verificationToken);
+                SendAccountVerification(user.email, user.verificationCode)
                 throw createHttpError(
                     400,
                     "you have not verify your account yet,do it by the link we sent to your email."
@@ -110,7 +110,7 @@ module.exports = new (class AuthController extends DefaultController {
                 verificationToken: generateToken({email: email}),
                 verificationCode: generateOneCode(10),
             });
-            await SendAccountVerification(user.email, user.verificationCode);
+            SendAccountVerification(user.email, user.verificationCode)
             return res
                 .status(StatusCodes.CREATED)
                 .cookie("verificationToken", user.verificationToken)
@@ -120,7 +120,6 @@ module.exports = new (class AuthController extends DefaultController {
                         "you've been registered successfully, make sure to verify your account by the link send to your email.",
                 });
         } catch (error) {
-            console.log(error)
             next(error);
         }
     }
@@ -153,8 +152,8 @@ module.exports = new (class AuthController extends DefaultController {
     async resendOTPToEmail(req, res, next) {
         try {
             const user = req?.user;
-            console.log(user);
             user.verificationCode = generateOneCode(10);
+            SendAccountVerification(user.email, user.verificationCode)
             await user.save();
             return res.status(StatusCodes.OK).json({
                 success: true,
@@ -262,8 +261,9 @@ module.exports = new (class AuthController extends DefaultController {
     //! Mobile Authentication
     async getOTP(req, res, next) {
         try {
-            const bodyData = await mobileNumber.validateAsync(req.body);
-            const {mobile} = bodyData;
+            const {mobile} = await mobileNumber.validateAsync(req.body);
+
+
             let otp = generateOTP();
             await UserModel.updateOne(
                 {mobileNumber: mobile},
@@ -271,6 +271,7 @@ module.exports = new (class AuthController extends DefaultController {
                 {upsert: true}
             )
                 .then((result) => {
+                    SendSms(mobile , `Your verification code ${otp.code}, this code will expire in next 2 minutes`)
                     return res.status(StatusCodes.OK).json({
                         success: true,
                         message:
@@ -287,8 +288,7 @@ module.exports = new (class AuthController extends DefaultController {
 
     async validateOTP(req, res, next) {
         try {
-            const bodyData = await loginByMobile.validateAsync(req.body);
-            const {mobile, otp} = bodyData;
+            const  {mobile, otp} = await loginByMobile.validateAsync(req.body);
             const user = await UserModel.findOne(
                 {mobileNumber: mobile},
                 {otp: 1, mobileNumber: 1, Role: 1}
@@ -312,7 +312,6 @@ module.exports = new (class AuthController extends DefaultController {
                 );
             }
             user.otp = {};
-            user.isMobileVerified = true;
             user.isVerified = true;
             user.accessToken = generateAccessToken({
                 mobileNumber: user?.mobileNumber,

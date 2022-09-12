@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const createHttpError = require("http-errors");
 const {UserModel} = require("../../models/User");
 const JWT = require("jsonwebtoken");
@@ -24,13 +25,17 @@ function getToken(headers, tokenName = "") {
 function VerifyAccessToken(req, res, next) {
     try {
         const token = getToken(req.headers, "access_token");
-        JWT.verify(token, process.env.JWT_TOKEN, async (err, encoded) => {
+
+        JWT.verify(token, process.env.JWT_TOKEN , {}, async (err, encoded) => {
             try {
-                if (err) throw createHttpError.InternalServerError(`JWT error : ${err}`)
+                if (err) {
+
+                    throw createHttpError.InternalServerError(`JWT error : ${err}`)
+                }
                 const {email, mobileNumber} = encoded.payload || {};
                 const user = await UserModel.findOne(
                     {$or: [{mobileNumber}, {email}]},
-                    {mobileNumber: 1, email: 1, username: 1, Role: 1, accessToken: 1, refreshToken: 1 , _id:1}
+                    {mobileNumber: 1, email: 1, username: 1, Role: 1, accessToken: 1, refreshToken: 1, _id: 1}
                 );
                 if (!user) throw createHttpError.Unauthorized("no account");
                 req.user = user;
@@ -47,7 +52,7 @@ function VerifyAccessToken(req, res, next) {
 function VerifyVerificationToken(req, res, next) {
     try {
         const token = getToken(req.headers, "verificationToken");
-        JWT.verify(token, process.env.JWT_TOKEN, async (err, encoded) => {
+        JWT.verify(token, process.env.JWT_TOKEN , {}, async (err, encoded) => {
             try {
                 if (err) throw createHttpError.Unauthorized("Please login first");
                 const {email} = encoded.payload || {};
@@ -69,7 +74,7 @@ function VerifyRefreshToken(req, res, next) {
     try {
         req.user = undefined
         const token = getToken(req.headers, "refresh_token");
-        JWT.verify(token, process.env.JWT_REFRESH_TOKEN, async (err, payload) => {
+        JWT.verify(token, process.env.JWT_REFRESH_TOKEN ,{}, async (err, payload) => {
             if (err) throw (createHttpError.Unauthorized("Please login first"))
             const {email, mobileNumber} = payload || {};
             const user = await UserModel.findOne({$or: [{email}, {mobileNumber}]}, {
@@ -95,11 +100,11 @@ function VerifyRefreshToken(req, res, next) {
 
 const GraphqlTokenAuth = async (headers) => {
     try {
-        const token = await getToken(headers , "access_token")
+        const token = await getToken(headers, "access_token")
         const encoded = JWT.verify(token, process.env.JWT_TOKEN);
         const {email, mobileNumber} = encoded.payload || {};
         const user = await UserModel.findOne(
-            {$or : [{email} , {mobileNumber}]},
+            {$or: [{email}, {mobileNumber}]},
             {mobileNumber: 1, email: 1, username: 1, Role: 1}
         );
         if (!user) {

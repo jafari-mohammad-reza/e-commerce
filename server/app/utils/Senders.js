@@ -1,48 +1,75 @@
 const createHttpError = require("http-errors");
 const nodemailer = require("nodemailer");
-const mailer = nodemailer.createTransport({
-    service: "gmail",
+const axios = require("axios");
+const accountSid = process.env.SMS_AUTH_SID;
+const authToken = process.env.SMS_AUTH_TOKEN;
+const {messages} = require('twilio')(accountSid, authToken);
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
     auth: {
-        user: process.env.EMAIL_USER_NAME,
-        pass: process.env.EMAIL_USER_PASS,
-
+        user: process.env.USER_MAIL,
+        pass: process.env.USER_PASS,
     },
     tls: {
         rejectUnauthorized: false,
-    },
-});
 
-async function SendResetPasswordEmail() {
-}
+    }
+})
 
-async function SendAccountVerification(receiver, token) {
-    mailer.sendMail(
+function SendAccountVerification(receiver, code) {
+    transporter.sendMail(
         {
             to: receiver,
             from: "E-Commerce store",
             subject: "Verify your account",
-            text: `
+            html: `
         <div style="width: 100vw;height:100vh;display: flex;flex-direction: column;align-items: center;justify-content: center;">
             <h1 style="font-size: 35px;color: #c8a267;">Welcome to E-Commerce store</h1>
-            <h4>Please verify your account by the link down there</h4>
-            <a style="text-decoration: none; background-color:#c8a267;color:#fff;width:70px;height:45px;border:none;outline:none;border-radius:15px;" href="http://localhost:5000/api/v1/auth/email/active-account/${token}">Verify</a>
+            <h4>Please verify your account with this code</h4>
+            <h3 style="font-size: 25px;font-weight: 500;margin-top: 20px;">${code}</h3>
         </div>
     `,
         },
         (err, result) => {
-            if (!err) {
-                console.log(result);
+            if (err) {
+               throw createHttpError.InternalServerError("Something went wrong" + err.message)
             }
-            console.error(err);
         }
     );
 }
 
-async function SendEmail() {
+function SendEmail(receiver , subject , content ) {
+    transporter.sendMail({
+        to:receiver,
+        from: "E-Commerce store",
+        subject: subject,
+        text : content,
+
+    } , (err, result) => {
+        if (err) {
+            throw createHttpError.InternalServerError("Something went wrong" + err.message)
+        }
+    } )
 }
 
+
+function SendSms(receiver,content) {
+    messages
+        .create({
+            messagingServiceSid: 'MGdc5a0b6342b0bf0ed39695b34c918845',
+            body: content,
+            to: receiver,
+            from : "+17432442557",
+            forceDelivery:true
+        })
+        .then(message => console.log(`SMS sent ${message.status}`)).catch(error => {
+        throw createHttpError.InternalServerError("Something went wrong" + error.message).done()
+    });
+}
+
+
+
 module.exports = {
-    SendResetPasswordEmail,
-    SendAccountVerification,
     SendEmail,
+    SendAccountVerification,SendSms
 };

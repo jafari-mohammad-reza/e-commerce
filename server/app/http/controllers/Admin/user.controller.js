@@ -6,6 +6,7 @@ const {isValidObjectId} = require("mongoose");
 const {deleteInvalidPropertyInObject, copyObject} = require("../../../utils/functions");
 const {hashPassword} = require("../../../utils/Security");
 const passwordGenerator = require("generate-password")
+const {SendEmail} = require("../../../utils/Senders");
 module.exports = new (class UserController extends DefaultController {
     async getAll(req, res, next) {
         try {
@@ -14,13 +15,13 @@ module.exports = new (class UserController extends DefaultController {
             if (search) {
                 dataBaseQuery['$text'] = {$search: search.toString()}
             }
-            const users = await UserModel.find({$and : [{dataBaseQuery} , {_id : {$ne : req.user._id}}]}, {
+            const users = await UserModel.find({$and: [{dataBaseQuery}, {_id: {$ne: req.user._id}}]}, {
                 username: 1,
                 email: 1,
                 mobileNumber: 1,
                 accessToken: 1,
                 Role: 1,
-                isBanned:true
+                isBanned: true
 
             })
             return res.status(StatusCodes.OK).json({
@@ -48,6 +49,7 @@ module.exports = new (class UserController extends DefaultController {
                 Role: 1,
                 isPrime: 1,
                 isBanned: 1,
+                orders: 1
             }).catch(err => {
                 throw createHttpError.internalServerError(err)
             })
@@ -63,9 +65,9 @@ module.exports = new (class UserController extends DefaultController {
     async updateProfile(req, res, next) {
         try {
             const {id} = req.params
-            const currentUser =req.user
-            const existUser = await UserModel.findOne({_id: id}, {Role: 1, accessToken: 1, refreshToken: 1,_id:1})
-            if(existUser._id.equals(currentUser._id)){
+            const currentUser = req.user
+            const existUser = await UserModel.findOne({_id: id}, {Role: 1, accessToken: 1, refreshToken: 1, _id: 1})
+            if (existUser._id.equals(currentUser._id)) {
                 throw createHttpError.BadRequest("You can't change your own credentials")
             }
             const body = req.body;
@@ -75,7 +77,7 @@ module.exports = new (class UserController extends DefaultController {
                 }
             }
 
-            await UserModel.updateOne({_id : id}, {$set: {...body , accessToken:"",refreshToken:""}}).then(result => {
+            await UserModel.updateOne({_id: id}, {$set: {...body, accessToken: "", refreshToken: ""}}).then(result => {
                 if (result.modifiedCount > 0) {
 
                     return res.status(StatusCodes.OK).json({
@@ -92,26 +94,33 @@ module.exports = new (class UserController extends DefaultController {
             next(e)
         }
     }
-    async createUser(req,res,next){
-        try{
-            const requestBody =copyObject(req.body)
-            const {username,email,mobileNumber,Role , password} = requestBody
-            if(await UserModel.findOne({$or : [{email: email} , {mobileNumber: mobileNumber}, {username: username}]})){
+
+    async createUser(req, res, next) {
+        try {
+            const requestBody = copyObject(req.body)
+            const {username, email, mobileNumber, Role, password} = requestBody
+            if (await UserModel.findOne({$or: [{email: email}, {mobileNumber: mobileNumber}, {username: username}]})) {
                 throw createHttpError.BadRequest("There is already one user with this credentials")
             }
-            if(!email && !mobileNumber){
+            if (!email && !mobileNumber) {
                 throw createHttpError.BadRequest("Please email or mobileNumber.")
             }
-            const generatedPassword =passwordGenerator.generate({length:10,lowercase:true,uppercase:true,numbers:true})
-            const hashedPassword  =password || hashPassword(generatedPassword);
+            const generatedPassword = passwordGenerator.generate({
+                length: 10,
+                lowercase: true,
+                uppercase: true,
+                numbers: true
+            })
+            const hashedPassword = password || hashPassword(generatedPassword);
             console.log(password)
-            //todo : send password and other crdentials to user email or mobile
-            await UserModel.create({email,username,mobileNumber,Role,password :hashedPassword}).then((result) => {
-                if(result){
+
+            await UserModel.create({email, username, mobileNumber, Role, password: hashedPassword}).then((result) => {
+                if (result) {
+                    SendEmail(email , "Your account information" , `our support has created a account for you, this is credentials of your account \n your email : ${email} \n your password : ${password || generatedPassword}`)
                     return res.status(200).json({
-                        status:200,
-                        userCredentials : {
-                            password:password || generatedPassword,
+                        status: 200,
+                        userCredentials: {
+                            password: password || generatedPassword,
                             username,
                             email,
                             mobileNumber,
@@ -122,7 +131,7 @@ module.exports = new (class UserController extends DefaultController {
             }).catch(err => {
                 throw createHttpError.InternalServerError(err)
             })
-        }catch (error) {
+        } catch (error) {
             next(error)
         }
     }

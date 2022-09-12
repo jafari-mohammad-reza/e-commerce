@@ -4,37 +4,38 @@ const {
     GraphQLInt,
     GraphQLString,
 } = require("graphql");
-const getBlogsQuery = require("./queries/Blog.resolver");
-const {BlogResolver} = require("./queries/Blog.resolver");
+const getBlogsQuery = require("./queries/Blog-Queries.resolver");
+const {BlogResolver} = require("./queries/Blog-Queries.resolver");
 const {
     ProductResolver,
     DiscountedProductResolver,
     MostRatedProductResolver,
     GetProductDetailResolver, GetProductByCategoryResolver
-} = require("./queries/Product.resolver");
+} = require("./queries/Product-Queries.resolver");
 const {
     CategoryResolver,
     ChildrenCategoryResolver, GetCategoryByTitleResolver
-} = require("./queries/Category.Resolver");
+} = require("./queries/Category-Querires.Resolver");
 const {
     CreateBlogComment,
     CreateProductComment,
-} = require("./mutations/Comments.Resolver");
-const {RateProduct} = require("./mutations/rating.resolver");
-const {LikeBlog, DisLikeBlog} = require("./mutations/opinion.resolver");
+} = require("./mutations/Comments-Mutations.Resolver");
+const {RateProduct} = require("./mutations/rating-Mutations.resolver");
+const {LikeBlog, DisLikeBlog} = require("./mutations/opinion-Mutations.resolver");
 const {
     BookMarkBlog,
     BookMarkProduct,
-} = require("./mutations/bookmark.resolver");
+} = require("./mutations/bookmark-Mutations.resolver");
 const {
     GetMarkedBlogs,
     GetMarkedProducts,
-    GetUserShoppingCart,
-} = require("./queries/user-profile.resolver");
+    GetUserShoppingCart, GetUserDashboard,
+} = require("./queries/userProfile-Queries.resolver");
 const {
     AddProductToCart,
     RemoveProductFromCart,
-} = require("./mutations/cart.resolver");
+} = require("./mutations/cart-Mutations.resolver");
+const {UpdateProfile} = require("./mutations/userProfile-Mutations.resolver");
 const RootQuery = new GraphQLObjectType({
     name: "RootQuery",
     fields: {
@@ -50,7 +51,7 @@ const RootQuery = new GraphQLObjectType({
         GetCategoryByTitle: GetCategoryByTitleResolver,
         GetProductDetail: GetProductDetailResolver,
         GetProductByCategory: GetProductByCategoryResolver,
-
+        GetUserDashboard
     },
 });
 
@@ -66,6 +67,7 @@ const RootMutation = new GraphQLObjectType({
         BookMarkProduct,
         AddProductToCart,
         RemoveProductFromCart,
+        UpdateProfile
     },
 });
 

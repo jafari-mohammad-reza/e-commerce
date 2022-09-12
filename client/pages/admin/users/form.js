@@ -24,11 +24,11 @@ const Form = () => {
         e.preventDefault()
         try {
             const bodyData = {
-                email :emailRef.current.value || undefined,
-                username :usernameRef.current.value || undefined,
-                password :passwordRef.current.value || undefined,
-                mobileNumber :mobileNumberRef.current.value || undefined,
-                Role :RoleRef.current.value || undefined,
+                email: emailRef.current.value || undefined,
+                username: usernameRef.current.value || undefined,
+                password: passwordRef.current.value || undefined,
+                mobileNumber: mobileNumberRef.current.value || undefined,
+                Role: RoleRef.current.value || undefined,
             }
             await axios.post("http://localhost:5000/admin/users", bodyData, {withCredentials: true}).then(result => {
                 console.log(result)

@@ -15,8 +15,8 @@ const UserLayout = ({children}) => {
     }, [])
     const dispatch = useDispatch()
     const [currentPage, setCurrentPage] = useState("Profile")
-    const UserLink = ({title}) => {
-        return <Link href={`/user/${title.toLowerCase()}`}>
+    const UserLink = ({title , path = undefined}) => {
+        return <Link href={`/user/${path ? path.toLowerCase() : title.toLowerCase()}`}>
             <a className={`font-semibold text-xl lg:text-2xl ${currentPage === title && "text-blue-500"} hover:text-blue-300`}
                onClick={() => setCurrentPage(title)}>
                 {title}
@@ -25,8 +25,8 @@ const UserLayout = ({children}) => {
     }
     return (
         <div className={'grid grid-cols-1 md:grid-cols-12 h-screen w-full pt-10 px-10 '}>
-            <div className={'h-screen col-span-1 flex flex-col items-start justify-start space-y-7'}>
-                <UserLink title={"Profile"}/>
+            <div className={'h-screen hidden  md:col-span-1 md:flex flex-col items-start justify-start space-y-7'}>
+                <UserLink title={"Dashboard"} path={"/"}/>
                 <UserLink title={"Information"}/>
                 <UserLink title={"Orders"}/>
                 <UserLink title={"Discounts"}/>
@@ -41,7 +41,7 @@ const UserLayout = ({children}) => {
                     Logout
                 </button>
             </div>
-            <div className={'h-screen overflow-y-scroll col-span-11'}>
+            <div className={'h-screen overflow-y-scroll col-span-full md:col-span-11'}>
                 {children}
             </div>
         </div>

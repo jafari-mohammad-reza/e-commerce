@@ -1,7 +1,6 @@
 import {onError} from "@apollo/client/link/error";
 import {ApolloClient, from, HttpLink, InMemoryCache} from "@apollo/client";
 import Swal from "sweetalert2";
-import {useCookies} from "react-cookie";
 
 
 const errorLink = onError(({graphQLErrors, networkError}) => {
@@ -24,7 +23,7 @@ const errorLink = onError(({graphQLErrors, networkError}) => {
 });
 
 
-const httpLink = new HttpLink({uri: `http://localhost:5000/graphql` , credentials:"include"  })
+const httpLink = new HttpLink({uri: `http://localhost:5000/graphql`, credentials: "include"})
 const client = new ApolloClient({
     cache: new InMemoryCache(),
     link: from([httpLink, errorLink]),

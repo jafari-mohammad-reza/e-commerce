@@ -4,7 +4,6 @@ import {AiFillDelete, AiFillEdit, AiFillPrinter, AiOutlinePlus} from "react-icon
 import axios from "../../../axios";
 import {Global_Error, Global_Success} from "../../../conf/ConstantFunctions";
 import AdminLayout from "../../../components/AdminLayout";
-import Image from "next/image";
 import 'swiper/css';
 
 const roles = ({roles}) => {
@@ -46,7 +45,7 @@ const roles = ({roles}) => {
                                 className="py-4 px-6 text-3xl font-bold text-gray-900 whitespace-nowrap ">{role.title}</td>
                             <td className="py-4 px-6 ">{role.permissions.map(permission => (
                                 <span key={permission._id} className={'mr-2'}>{permission.title},</span>
-                            )) }</td>
+                            ))}</td>
 
                             <td className="flex flex-col items-center justify-center w-max h-max space-y-3 mt-10">
                                 <Link href={`/admin/roles/${role._id}`}>

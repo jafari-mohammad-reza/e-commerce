@@ -2,13 +2,13 @@ import React, {Fragment, useEffect, useRef, useState} from "react";
 import {useRouter} from "next/router";
 import axios from "../../../axios";
 import {Global_Error, Global_Message, Global_Success} from "../../../conf/ConstantFunctions";
-import {AiOutlinePlus, AiTwotoneDelete} from "react-icons/ai";
+import {AiTwotoneDelete} from "react-icons/ai";
 
 const Form = () => {
     const [isLoading, setIsLoading] = useState(false)
     const router = useRouter()
     const titleRef = useRef(null)
-    const [permissions,setPermissions] = useState([])
+    const [permissions, setPermissions] = useState([])
     const [allPermissions, setAllPermissions] = useState([])
 
     useEffect(() => {
@@ -26,8 +26,8 @@ const Form = () => {
 
         try {
             const bodyData = {
-                title : titleRef.current.value,
-                permissions : [...new Set(permissions.map(permission => permission._id))]
+                title: titleRef.current.value,
+                permissions: [...new Set(permissions.map(permission => permission._id))]
             }
             console.log(bodyData)
             await axios.post(`http://localhost:5000/admin/roles/`, bodyData, {withCredentials: true}).then(result => {
@@ -58,8 +58,8 @@ const Form = () => {
 
 
                         <select name="permission" className={'admin_input '} onChange={(e) => {
-                            setPermissions([...permissions , allPermissions[e.target.options.selectedIndex -1]])
-                            e.target.options.selectedIndex=0
+                            setPermissions([...permissions, allPermissions[e.target.options.selectedIndex - 1]])
+                            e.target.options.selectedIndex = 0
                         }
                         }>
                             <option value={undefined} disabled={false} defaultChecked={true}>Select One role
@@ -74,12 +74,17 @@ const Form = () => {
                             Create role
                         </button>
                         {
-                            permissions.length > 0 && <div className=" flex items-center justify-start space-x-20 w-full block mt-20">
-                                <h3 className={'text-2xl md:text-3xl lg:text-4xl font-semibold'}>Selected permissions:</h3>
-                                { permissions.map(permission => {
-                                    return <div key={permission._id} className={'flex items-center justify-center space-x-6'}>
+                            permissions.length > 0 &&
+                            <div className=" flex items-center justify-start space-x-20 w-full block mt-20">
+                                <h3 className={'text-2xl md:text-3xl lg:text-4xl font-semibold'}>Selected
+                                    permissions:</h3>
+                                {permissions.map(permission => {
+                                    return <div key={permission._id}
+                                                className={'flex items-center justify-center space-x-6'}>
                                         <h4 className={'text-xl md:text-3xl font-semibold'}>{permission.title}</h4>
-                                        <button onClick={() => setPermissions([...permissions.filter(per => per._id !== permission._id)])} className={'flex items-center justify-center py-4 px-8 bg-red-500 text-white rounded-xl'}>
+                                        <button
+                                            onClick={() => setPermissions([...permissions.filter(per => per._id !== permission._id)])}
+                                            className={'flex items-center justify-center py-4 px-8 bg-red-500 text-white rounded-xl'}>
                                             <AiTwotoneDelete/>
                                         </button>
                                     </div>

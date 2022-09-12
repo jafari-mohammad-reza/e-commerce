@@ -25,7 +25,7 @@ const ProductCard = ({product}) => {
         averageRating,
         ratings
     } = product
-    const [mutateFunction , {data  ,error}] = useMutation(AddProductToCart)
+    const [mutateFunction, {data, error}] = useMutation(AddProductToCart)
 
     return (
         <div
@@ -62,23 +62,25 @@ const ProductCard = ({product}) => {
 
             <button
                 className={'bg-sky-200 outline-0 border-0 rounded-lg px-6 py-3.5  text:xl md:text-3xl font-semibold text-blue-500 place-self-center '}
-                onClick={ () => {
-                     mutateFunction({
-                         variables : {
-                             productId :product._id
-                         }
-                     }).then(() => {
-                         Swal.fire({
-                             icon: "success",
-                             text: "Product added successfully.",
-                             timer: 700,
-                             position: "bottom-right",
-                             showConfirmButton:false
-                         }).then( () => { dispatch(addItemToBasket(product))})
+                onClick={() => {
+                    mutateFunction({
+                        variables: {
+                            productId: product._id
+                        }
+                    }).then(() => {
+                        Swal.fire({
+                            icon: "success",
+                            text: "Product added successfully.",
+                            timer: 700,
+                            position: "bottom-right",
+                            showConfirmButton: false
+                        }).then(() => {
+                            dispatch(addItemToBasket(product))
+                        })
 
-                     }).catch(error => {
-                         return Global_Error(error.message)
-                     })
+                    }).catch(error => {
+                        return Global_Error(error.message)
+                    })
                 }}
             >
                 Add to cart

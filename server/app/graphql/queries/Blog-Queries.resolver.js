@@ -2,7 +2,7 @@ const {GraphQLList, GraphQLString, GraphQLInt} = require("graphql");
 const {BlogType} = require("../typeDefs/Blog.type");
 const {BlogModel} = require("../../models/Blog");
 
-const BlogResolver = {
+const BlogQueriesResolver = {
     type: new GraphQLList(BlogType),
     args: {
         limit: {
@@ -19,5 +19,5 @@ const BlogResolver = {
 };
 
 module.exports = {
-    BlogResolver,
+    BlogResolver: BlogQueriesResolver,
 };

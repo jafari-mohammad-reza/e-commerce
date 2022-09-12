@@ -2,7 +2,7 @@
  * @swagger
  *  components:
  *      schemas:
- *          Update-Profile:
+ *          Update-Index:
  *              type: object
  *              properties:
  *                  firstName:
@@ -99,10 +99,10 @@
  *              content:
  *                  application/x-www-form-urlencoded:
  *                      schema:
- *                          $ref: '#/components/schemas/Update-Profile'
+ *                          $ref: '#/components/schemas/Update-Index'
  *                  application/json:
  *                      schema:
- *                          $ref: '#/components/schemas/Update-Profile'
+ *                          $ref: '#/components/schemas/Update-Index'
  *          responses:
  *              200:
  *                  description: success
