@@ -129,7 +129,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 server/package-lock.json
-server/public
+server/public/uploads
 client/package-lock.json
 client/public
 server/node_modules

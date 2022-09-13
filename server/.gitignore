@@ -1,7 +1,0 @@
-node_modules
-public/uploads
-.vscode
-.idea
-package-lock.json
-yarn-error.log
-yarn.lock
