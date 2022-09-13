@@ -15,8 +15,9 @@
  *                      description: the title of category
  *                  image:
  *                      type: string
- *                      description: the index picture of category
+ *                      format: binary
  */
+
 /**
  * @swagger
  *  /admin/categories/:

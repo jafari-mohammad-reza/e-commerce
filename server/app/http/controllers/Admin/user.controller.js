@@ -6,15 +6,16 @@ const {isValidObjectId} = require("mongoose");
 const {deleteInvalidPropertyInObject, copyObject} = require("../../../utils/functions");
 const {hashPassword} = require("../../../utils/Security");
 const passwordGenerator = require("generate-password")
-const {SendEmail} = require("../../../utils/Senders");
+const {SendEmail, SendSms} = require("../../../utils/Senders");
 module.exports = new (class UserController extends DefaultController {
     async getAll(req, res, next) {
         try {
-            const {search} = req.query;
+            const search = req?.query?.search;
             const dataBaseQuery = {}
             if (search) {
                 dataBaseQuery['$text'] = {$search: search.toString()}
             }
+
             const users = await UserModel.find({$and: [{dataBaseQuery}, {_id: {$ne: req.user._id}}]}, {
                 username: 1,
                 email: 1,
@@ -90,20 +91,41 @@ module.exports = new (class UserController extends DefaultController {
                 throw createHttpError.InternalServerError(error)
             })
         } catch (e) {
-            console.log(e)
+
             next(e)
         }
     }
 
+    async banUser(req,res,next){
+        try{
+            const {id} = req?.params
+            if(!isValidObjectId || !id){
+                throw  createHttpError.BadRequest("Please provide a valid user id")
+            }
+            await UserModel.findByIdAndUpdate(id, {$set : {isBanned :true}}).then(result => {
+                    SendEmail(result.email , `Your account has been banned by our admins, contact our support for more information`)
+                    return res.status(StatusCodes.OK).json({
+                        message : "user has been banned successfully."
+                    })
+            }).catch(error => {
+                throw  createHttpError.InternalServerError(`${error.message}`)
+            })
+        }catch (error) {
+            next(error)
+        }
+    }
+
+
     async createUser(req, res, next) {
         try {
             const requestBody = copyObject(req.body)
-            const {username, email, mobileNumber, Role, password} = requestBody
-            if (await UserModel.findOne({$or: [{email: email}, {mobileNumber: mobileNumber}, {username: username}]})) {
+            let {username, email, mobileNumber, Role, password} = requestBody
+            Role = Role ? Role.toUpperCase() : "USER"
+            if (await UserModel.findOne({$or: [{email}, {mobileNumber}, {username}]})) {
                 throw createHttpError.BadRequest("There is already one user with this credentials")
             }
             if (!email && !mobileNumber) {
-                throw createHttpError.BadRequest("Please email or mobileNumber.")
+                throw createHttpError.BadRequest("Please provide an email or a mobileNumber.")
             }
             const generatedPassword = passwordGenerator.generate({
                 length: 10,
@@ -112,11 +134,12 @@ module.exports = new (class UserController extends DefaultController {
                 numbers: true
             })
             const hashedPassword = password || hashPassword(generatedPassword);
-            console.log(password)
 
-            await UserModel.create({email, username, mobileNumber, Role, password: hashedPassword}).then((result) => {
+
+            await UserModel.create({email, username, mobileNumber, Role, password: hashedPassword , isVerified:true}).then((result) => {
                 if (result) {
-                    SendEmail(email , "Your account information" , `our support has created a account for you, this is credentials of your account \n your email : ${email} \n your password : ${password || generatedPassword}`)
+                    email ? SendEmail(email , "Your account information" , `our support has created a account for you, this is credentials of your account
+                     \n your email : ${email} \n your password : ${password || generatedPassword}`) : SendSms(mobileNumber ,`our support has created a account for you, please login to your account by this mobile number we sent message to `)
                     return res.status(200).json({
                         status: 200,
                         userCredentials: {

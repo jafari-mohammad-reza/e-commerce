@@ -33,7 +33,7 @@ module.exports = new (class AdminBlogController extends DefaultController {
                 author,
             })
                 .then(() => {
-                    return res.status(StatusCodes.OK).json({
+                    return res.status(StatusCodes.CREATED).json({
                         success: true,
                         message: "Blog has been created successfuly.",
                     });
@@ -50,7 +50,7 @@ module.exports = new (class AdminBlogController extends DefaultController {
         try {
             const {id} = req.params;
             if (!isValidObjectId(id)) {
-                return res.status(StatusCodes.BAD_REQUEST).json({
+                return res.status(StatusCodes.BadRequest).json({
                     success: false,
                     message: "Not a valid id",
                 });
@@ -158,7 +158,7 @@ module.exports = new (class AdminBlogController extends DefaultController {
         try {
             const {id} = req.params;
             if (!isValidObjectId(id)) {
-                return res.status(StatusCodes.BAD_REQUEST).json({
+                return res.status(StatusCodes.BadRequest).json({
                     success: false,
                     message: "Not a valid id",
                 });
@@ -173,7 +173,7 @@ module.exports = new (class AdminBlogController extends DefaultController {
                 ])
                 .then((result) => {
                     if (!result) {
-                        return res.status(StatusCodes.NOT_FOUND).json({
+                        return res.status(StatusCodes.NotFound).json({
                             success: false,
                             message: "BLog not found",
                         });

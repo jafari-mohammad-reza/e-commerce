@@ -1,9 +1,7 @@
 /* eslint-disable no-unused-vars */
 const express = require("express");
-const {default: mongoose, mongo} = require("mongoose");
 const path = require("path");
 const createError = require("http-errors");
-const {StatusCodes} = require("http-status-codes");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const cors = require("cors");
@@ -15,7 +13,7 @@ const {mainRouter} = require("./routes/router");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const configureMongoose = require("./conf/mongooseConfiguration");
-const {ProductModel} = require("./models/Product");
+const {DailyDiscount} = require("./utils/crone-tasks/dailyDiscount");
 module.exports = class ApplicationServer {
     #app = express();
 
@@ -121,47 +119,7 @@ module.exports = class ApplicationServer {
     configureDailyDiscounts() {
         cluster.isMaster ? cron.schedule("* * */24 * * *", async () => {
             console.log("\x1b[32m", "running cron job")
-            const randomSkipNumber = Math.floor(await mongoose.model("product").count().exec().then(count => {
-                return count / 4
-            }))
-
-            mongoose.model("product").aggregate([
-                {
-                    $match: {
-                        discount: {$exists: true},
-                        updatedAt: {$lt: new Date() - 1000 * 60 * 60 * 12},
-
-                    }
-                },
-                {
-                    $project: {
-                        _id: 1,
-                        discount: 1,
-                        price: 1
-                    }
-                },
-                {
-                    $skip: randomSkipNumber
-                },
-                {
-                    $limit: 30
-                },
-
-
-            ]).exec(async (err, products) => {
-                if (err) {
-                    console.log(err)
-                    throw new Error(err)
-                } else {
-                    for (const product of products) {
-                        product.discount = Math.floor(Math.random() * 75).toString()
-                        await mongoose.model("product").updateOne({_id: product._id}, product, (_err, _result) => {
-                        })
-                    }
-                    console.log("Daily discounts applied")
-                }
-            })
-
+            await DailyDiscount()
         }, {
             scheduled: true,
             timezone: "Asia/Tehran",

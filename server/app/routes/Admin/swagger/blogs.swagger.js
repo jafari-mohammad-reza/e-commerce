@@ -6,8 +6,8 @@
  *              type: object
  *              required:
  *                  -   title
- *                  -   short_text
- *                  -   text
+ *                  -   overView
+ *                  -   content
  *                  -   tags
  *                  -   category
  *                  -   image
@@ -28,8 +28,8 @@
  *                      type: string
  *                      description: the id of category for foreign field in blogs
  *                  image:
- *                      type: file
- *                      description: the index picture of blogs
+ *                      type: string
+ *                      format: binary
  *          BlogUpdate:
  *              type: object
  *              properties:
@@ -49,7 +49,8 @@
  *                      type: string
  *                      description: the id of category for foreign Field in blogs
  *                  image:
- *                      type: file
+ *                      type: string
+ *                      format: binary
  *                      description: the index picture of blogs
  */
 
@@ -66,7 +67,7 @@
  */
 /**
  * @swagger
- *  /admin/blogs/:
+ *  /admin/blogs:
  *      post:
  *          tags: [ Blog(AdminPanel)]
  *          summary: create Blog document
@@ -76,17 +77,16 @@
  *                  multipart/form-data:
  *                      schema:
  *                          $ref: '#/components/schemas/Blog'
- *                  application/json:
- *                      schema:
- *                          $ref: '#/components/schemas/Blog'
  *          responses:
+ *              200:
+ *                  description: success
  *              201:
  *                  description: created
  */
 /**
  * @swagger
  *  /admin/blogs/{id}:
- *      patch:
+ *      put:
  *          tags: [ Blog(AdminPanel)]
  *          summary: update  Blog document by id
  *          consumes:

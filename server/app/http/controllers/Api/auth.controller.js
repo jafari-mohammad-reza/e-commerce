@@ -22,7 +22,7 @@ const {
 } = require("../../../utils/Security");
 const {
     SendAccountVerification,
-    SendResetPasswordEmail, SendSms,
+  SendSms, SendEmail,
 } = require("../../../utils/Senders");
 const {copyObject} = require("../../../utils/functions");
 module.exports = new (class AuthController extends DefaultController {
@@ -188,7 +188,7 @@ module.exports = new (class AuthController extends DefaultController {
             user.resetPasswordAttempt++;
             user.lastResetPassword = currentDate
             await user.save();
-            await SendResetPasswordEmail(user.email, user.resetPasswordToken);
+            await SendEmail(user.email, `Use this link to reset your password \n http://localhost:3000/reset-password/${user.resetPasswordToken}`);
             return res.status(StatusCodes.OK).json({
                 success: true,
                 message: "we sent you a email contains a link to reset your password",
@@ -200,9 +200,7 @@ module.exports = new (class AuthController extends DefaultController {
 
     async logOut(req, res, next) {
         try {
-
             const user = req?.user
-            console.log(user)
             if (!user) throw createHttpError.Unauthorized("Not a valid token");
             user.accessToken = "";
             user.refreshToken = "";
@@ -222,7 +220,6 @@ module.exports = new (class AuthController extends DefaultController {
     async resetPassword(req, res, next) {
         try {
             const bodyData = await validatePassword.validateAsync(req.body);
-
             const {password, confirmPassword} = bodyData;
             const {resetPasswordToken} = req.params;
             if (password !== confirmPassword) {
@@ -262,8 +259,6 @@ module.exports = new (class AuthController extends DefaultController {
     async getOTP(req, res, next) {
         try {
             const {mobile} = await mobileNumber.validateAsync(req.body);
-
-
             let otp = generateOTP();
             await UserModel.updateOne(
                 {mobileNumber: mobile},

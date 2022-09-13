@@ -2,6 +2,13 @@
  * @swagger
  *  components:
  *      schemas:
+ *          physicalFeature:
+ *              type: object
+ *              properties:
+ *                  title:
+ *                      type: string
+ *                  value:
+ *                      type: string
  *          Color:
  *              type: array
  *              items:
@@ -62,6 +69,12 @@
  *                      items:
  *                          type: string
  *                          format: binary
+ *                  physicalFeatures:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/physicalFeature'
+ *                  colors:
+ *                      $ref: '#/components/schemas/Color'
  */
 
 /**
@@ -127,6 +140,9 @@
  *              required: true
  *              content:
  *                  multipart/form-data:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Product'
+ *                  application/json:
  *                      schema:
  *                          $ref: '#/components/schemas/Product'
  *

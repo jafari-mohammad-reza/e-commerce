@@ -21,7 +21,26 @@
  *                      type: Date
  *                      example: MohammadJafari
  *                      description: the username of user
- *
+ *          createUser:
+ *              type: object
+ *              properties:
+ *                  email:
+ *                      type: email
+ *                      description: user email
+ *                  username:
+ *                      type: string
+ *                      description: user username
+ *                  mobileNumber:
+ *                      type: string
+ *                      description: user mobileNumber
+ *                      example: +989037418138
+ *                  Role:
+ *                      type: string
+ *                      description: user Role
+ *                      example: USER
+ *                  password:
+ *                      type: string
+ *                      description: user password
  */
 /**
  * @swagger
@@ -91,7 +110,7 @@
 /**
  * @swagger
  *  /admin/users/:
- *      patch:
+ *      put:
  *          tags: [Users(AdminPanel)]
  *          summary: update user detail and profile
  *          requestBody:
@@ -100,9 +119,46 @@
  *                  application/x-www-form-urlencoded:
  *                      schema:
  *                          $ref: '#/components/schemas/Update-Index'
- *                  application/json:
+ *          responses:
+ *              200:
+ *                  description: success
+ *                  content:
+ *                      application/json:
+ *                          schema:
+ *                              $ref: '#/definitions/publicDefinition'
+ */
+
+
+
+/**
+ * @swagger
+ *  /admin/users/:
+ *      post:
+ *          tags: [Users(AdminPanel)]
+ *          summary: create new user
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
  *                      schema:
- *                          $ref: '#/components/schemas/Update-Index'
+ *                          $ref: '#/components/schemas/createUser'
+ *          responses:
+ *              200:
+ *                  description: success
+ */
+
+
+/**
+ * @swagger
+ *  /admin/users/ban-user/{id}:
+ *      post:
+ *          tags: [Users(AdminPanel)]
+ *          summary: ban exist user
+ *          parameters:
+ *              - in: path
+ *                name: id
+ *                required: true
+ *                description: exist user id
  *          responses:
  *              200:
  *                  description: success

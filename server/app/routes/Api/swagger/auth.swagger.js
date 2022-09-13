@@ -5,17 +5,17 @@
  *          emailLogin:
  *              type: object
  *              required:
+ *                  -   email
  *                  -   password
  *              properties:
- *                  username:
- *                      type: string
- *                      description: the uniq username of user
  *                  email:
  *                      type: email
  *                      description: the uniq email of user
  *                  password:
  *                      type: string
  *                      description: the strong password of user contains at least one capital one lower case and one numerical letter with length of between 8 and 16
+ *                  rememberme:
+ *                      type: boolean
  *          emailRegister:
  *              type: object
  *              required:
@@ -36,14 +36,22 @@
  *                  confirmPassword:
  *                      type: string
  *                      description: confirmation of user password
- *          resetEmail:
+ *          verifyAccountByEmail:
+ *              type: object
+ *              required:
+ *                  -   code
+ *              properties:
+ *                  code:
+ *                      type: string
+ *                      description: code we sent to your email
+ *          getResetPasswordLink:
  *              type: object
  *              required:
  *                  -   email
  *              properties:
  *                  email:
- *                      type: email
- *                      description: the uniq email of user
+ *                      type: string
+ *                      description: the email address you used for registration
  *          resetPassword:
  *              type: object
  *              required:
@@ -52,19 +60,20 @@
  *              properties:
  *                  password:
  *                      type: string
- *                      description: user new password
+ *                      description: your new password
  *                  confirmPassword:
  *                      type: string
- *                      description: user new password confirmation
- *          getOtp:
+ *                      description: your new password confirmation
+ *          getOTP:
  *              type: object
  *              required:
  *                  -   mobile
  *              properties:
  *                  mobile:
  *                      type: string
- *                      description: user mobile number
- *          verifyOtp:
+ *                      description: your mobile number
+ *                      example: +989037418138
+ *          validateOTP:
  *              type: object
  *              required:
  *                  -   mobile
@@ -72,11 +81,12 @@
  *              properties:
  *                  mobile:
  *                      type: string
- *                      description: user mobile number
+ *                      description: your mobile number
+ *                      example: +989037418138
  *                  otp:
  *                      type: string
- *                      description: user otp code
- *
+ *                      description: the code we have sent to your account
+ *                      example: 238759
  */
 
 
@@ -116,7 +126,7 @@
 
 /**
  * @swagger
- *  /api/v1/auth/mobile/get-otp/:
+ * /api/v1/auth/mobile/get-otp/:
  *      post:
  *          tags: [ Auth(API) ]
  *          summary: get otp code
@@ -125,7 +135,7 @@
  *              content:
  *                  application/x-www-form-urlencoded:
  *                      schema:
- *                          $ref: '#/components/schemas/getOtp'
+ *                          $ref: '#/components/schemas/getOTP'
  *          responses:
  *              200:
  *                  description: auth controller result
@@ -142,7 +152,7 @@
  *              content:
  *                  application/x-www-form-urlencoded:
  *                      schema:
- *                          $ref: '#/components/schemas/verifyOtp'
+ *                          $ref: '#/components/schemas/validateOTP'
  *          responses:
  *              200:
  *                  description: auth controller result
@@ -151,14 +161,16 @@
 
 /**
  * @swagger
- *  /api/v1/auth/email/verify-account/{verificationToken}/:
+ *  /api/v1/auth/email/verify-account/:
  *      post:
  *          tags: [ Auth(API) ]
  *          summary: verify account
- *          parameters:
- *              - in: path
- *                name: verificationToken
- *                type: string
+ *          requestBody:
+ *              required: true
+ *              content:
+ *                  application/x-www-form-urlencoded:
+ *                      schema:
+ *                          $ref: '#/components/schemas/verifyAccountByEmail'
  *          responses:
  *              200:
  *                  description: auth controller result
@@ -166,14 +178,10 @@
 
 /**
  * @swagger
- *  /api/v1/auth/email/resend-code/{token}/:
+ *  /api/v1/auth/email/resend-code/:
  *      post:
  *          tags: [ Auth(API) ]
  *          summary: resend verification code
- *          parameters:
- *              - in: path
- *                name: token
- *                type: string
  *          responses:
  *              200:
  *                  description: auth controller result
@@ -181,14 +189,10 @@
 
 /**
  * @swagger
- *  /api/v1/auth/email/logout/{accessToken}/:
+ *  /api/v1/auth/email/logout/:
  *      post:
  *          tags: [ Auth(API) ]
  *          summary: logout from account
- *          parameters:
- *              - in: path
- *                name: accessToken
- *                type: string
  *          responses:
  *              200:
  *                  description: auth controller result
@@ -218,7 +222,7 @@
 
 /**
  * @swagger
- *  /api/v1/auth/email/get-reset-password/:
+ *  /api/v1/auth/email/forgot-password/:
  *      post:
  *          tags: [ Auth(API) ]
  *          summary: get reset password link
@@ -227,7 +231,7 @@
  *              content:
  *                  application/x-www-form-urlencoded:
  *                      schema:
- *                          $ref: '#/components/schemas/emailLogin'
+ *                          $ref: '#/components/schemas/getResetPasswordLink'
  *          responses:
  *              200:
  *                  description: auth controller result
