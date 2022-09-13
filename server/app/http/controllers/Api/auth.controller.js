@@ -22,7 +22,7 @@ const {
 } = require("../../../utils/Security");
 const {
     SendAccountVerification,
-  SendSms, SendEmail,
+    SendSms, SendEmail,
 } = require("../../../utils/Senders");
 const {copyObject} = require("../../../utils/functions");
 module.exports = new (class AuthController extends DefaultController {
@@ -266,7 +266,7 @@ module.exports = new (class AuthController extends DefaultController {
                 {upsert: true}
             )
                 .then((result) => {
-                    SendSms(mobile , `Your verification code ${otp.code}, this code will expire in next 2 minutes`)
+                    SendSms(mobile, `Your verification code ${otp.code}, this code will expire in next 2 minutes`)
                     return res.status(StatusCodes.OK).json({
                         success: true,
                         message:
@@ -283,7 +283,7 @@ module.exports = new (class AuthController extends DefaultController {
 
     async validateOTP(req, res, next) {
         try {
-            const  {mobile, otp} = await loginByMobile.validateAsync(req.body);
+            const {mobile, otp} = await loginByMobile.validateAsync(req.body);
             const user = await UserModel.findOne(
                 {mobileNumber: mobile},
                 {otp: 1, mobileNumber: 1, Role: 1}

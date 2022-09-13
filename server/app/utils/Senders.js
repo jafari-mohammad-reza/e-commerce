@@ -32,35 +32,35 @@ function SendAccountVerification(receiver, code) {
         },
         (err, result) => {
             if (err) {
-               throw createHttpError.InternalServerError("Something went wrong" + err.message)
+                throw createHttpError.InternalServerError("Something went wrong" + err.message)
             }
         }
     );
 }
 
-function SendEmail(receiver , subject , content ) {
+function SendEmail(receiver, subject, content) {
     transporter.sendMail({
-        to:receiver,
+        to: receiver,
         from: "E-Commerce store",
         subject: subject,
-        text : content,
+        text: content,
 
-    } , (err, result) => {
+    }, (err, result) => {
         if (err) {
             throw createHttpError.InternalServerError("Something went wrong" + err.message)
         }
-    } )
+    })
 }
 
 
-function SendSms(receiver,content) {
+function SendSms(receiver, content) {
     messages
         .create({
             messagingServiceSid: 'MGdc5a0b6342b0bf0ed39695b34c918845',
             body: content,
             to: receiver,
-            from : "+17432442557",
-            forceDelivery:true
+            from: "+17432442557",
+            forceDelivery: true
         })
         .then(message => console.log(`SMS sent ${message.status}`)).catch(error => {
         throw createHttpError.InternalServerError("Something went wrong" + error.message).done()
@@ -68,8 +68,7 @@ function SendSms(receiver,content) {
 }
 
 
-
 module.exports = {
     SendEmail,
-    SendAccountVerification,SendSms
+    SendAccountVerification, SendSms
 };

@@ -1,4 +1,4 @@
-    import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useDispatch, useSelector} from "react-redux";
 import {logout, selectCurrentUser} from "../app/features/authSlice";
 import Link from "next/link";
@@ -15,7 +15,7 @@ const UserLayout = ({children}) => {
     }, [])
     const dispatch = useDispatch()
     const [currentPage, setCurrentPage] = useState("Profile")
-    const UserLink = ({title , path = undefined}) => {
+    const UserLink = ({title, path = undefined}) => {
         return <Link href={`/user/${path ? path.toLowerCase() : title.toLowerCase()}`}>
             <a className={`font-semibold text-xl lg:text-2xl ${currentPage === title && "text-blue-500"} hover:text-blue-300`}
                onClick={() => setCurrentPage(title)}>

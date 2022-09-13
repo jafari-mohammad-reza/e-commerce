@@ -96,21 +96,21 @@ module.exports = new (class UserController extends DefaultController {
         }
     }
 
-    async banUser(req,res,next){
-        try{
+    async banUser(req, res, next) {
+        try {
             const {id} = req?.params
-            if(!isValidObjectId || !id){
+            if (!isValidObjectId || !id) {
                 throw  createHttpError.BadRequest("Please provide a valid user id")
             }
-            await UserModel.findByIdAndUpdate(id, {$set : {isBanned :true}}).then(result => {
-                    SendEmail(result.email , `Your account has been banned by our admins, contact our support for more information`)
-                    return res.status(StatusCodes.OK).json({
-                        message : "user has been banned successfully."
-                    })
+            await UserModel.findByIdAndUpdate(id, {$set: {isBanned: true}}).then(result => {
+                SendEmail(result.email, `Your account has been banned by our admins, contact our support for more information`)
+                return res.status(StatusCodes.OK).json({
+                    message: "user has been banned successfully."
+                })
             }).catch(error => {
                 throw  createHttpError.InternalServerError(`${error.message}`)
             })
-        }catch (error) {
+        } catch (error) {
             next(error)
         }
     }
@@ -136,10 +136,17 @@ module.exports = new (class UserController extends DefaultController {
             const hashedPassword = password || hashPassword(generatedPassword);
 
 
-            await UserModel.create({email, username, mobileNumber, Role, password: hashedPassword , isVerified:true}).then((result) => {
+            await UserModel.create({
+                email,
+                username,
+                mobileNumber,
+                Role,
+                password: hashedPassword,
+                isVerified: true
+            }).then((result) => {
                 if (result) {
-                    email ? SendEmail(email , "Your account information" , `our support has created a account for you, this is credentials of your account
-                     \n your email : ${email} \n your password : ${password || generatedPassword}`) : SendSms(mobileNumber ,`our support has created a account for you, please login to your account by this mobile number we sent message to `)
+                    email ? SendEmail(email, "Your account information", `our support has created a account for you, this is credentials of your account
+                     \n your email : ${email} \n your password : ${password || generatedPassword}`) : SendSms(mobileNumber, `our support has created a account for you, please login to your account by this mobile number we sent message to `)
                     return res.status(200).json({
                         status: 200,
                         userCredentials: {

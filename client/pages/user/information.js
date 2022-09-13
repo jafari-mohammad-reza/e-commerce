@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef} from 'react';
 import UserLayout from "../../components/UserLayout";
 import {useMutation, useQuery} from "@apollo/client";
 import {GetUserDashboard_Query} from "../../graphql/Queries/GlobalQueries";
@@ -12,35 +12,35 @@ const Information = () => {
     const mobileNumberRef = useRef(undefined)
     const addressRef = useRef(undefined)
     const birthdayRef = useRef(undefined)
-    const {data , loading} = useQuery(GetUserDashboard_Query)
+    const {data, loading} = useQuery(GetUserDashboard_Query)
     const router = useRouter()
-    const [updateInformationFunction , {data:updateData}] = useMutation(UpdateProfile_Mutation )
+    const [updateInformationFunction, {data: updateData}] = useMutation(UpdateProfile_Mutation)
     useEffect(() => {
-        if(!loading){
-            const userDashboardData =data.GetUserDashboard.data
+        if (!loading) {
+            const userDashboardData = data.GetUserDashboard.data
             emailRef.current.value = userDashboardData.email
             usernameRef.current.value = userDashboardData.username
-            mobileNumberRef.current.value = userDashboardData.mobileNumber ||""
+            mobileNumberRef.current.value = userDashboardData.mobileNumber || ""
             addressRef.current.value = userDashboardData.address || ""
             birthdayRef.current.value = userDashboardData.birthday.split("T")[0] || ""
 
         }
-    } , [data,loading])
+    }, [data, loading])
 
-    const handleSubmit =async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         await updateInformationFunction({
-            variables : {
-                email :emailRef.current.value,
-                username :usernameRef.current.value,
-                mobileNumber :mobileNumberRef.current.value,
-                address :addressRef.current.value,
-                birthday :birthdayRef.current.value,
+            variables: {
+                email: emailRef.current.value,
+                username: usernameRef.current.value,
+                mobileNumber: mobileNumberRef.current.value,
+                address: addressRef.current.value,
+                birthday: birthdayRef.current.value,
             }
         }).then((result) => {
-            if(result?.data?.UpdateProfile.statusCode) {
-                 Global_Success("Your information updated successfully")
-                 return router.reload()
+            if (result?.data?.UpdateProfile.statusCode) {
+                Global_Success("Your information updated successfully")
+                return router.reload()
             }
         }).catch(err => {
             console.log(err)
@@ -54,7 +54,7 @@ const Information = () => {
                 encType="multipart/form-data" onSubmit={(e) => handleSubmit(e)}>
                 {loading ? <h1>Loading</h1> : <>
                     <input type="text" className={'admin_input'} placeholder={'Email address'}
-                           ref={emailRef} />
+                           ref={emailRef}/>
                     <input type="text" className={'admin_input'} placeholder={'Username'}
                            ref={usernameRef}/>
                     <input type="text" className={'admin_input'} placeholder={'mobile number'}

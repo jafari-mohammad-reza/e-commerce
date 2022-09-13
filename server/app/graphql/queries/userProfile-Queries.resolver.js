@@ -59,29 +59,29 @@ const GetUserDashboard = {
     resolve: async (_, args, context) => {
         const {headers} = context
         const user = await GraphqlTokenAuth(headers)
-        const data  = await UserModel.aggregate([
+        const data = await UserModel.aggregate([
             {
                 $match: {
                     _id: user._id,
                 }
             },
             {
-                $project : {
-                    email :true,
-                    username:true,
-                    mobileNumber:true,
-                    orders:true,
-                    walletCredit:true,
-                    address:true,
-                    birthday:true
+                $project: {
+                    email: true,
+                    username: true,
+                    mobileNumber: true,
+                    orders: true,
+                    walletCredit: true,
+                    address: true,
+                    birthday: true
                 }
             },
 
         ]);
 
         return {
-            statusCode :StatusCodes.OK,
-            data : data[0]
+            statusCode: StatusCodes.OK,
+            data: data[0]
         }
 
     },
@@ -92,11 +92,11 @@ const GetUserDiscounts = {
     resolve: async (_, args, context) => {
         const {headers} = context
         const user = await GraphqlTokenAuth(headers)
-        const data = await UserModel.findById(user._id , {discounts: 1})
+        const data = await UserModel.findById(user._id, {discounts: 1})
 
         return {
-            statusCode :StatusCodes.OK,
-            data :data.discounts
+            statusCode: StatusCodes.OK,
+            data: data.discounts
         }
     },
 }

@@ -1,6 +1,6 @@
-const {default : mongoose} = require("mongoose");
+const {default: mongoose} = require("mongoose");
 
-async function DailyDiscount(){
+async function DailyDiscount() {
     const randomSkipNumber = Math.floor(await mongoose.model("product").count().exec().then(count => {
         return count / 4
     }))

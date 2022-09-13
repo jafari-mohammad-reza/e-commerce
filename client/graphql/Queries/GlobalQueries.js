@@ -106,22 +106,22 @@ export const GetProductDetail_Query = gql`
 
 export const GetUserShoppingCart_Query = gql`
     query GetUserShoppingCart {
-        GetUserShoppingCart 
+        GetUserShoppingCart
     }
 `
 
 
 export const GetUserDashboard_Query = gql`
     query GetUserDashboard{
-    GetUserDashboard {
-    statusCode
-    data
+        GetUserDashboard {
+            statusCode
+            data
+        }
     }
-    }
-    
+
 `
 
-export const GetUserOrders_Query  = gql`
+export const GetUserOrders_Query = gql`
     query UserOrders{
         GetUserOrders {
             data
@@ -132,7 +132,7 @@ export const GetUserOrderDetail_Query = gql`
     query OrderDetail($orderId : Int!){
         GetUserOrderdetail(orderId : $orderId){
             data
-        }   
+        }
     }
 `
 
@@ -142,7 +142,7 @@ export const GetUserDiscounts_Query = gql`
             data
         }
     }
-        
+
 `
 
 

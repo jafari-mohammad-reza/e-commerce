@@ -18,7 +18,7 @@ module.exports = new (class AdminProductController extends DefaultController {
                 req?.files || [],
                 req.body.fileUploadPath
             );
-            req.body.physicalFeatures =Array(req.body.physicalFeatures).map(item => {
+            req.body.physicalFeatures = Array(req.body.physicalFeatures).map(item => {
                 return JSON.parse(item)
             })
             req.body.colors = Array(req.body.colors)

@@ -37,7 +37,7 @@ const createProductValidator = Joi.object({
         title: Joi.string().required(),
         value: Joi.string().required()
     })).empty(),
-    colors : Joi.array().items(Joi.string()).allow(),
+    colors: Joi.array().items(Joi.string()).allow(),
     additionalFeatured: Joi.object().empty()
 });
 module.exports = {

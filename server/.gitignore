@@ -1,6 +1,7 @@
 node_modules
-public
+public/uploads
 .vscode
 .idea
 package-lock.json
-test
+yarn-error.log
+yarn.lock

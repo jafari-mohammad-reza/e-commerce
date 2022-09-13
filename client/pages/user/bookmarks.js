@@ -8,7 +8,7 @@ const Bookmarks = ({bookmarks}) => {
         <UserLayout>
             <div className={'flex flex-col items-start justify-start overflow-x-hidden overflow-y-scroll'}>
                 {
-                    bookmarks.length >0 ? bookmarks.map(bookmarked => (
+                    bookmarks.length > 0 ? bookmarks.map(bookmarked => (
                         <div key={bookmarked._id}>
                             <h2>{bookmarked.title}</h2>
                         </div>
@@ -22,17 +22,18 @@ const Bookmarks = ({bookmarks}) => {
 
 export async function getServerSideProps(context) {
     const {data} = await client.query({
-        query :GetMarkedProducts_Query,
-        context : {
+        query: GetMarkedProducts_Query,
+        context: {
             headers: {
-                "authorization" : `Bearer ${context.req.cookies["access_token"]}`
+                "authorization": `Bearer ${context.req.cookies["access_token"]}`
             }
         }
     })
     return {
-        props : {
-            bookmarks : data.GetMarkedProducts
+        props: {
+            bookmarks: data.GetMarkedProducts
         }
     }
 }
+
 export default Bookmarks;

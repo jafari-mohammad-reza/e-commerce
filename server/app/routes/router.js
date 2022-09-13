@@ -4,8 +4,8 @@ const {VerifyAccessToken} = require("../http/middleWares/TokenAuthorization");
 const {graphqlHTTP} = require("express-graphql");
 const graphQlSchema = require("../graphql/index.graphql");
 const {graphQlConfig} = require("../conf/graphql.config");
-const {DeveloperRouter} = require("./Developer/loadTest");
 const {StatusCodes} = require("http-status-codes");
+const path = require("path")
 const limit = require("express-rate-limit");
 const router = require("express").Router();
 // router.all("*", (req, res, next) => {
@@ -25,7 +25,11 @@ const graphqlLimit = limit({
 router.use("/graphql",
     graphqlLimit,
     graphqlHTTP(graphQlConfig))
-router.use("/developer", DeveloperRouter)
+router.get("/graphql-doc" , (req,res,next) =>{
+
+    return res.render("swagger-doc/index.html" )
+})
+
 module.exports = {
     mainRouter: router,
 };
