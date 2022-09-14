@@ -7,7 +7,7 @@ const {isValidObjectId} = require("mongoose");
 const GetUserOrders = {
     type: ResponseType,
     resolve: async (_, args, context) => {
-        const user = await GraphqlTokenAuth(context.headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         return OrderModel.find({costumer: user._id})
     }
 }
@@ -18,7 +18,7 @@ const GetUserOrderDetail = {
         orderId: {type: new GraphQLNonNull(GraphQLString)}
     },
     resolve: async (_, args, context) => {
-        const user = await GraphqlTokenAuth(context.headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         const {orderId} = args
         if (!isValidObjectId(orderId)) {
             throw createHttpError.BadRequest("Not a valid order id")

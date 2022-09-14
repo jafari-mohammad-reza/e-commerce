@@ -2,7 +2,7 @@
  * @swagger
  *  components:
  *      schemas:
- *          physicalFeature:
+ *          feature:
  *              type: object
  *              properties:
  *                  title:
@@ -72,7 +72,11 @@
  *                  physicalFeatures:
  *                      type: array
  *                      items:
- *                          $ref: '#/components/schemas/physicalFeature'
+ *                          $ref: '#/components/schemas/feature'
+ *                  additionalFeatures:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/feature'
  *                  colors:
  *                      $ref: '#/components/schemas/Color'
  */
@@ -113,18 +117,14 @@
  *                      items:
  *                          type: string
  *                          format: binary
- *                  height:
- *                      type: string
- *                      description: the height of product packet
- *                  weight:
- *                      type: string
- *                      description: the weight of product packet
- *                  width:
- *                      type: string
- *                      description: the with of product packet
- *                  length:
- *                      type: string
- *                      description: the length of product packet
+ *                  physicalFeatures:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/feature'
+ *                  additionalFeatures:
+ *                      type: array
+ *                      items:
+ *                          $ref: '#/components/schemas/feature'
  *                  colors:
  *                      $ref: '#/components/schemas/Color'
  *

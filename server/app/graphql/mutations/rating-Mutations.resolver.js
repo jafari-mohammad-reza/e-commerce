@@ -15,7 +15,7 @@ const RateProduct = {
     },
     resolve: async (parent, args, context) => {
         const {headers} = context
-        const user = await GraphqlTokenAuth(headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         const {productId, stars} = args;
         if (stars > 5 || stars < 1) throw new createHttpError(StatusCodes.BAD_REQUEST, "star must be between 1 and 5");
         if (!isValidObjectId(productId)) {

@@ -28,6 +28,7 @@ const ProductSchema = new mongoose.Schema(
         stockCount: {type: Number, default: 0},
         supplier: {type: mongoose.Types.ObjectId, ref: "user", required: true},
         physicalFeatures: {type: [Object], required: false},
+        additionalFeatured: {type: [Object], required: false},
         isActive: {type: Boolean, default: true},
         isPrime: {type: Boolean, default: false},
         bookmarks: {type: [mongoose.Types.ObjectId], ref: "user", default: []},

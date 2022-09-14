@@ -7,8 +7,7 @@ const {
     emailLoginValidator,
     isEmailValid,
     loginByMobile,
-    mobileNumber,
-    validatePassword,
+    validatePassword, mobileValidator,
 } = require("../../validators/Api/auth.validators");
 const {
     generateAccessToken,
@@ -120,6 +119,7 @@ module.exports = new (class AuthController extends DefaultController {
                         "you've been registered successfully, make sure to verify your account by the link send to your email.",
                 });
         } catch (error) {
+            console.log(error)
             next(error);
         }
     }
@@ -258,7 +258,7 @@ module.exports = new (class AuthController extends DefaultController {
     //! Mobile Authentication
     async getOTP(req, res, next) {
         try {
-            const {mobile} = await mobileNumber.validateAsync(req.body);
+            const {mobile} = await mobileValidator.validateAsync(req.body);
             let otp = generateOTP();
             await UserModel.updateOne(
                 {mobileNumber: mobile},

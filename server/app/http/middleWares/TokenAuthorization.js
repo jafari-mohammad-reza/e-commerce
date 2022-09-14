@@ -105,7 +105,7 @@ const GraphqlTokenAuth = async (headers) => {
         const {email, mobileNumber} = encoded.payload || {};
         const user = await UserModel.findOne(
             {$or: [{email}, {mobileNumber}]},
-            {mobileNumber: 1, email: 1, username: 1, Role: 1}
+            {mobileNumber: 1, email: 1, username: 1, Role: 1 , birthdate:1}
         );
         if (!user) {
             throw new createHttpError.Unauthorized("no account");

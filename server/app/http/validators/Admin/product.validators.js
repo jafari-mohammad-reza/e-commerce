@@ -26,6 +26,7 @@ const createProductValidator = Joi.object({
     price: Joi.number().required().min(0),
     discount: Joi.number()
         .min(0)
+        .max(100)
         .error(
             createHttpError.BadRequest(
                 "Discount percent must be between 0 to 100 percent"
@@ -38,7 +39,10 @@ const createProductValidator = Joi.object({
         value: Joi.string().required()
     })).empty(),
     colors: Joi.array().items(Joi.string()).allow(),
-    additionalFeatured: Joi.object().empty()
+    additionalFeatures: Joi.array().items(Joi.object({
+        title: Joi.string().required(),
+        value: Joi.string().required()
+    })).empty(),
 });
 module.exports = {
     createProductValidator,

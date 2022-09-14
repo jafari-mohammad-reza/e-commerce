@@ -43,9 +43,9 @@ const RatingSchema = new mongoose.Schema({
     postBy: {type: mongoose.Types.ObjectId, ref: "user", required: true},
 });
 const DiscountSchema = new mongoose.Schema({
-    code: {type: String, required: true, unique: true},
+    code: {type: String, required: true},
     percentage: {type: Number, min: 0, max: 100, required: true},
-    expirationTime: {type: Date, required: true}
+    expiresIn: {type: Date, required: true}
 })
 
 module.exports = {

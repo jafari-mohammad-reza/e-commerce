@@ -19,7 +19,7 @@ const AddProductToCart = {
     },
     resolve: async (_, args, context) => {
         const {headers} = context
-        const user = await GraphqlTokenAuth(headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         const {productId} = args;
         const existProductInBasket = await findProductInBasket(productId, user._id);
         let message;
@@ -68,7 +68,7 @@ const RemoveProductFromCart = {
     },
     resolve: async (_, args, context) => {
         const {headers} = context
-        const user = await GraphqlTokenAuth(headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         const {productId} = args;
         const existProductInBasket = await findProductInBasket(productId, user._id);
         if (!existProductInBasket) {

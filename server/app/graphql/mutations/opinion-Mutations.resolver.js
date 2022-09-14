@@ -13,7 +13,7 @@ const LikeBlog = {
     },
     resolve: async (_, args, context) => {
         const {headers} = context
-        const user = await GraphqlTokenAuth(headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         const {blogId} = args;
         const blog = await BlogModel.findById(blogId);
         if (!blog || !isValidObjectId(blogId)) {
@@ -47,7 +47,7 @@ const DisLikeBlog = {
     },
     resolve: async (_, args, context) => {
         const {headers} = context
-        const user = await GraphqlTokenAuth(headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         const {blogId} = args;
         const blog = await BlogModel.findById(blogId);
         if (!blog || !isValidObjectId(blogId)) {

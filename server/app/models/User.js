@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema(
         },
         orders: {type: [mongoose.Types.objectId], ref: "order", default: []},
         bookMarks: {type: [mongoose.Types.ObjectId], default: []},
-        birthday: {type: Date, required: false},
+        birthdate: {type: Date, required: false , default:undefined},
         Role: {type: String, default: "USER"},
         isVerified: {type: Boolean, default: false},
         isPrime: {type: Boolean, default: false},

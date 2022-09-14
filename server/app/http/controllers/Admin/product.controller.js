@@ -18,10 +18,20 @@ module.exports = new (class AdminProductController extends DefaultController {
                 req?.files || [],
                 req.body.fileUploadPath
             );
-            req.body.physicalFeatures = Array(req.body.physicalFeatures).map(item => {
-                return JSON.parse(item)
-            })
-            req.body.colors = Array(req.body.colors)
+            if(req.body.physicalFeatures){
+                req.body.physicalFeatures = Array(req.body.physicalFeatures).map(item => {
+                    return JSON.parse(item)
+                })
+            }
+            if(req.body.additionalFeatures){
+
+                req.body.additionalFeatures = Array(req.body.additionalFeatures).map(item => {
+                    return JSON.parse(item)
+                })
+            }
+            if(req.body.colors ){
+                req.body.colors = Array(req.body.colors)
+            }
             const bodyData = await createProductValidator.validateAsync(req.body);
 
             const {
@@ -34,6 +44,7 @@ module.exports = new (class AdminProductController extends DefaultController {
                 discount,
                 price,
                 physicalFeatures,
+                additionalFeatures,
                 colors
             } = bodyData;
             const supplier = req.user._id;
@@ -47,6 +58,7 @@ module.exports = new (class AdminProductController extends DefaultController {
                 stockCount,
                 price,
                 physicalFeatures,
+                additionalFeatures,
                 supplier,
                 images,
                 colors

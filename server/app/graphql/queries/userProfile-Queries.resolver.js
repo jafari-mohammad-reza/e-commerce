@@ -22,7 +22,7 @@ const GetMarkedBlogs = {
     },
     resolve: async (_, args, context) => {
         const {headers} = context
-        const user = await GraphqlTokenAuth(headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         const {limit} = args;
         return await BlogModel.find({bookmarks: user._id}).limit(limit);
     },
@@ -38,7 +38,7 @@ const GetMarkedProducts = {
     },
     resolve: async (_, args, context) => {
         const {headers} = context
-        const user = await GraphqlTokenAuth(headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         const {limit} = args;
         return await ProductModel.find({bookmarks: user._id}).limit(limit);
     },
@@ -48,7 +48,7 @@ const GetUserShoppingCart = {
     type: AnyType,
     resolve: async (_, args, context) => {
         const {headers} = context
-        const user = await GraphqlTokenAuth(headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         return await getUserCart(user._id);
 
     },
@@ -58,7 +58,7 @@ const GetUserDashboard = {
     type: ResponseType,
     resolve: async (_, args, context) => {
         const {headers} = context
-        const user = await GraphqlTokenAuth(headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         const data = await UserModel.aggregate([
             {
                 $match: {
@@ -73,7 +73,7 @@ const GetUserDashboard = {
                     orders: true,
                     walletCredit: true,
                     address: true,
-                    birthday: true
+                    birthdate: true
                 }
             },
 
@@ -91,7 +91,7 @@ const GetUserDiscounts = {
     type: ResponseType,
     resolve: async (_, args, context) => {
         const {headers} = context
-        const user = await GraphqlTokenAuth(headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         const data = await UserModel.findById(user._id, {discounts: 1})
 
         return {

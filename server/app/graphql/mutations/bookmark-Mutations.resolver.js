@@ -15,7 +15,7 @@ const BookMarkBlog = {
     },
     resolve: async (_, args, context) => {
         const {headers} = context
-        const user = await GraphqlTokenAuth(headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         const {blogId} = args;
         const blog = await BlogModel.findById(blogId);
         if (!blog || !isValidObjectId(blogId)) {
@@ -50,7 +50,7 @@ const BookMarkProduct = {
     },
     resolve: async (_, args, context) => {
         const {headers} = context
-        const user = await GraphqlTokenAuth(headers)
+        const user = await GraphqlTokenAuth(context.req.headers)
         const {productId} = args;
         const product = await ProductModel.findById(productId);
         if (!product || !isValidObjectId(productId)) {

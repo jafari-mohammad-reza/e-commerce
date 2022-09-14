@@ -27,7 +27,7 @@ const CreateBlogComment = {
     },
     resolve: async (_, args, context) => {
         const {headers} = context
-        const author = await GraphqlTokenAuth(headers)
+        const author = await GraphqlTokenAuth(context.req.headers)
         const {blogId, content, parent} = args;
 
         const blog = await BlogModel.findById(blogId);
@@ -92,7 +92,7 @@ const CreateProductComment = {
     },
     resolve: async (_, args, context) => {
         const {headers} = context
-        const author = await GraphqlTokenAuth(headers)
+        const author = await GraphqlTokenAuth(context.req.headers)
         const {productId, content, parent} = args;
 
         const product = await ProductModel.findById(productId);

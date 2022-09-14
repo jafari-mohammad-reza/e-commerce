@@ -13,7 +13,7 @@ const {mainRouter} = require("./routes/router");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const configureMongoose = require("./conf/mongooseConfiguration");
-const {DailyDiscount} = require("./utils/crone-tasks/dailyDiscount");
+const {UserBirthDayDiscount ,DailyDiscount} = require("./utils/schedule-tasks");
 module.exports = class ApplicationServer {
     #app = express();
 
@@ -23,7 +23,7 @@ module.exports = class ApplicationServer {
         this.configureDataBases(mongoUrl);
         this.configureRoutes();
         this.configureErrorHandlers();
-        this.configureDailyDiscounts()
+        this.configureScheduleTasks()
     }
 
     configureApplication() {
@@ -116,10 +116,11 @@ module.exports = class ApplicationServer {
 
     }
 
-    configureDailyDiscounts() {
+    configureScheduleTasks() {
         cluster.isMaster ? cron.schedule("* * */24 * * *", async () => {
             console.log("\x1b[32m", "running cron job")
             await DailyDiscount()
+            await UserBirthDayDiscount()
         }, {
             scheduled: true,
             timezone: "Asia/Tehran",

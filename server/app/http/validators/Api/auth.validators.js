@@ -79,21 +79,15 @@ const isEmailValid = Joi.object({
             "string.email": "make sure to enter a valid email address"
         })
 })
-const mobileNumber = Joi.object({
-    mobile: Joi.string()
-        .required().pattern(/^(\+98|0)?9\d{9}$/)
-        .trim().messages({
-            "any.required": "Mobile cannot be empty",
-            "any.pattern": "Not a valid mobile number  "
-        })
-});
+const mobileValidator =Joi.string()
+    .required().pattern(/^(\+98|0)?9\d{9}$/)
+    .trim().messages({
+        "any.required": "Mobile cannot be empty",
+        "any.pattern": "Not a valid mobile number  "
+    })
+
 const loginByMobile = Joi.object({
-    mobile: Joi.string()
-        .required().pattern(/^(\+98|0)?9\d{9}$/)
-        .trim().messages({
-            "any.required": "Mobile cannot be empty",
-            "any.pattern": "Not a valid mobile number  "
-        }),
+    mobile:mobileValidator,
     otp: Joi.string().required().length(6).messages({
         "any.required": "OTP cannot be empty",
         "string.length": "OTP should bbe 6 numbers"
@@ -104,7 +98,7 @@ module.exports = {
     emailLoginValidator,
     emailRegisterValidator,
     isEmailValid,
-    mobileNumber,
+    mobileValidator,
     loginByMobile,
     validatePassword
 };
