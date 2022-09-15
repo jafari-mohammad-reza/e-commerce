@@ -1,6 +1,9 @@
-const autoBind = require("auto-bind");
+const autoBind = require('auto-bind');
 module.exports = class {
-    constructor() {
-        autoBind(this);
-    }
+  /**
+     * active auto binding to all controllers tact inheritance from this class
+     * */
+  constructor() {
+    autoBind(this);
+  }
 };

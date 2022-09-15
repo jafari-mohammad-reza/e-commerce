@@ -45,8 +45,8 @@ export const RemoveProductFromCart = gql`
 
 
 export const UpdateProfile_Mutation = gql`
-    mutation UpdateProfile($email : String ,$username : String ,$mobileNumber : String , $address : String , $birthday : String) {
-        UpdateProfile(email:$email,username:$username,mobileNumber:$mobileNumber,address:$address,birthday:$birthday) {
+    mutation UpdateProfile($email : String ,$username : String ,$mobileNumber : String , $address : String , $birthdate : String) {
+        UpdateProfile(email:$email,username:$username,mobileNumber:$mobileNumber,address:$address,birthdate:$birthdate) {
             data
             statusCode
         }

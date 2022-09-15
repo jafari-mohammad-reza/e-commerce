@@ -1,24 +1,24 @@
-const {default: mongoose} = require("mongoose");
-
+const {default: mongoose} = require('mongoose');
+const createHttpError = require('http-errors');
+/**
+ * connect to mongodb
+ * @param {string} mongoUrl
+ * */
 function configureMongoose(mongoUrl) {
-    mongoose.connect(mongoUrl);
-    const connection = mongoose.connection;
-    connection.on("open", () => {
-        console.log("\x1b[34m", "Connected to mongodb");
+  mongoose.connect(mongoUrl).then((result) => {
+    const connection = result.connection;
+    console.log('connected to mongo');
+    connection.on('close', () => {
+      console.log('\x1b[33m', 'Disconnected from mongodb');
     });
-    connection.on("close", () => {
-        console.log("\x1b[33m", "Disconnected from mongodb");
+    process.once('SIGINT', async () => {
+      await connection.close();
+      process.exit(0);
     });
-    connection.once("error", (error) => {
-        console.log(
-            "\x1b[35m",
-            `Error while connecting to mongodb , error : ${error.message}`
-        );
-    });
-    process.once("SIGINT", async () => {
-        await connection.close();
-        process.exit(0);
-    });
+  }).catch((error) => {
+    console.log(error);
+    throw createHttpError.InternalServerError(`Mongoose failed to connect ${error.message}`);
+  });
 }
 
 module.exports = configureMongoose;
