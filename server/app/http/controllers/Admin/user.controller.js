@@ -7,6 +7,7 @@ const {copyObject, deleteInvalidPropertyInObject} = require('../../../utils/func
 const {hashPassword} = require('../../../utils/Security');
 const passwordGenerator = require('generate-password');
 const {SendEmail, SendSms} = require('../../../utils/Senders');
+const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class UserController extends DefaultController {
   /**
    * get all users in database except the request user
@@ -66,6 +67,7 @@ module.exports = new (class UserController extends DefaultController {
       }).catch((err) => {
         throw createHttpError.internalServerError(err);
       });
+      await redisClient.setEx(id, 3600, JSON.stringify(user));
       return res.status(StatusCodes.OK).json({
         success: true,
         user: user,

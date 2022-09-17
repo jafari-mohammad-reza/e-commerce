@@ -9,6 +9,7 @@ const {
 const {
   copyObject,
 } = require('../../../utils/functions');
+const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class RoleController extends DefaultController {
   /**
      * create new role with list of permissions
@@ -93,9 +94,13 @@ module.exports = new (class RoleController extends DefaultController {
                   'role has not been found.',
               );
             }
-            return res.status(StatusCodes.OK).json({
-              success: true,
-              role: result,
+            redisClient.setEx(id, 3600, JSON.stringify(result)).then(() => {
+              return res.status(StatusCodes.OK).json({
+                success: true,
+                role: result,
+              });
+            }).catch((error) => {
+              throw createHttpError.InternalServerError(error);
             });
           })
           .catch((error) => {

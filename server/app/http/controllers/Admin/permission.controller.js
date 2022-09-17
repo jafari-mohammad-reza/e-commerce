@@ -3,6 +3,7 @@ const createHttpError = require('http-errors');
 const {PermissionsModel} = require('../../../models/Permission');
 const {StatusCodes} = require('http-status-codes');
 const {isValidObjectId} = require('mongoose');
+const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class PermissionController extends DefaultController {
   /**
      * get all permissions in database
@@ -46,9 +47,13 @@ module.exports = new (class PermissionController extends DefaultController {
                   'permission has not been found.',
               );
             }
-            return res.status(StatusCodes.OK).json({
-              success: true,
-              permission: result,
+            redisClient.setEx(id, 3600, JSON.stringify(result)).then(() => {
+              return res.status(StatusCodes.OK).json({
+                success: true,
+                permission: result,
+              });
+            }).catch((error) => {
+              throw createHttpError.InternalServerError(error);
             });
           })
           .catch((error) => {

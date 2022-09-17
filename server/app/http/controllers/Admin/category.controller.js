@@ -8,6 +8,7 @@ const {StatusCodes} = require('http-status-codes');
 const {isValidObjectId} = require('mongoose');
 const path = require('path');
 const {deleteImageFromPath} = require('../../../utils/imageUtils');
+const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class AdminCategoryController extends DefaultController {
   /**
    * create a new category with parent or without parent
@@ -172,8 +173,10 @@ module.exports = new (class AdminCategoryController extends DefaultController {
           {_id: id},
           {__v: 0, parent: 0},
       );
+      await redisClient.setEx(id, 3600, JSON.stringify(category));
       return res.status(StatusCodes.OK).json({
         success: true,
+        isCahce: false,
         data: category,
       });
     } catch (error) {
@@ -215,6 +218,7 @@ module.exports = new (class AdminCategoryController extends DefaultController {
           },
         },
       ]);
+      await redisClient.setEx(id, 3600, JSON.stringify(categories));
       return res.status(StatusCodes.OK).json({
         success: true,
         data: categories,

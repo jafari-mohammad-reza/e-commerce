@@ -11,6 +11,7 @@ const {
   deleteImageFromPath,
 } = require('../../../utils/imageUtils');
 const {copyObject} = require('../../../utils/functions');
+const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class AdminProductController extends DefaultController {
   /**
    * create new product
@@ -26,14 +27,18 @@ module.exports = new (class AdminProductController extends DefaultController {
           req.body.fileUploadPath,
       );
       if (req.body.physicalFeatures) {
-        req.body.physicalFeatures = Array(req.body.physicalFeatures).map((item) => {
-          return JSON.parse(item);
-        });
+        if (typeof req.body.physicalFeatures === 'string') {
+          req.body.additionalFeatures = Array(req.body.additionalFeatures).map((item) => {
+            return JSON.parse(item);
+          });
+        }
       }
       if (req.body.additionalFeatures) {
-        req.body.additionalFeatures = Array(req.body.additionalFeatures).map((item) => {
-          return JSON.parse(item);
-        });
+        if (typeof req.body.additionalFeatures === 'string') {
+          req.body.additionalFeatures = Array(req.body.additionalFeatures).map((item) => {
+            return JSON.parse(item);
+          });
+        }
       }
       if (req.body.colors) {
         req.body.colors = Array(req.body.colors);
@@ -214,6 +219,7 @@ module.exports = new (class AdminProductController extends DefaultController {
     try {
       const {id} = req.params;
       const product = await this.getById(id);
+      await redisClient.setEx(id, 3600, JSON.stringify(product));
       return res.status(StatusCodes.OK).json({
         success: true,
         product,

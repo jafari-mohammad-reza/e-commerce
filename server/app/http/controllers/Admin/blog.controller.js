@@ -9,6 +9,7 @@ const {BlogModel} = require('../../../models/Blog');
 const {isValidObjectId} = require('mongoose');
 const {deleteImageFromPath} = require('../../../utils/imageUtils');
 const {copyObject} = require('../../../utils/functions');
+const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class AdminBlogController extends DefaultController {
   /**
    * create blog with user inputs and set blog author to the creator of blog
@@ -209,9 +210,13 @@ module.exports = new (class AdminBlogController extends DefaultController {
                 message: 'BLog not found',
               });
             }
-            return res.status(StatusCodes.OK).json({
-              success: true,
-              blog: result,
+            redisClient.setEx(id, 3600, JSON.stringify(result)).then(() => {
+              return res.status(StatusCodes.OK).json({
+                success: true,
+                blog: result,
+              });
+            }).catch((error) => {
+              throw createHttpError.InternalServerError(error);
             });
           })
           .catch((error) => {
