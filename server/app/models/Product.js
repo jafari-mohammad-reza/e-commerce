@@ -69,7 +69,6 @@ function autoPopulate(next) {
     {path: 'supplier', select: {username: 1, email: 1}},
     {path: 'comments.author', select: {username: 1, email: 1}},
     {path: 'comments.Replies.author', select: {username: 1, email: 1}},
-    {path: 'ratings.postBy', select: {username: 1, email: 1}},
   ]);
   next();
 }

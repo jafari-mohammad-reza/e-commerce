@@ -14,7 +14,7 @@ const createHttpError = require('http-errors');
  * @param {id} id
  * */
 async function getComment(model, id) {
-  const foundedComment = await model.findOne({'$comments._id': id}, {'comments.$': 1}).catch((err) => {
+  const foundedComment = await model.findOne({'$comments._id': id}, {'comments': 1}).catch((err) => {
     console.log(err);
     throw new createHttpError.InternalServerError(err.message);
   });
