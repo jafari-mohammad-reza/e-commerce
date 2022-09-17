@@ -15,8 +15,8 @@ const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class AdminProductController extends DefaultController {
   /**
    * create new product
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    *
    * */
@@ -28,9 +28,7 @@ module.exports = new (class AdminProductController extends DefaultController {
       );
       if (req.body.physicalFeatures) {
         if (typeof req.body.physicalFeatures === 'string') {
-          req.body.additionalFeatures = Array(req.body.additionalFeatures).map((item) => {
-            return JSON.parse(item);
-          });
+          req.body.additionalFeatures = JSON.parse(req.body.additionalFeatures.replace(/'/g, '"'));
         }
       }
       if (req.body.additionalFeatures) {
@@ -92,8 +90,8 @@ module.exports = new (class AdminProductController extends DefaultController {
 
   /**
    * edit exist product
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    *
    * */
@@ -150,8 +148,8 @@ module.exports = new (class AdminProductController extends DefaultController {
 
   /**
    * remove exist product
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    *
    * */
@@ -180,8 +178,8 @@ module.exports = new (class AdminProductController extends DefaultController {
 
   /**
    * get all products from database
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    *
    * */
@@ -210,8 +208,8 @@ module.exports = new (class AdminProductController extends DefaultController {
 
   /**
    * get exist product with id
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    *
    * */

@@ -25,7 +25,7 @@ const errorLink = onError(({graphQLErrors, networkError}) => {
 
 const httpLink = new HttpLink({uri: `http://localhost:5000/graphql`, credentials: "include"})
 const client = new ApolloClient({
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({resultCaching:true,canonizeResults:true}),
     link: from([httpLink, errorLink]),
 });
 

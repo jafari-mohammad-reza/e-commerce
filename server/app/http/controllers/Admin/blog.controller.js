@@ -13,8 +13,8 @@ const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class AdminBlogController extends DefaultController {
   /**
    * create blog with user inputs and set blog author to the creator of blog
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async createBlog(req, res, next) {
@@ -54,8 +54,8 @@ module.exports = new (class AdminBlogController extends DefaultController {
 
   /**
    * edit blog with user inputs and set blog author to the creator of blog
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async editBlog(req, res, next) {
@@ -118,8 +118,8 @@ module.exports = new (class AdminBlogController extends DefaultController {
 
   /**
    * remove blog with id
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async deleteBlog(req, res, next) {
@@ -155,8 +155,8 @@ module.exports = new (class AdminBlogController extends DefaultController {
 
   /**
    * get all blogs in database
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async getAllBlogs(req, res, next) {
@@ -182,8 +182,8 @@ module.exports = new (class AdminBlogController extends DefaultController {
 
   /**
    * get a blog with id
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async getBlogById(req, res, next) {
@@ -229,8 +229,8 @@ module.exports = new (class AdminBlogController extends DefaultController {
 
   /**
    * get blog by custom query
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async getBlogByQuery(req, res, next) {

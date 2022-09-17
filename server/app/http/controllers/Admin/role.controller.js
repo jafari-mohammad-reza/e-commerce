@@ -13,8 +13,8 @@ const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class RoleController extends DefaultController {
   /**
      * create new role with list of permissions
-     * @param {req} req
-     * @param {res} res
+     * @param {Express.Request} req
+     * @param {Express.Response} res
      * @param {next} next
      *
      * */
@@ -51,8 +51,8 @@ module.exports = new (class RoleController extends DefaultController {
 
   /**
      * get all roles from database
-     * @param {req} req
-     * @param {res} res
+     * @param {Express.Request} req
+     * @param {Express.Response} res
      * @param {next} next
      *
      * */
@@ -75,8 +75,8 @@ module.exports = new (class RoleController extends DefaultController {
 
   /**
      * get one role by id
-     * @param {req} req
-     * @param {res} res
+     * @param {Express.Request} req
+     * @param {Express.Response} res
      * @param {next} next
      *
      * */
@@ -113,8 +113,8 @@ module.exports = new (class RoleController extends DefaultController {
 
   /**
      * update exist role
-     * @param {req} req
-     * @param {res} res
+     * @param {Express.Request} req
+     * @param {Express.Response} res
      * @param {next} next
      *
      * */
@@ -148,8 +148,8 @@ module.exports = new (class RoleController extends DefaultController {
 
   /**
      * remove exist user by id
-     * @param {req} req
-     * @param {res} res
+     * @param {Express.Request} req
+     * @param {Express.Response} res
      * @param {next} next
      *
      * */

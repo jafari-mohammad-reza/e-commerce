@@ -4,8 +4,8 @@ const {
 
 /**
  * Graphql configuration
- * @param {req} req
- * @param {res} res
+ * @param {Express.Request} req
+ * @param {Express.Response} res
  * @return {{schema, graphiql: boolean, context: {res: res, req: req}}}
  * */
 function graphQlConfig(req, res) {

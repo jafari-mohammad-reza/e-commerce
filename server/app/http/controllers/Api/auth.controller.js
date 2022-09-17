@@ -26,8 +26,8 @@ const {copyObject} = require('../../../utils/functions');
 module.exports = new (class AuthController extends DefaultController {
   /**
    * Login into user account with email
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async loginByEmail(req, res, next) {
@@ -98,8 +98,8 @@ module.exports = new (class AuthController extends DefaultController {
 
   /**
    * register new account with email
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async registerByEmail(req, res, next) {
@@ -136,8 +136,8 @@ module.exports = new (class AuthController extends DefaultController {
 
   /**
    * verify account with email that been sent to user email
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async verifyAccountByEmail(req, res, next) {
@@ -167,8 +167,8 @@ module.exports = new (class AuthController extends DefaultController {
 
   /**
    * resent verification code to user email by using verificationToken
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async resendOTPToEmail(req, res, next) {
@@ -188,8 +188,8 @@ module.exports = new (class AuthController extends DefaultController {
 
   /**
    * send reset password link to user email
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async getResetPasswordLink(req, res, next) {
@@ -228,8 +228,8 @@ module.exports = new (class AuthController extends DefaultController {
 
   /**
    * remove accessToken and refreshToken from user browser cookies and remove user tokens from database
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async logOut(req, res, next) {
@@ -253,8 +253,8 @@ module.exports = new (class AuthController extends DefaultController {
 
   /**
    * reset user password by the link that been sent to user email and new password that should be different from old one
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async resetPassword(req, res, next) {
@@ -298,8 +298,8 @@ module.exports = new (class AuthController extends DefaultController {
 
   /**
    * send one time password to user mobile number
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async getOTP(req, res, next) {
@@ -329,8 +329,8 @@ module.exports = new (class AuthController extends DefaultController {
 
   /**
    * validate one time password that been sent to user mobile number
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async validateOTP(req, res, next) {
@@ -386,8 +386,8 @@ module.exports = new (class AuthController extends DefaultController {
 
   /**
    * set a accessToken cookie for user by verifying refreshToken
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async getAccessToken(req, res, next) {

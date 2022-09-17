@@ -3,6 +3,7 @@ import {useRouter} from "next/router";
 import {useQuery} from "@apollo/client";
 import {GetCategoryProductsByTitle_Query} from "../../graphql/Queries/GlobalQueries";
 import ProductCard from "../../components/ProductsCard";
+import client from "../../apollo-client";
 
 const Category = () => {
     const {query} = useRouter();

@@ -12,8 +12,8 @@ const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class AdminCategoryController extends DefaultController {
   /**
    * create a new category with parent or without parent
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async createCategory(req, res, next) {
@@ -49,8 +49,8 @@ module.exports = new (class AdminCategoryController extends DefaultController {
 
   /**
    * edit category title and parent and image by user inputs
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async editCategory(req, res, next) {
@@ -91,8 +91,8 @@ module.exports = new (class AdminCategoryController extends DefaultController {
 
   /**
    * remove a category and all it's children by id
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async removeCategory(req, res, next) {
@@ -119,8 +119,8 @@ module.exports = new (class AdminCategoryController extends DefaultController {
 
   /**
    * get all categories in database
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async getAllCategories(req, res, next) {
@@ -138,8 +138,8 @@ module.exports = new (class AdminCategoryController extends DefaultController {
 
   /**
    * get all categories that are not child of another category
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async getAllParentCategories(req, res, next) {
@@ -159,8 +159,8 @@ module.exports = new (class AdminCategoryController extends DefaultController {
 
   /**
    * get a category by id
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async getCategoryById(req, res, next) {
@@ -186,8 +186,8 @@ module.exports = new (class AdminCategoryController extends DefaultController {
 
   /**
    * get a category that is parent by id
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async getParentCategoryById(req, res, next) {

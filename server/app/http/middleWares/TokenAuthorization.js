@@ -1,5 +1,4 @@
 /* eslint-disable no-undef */
-const createHttpError = require('http-errors');
 const {UserModel} = require('../../models/User');
 const JWT = require('jsonwebtoken');
 const redisClient = require('../../conf/redisConfiguration');
@@ -30,8 +29,8 @@ function getToken(headers, tokenName = '') {
 
 /**
  * verify access token
- * @param {req} req
- * @param {res} res
+ * @param {Express.Request} req
+ * @param {Express.Response} res
  * @param {next} next
  * */
 function VerifyAccessToken(req, res, next) {
@@ -62,8 +61,8 @@ function VerifyAccessToken(req, res, next) {
 
 /**
  * verify verification token
- * @param {req} req
- * @param {res} res
+ * @param {Express.Request} req
+ * @param {Express.Response} res
  * @param {next} next
  * */
 function VerifyVerificationToken(req, res, next) {
@@ -88,8 +87,8 @@ function VerifyVerificationToken(req, res, next) {
 
 /**
  * verify refresh token
- * @param {req} req
- * @param {res} res
+ * @param {Express.Request} req
+ * @param {Express.Response} res
  * @param {next} next
  * */
 function VerifyRefreshToken(req, res, next) {

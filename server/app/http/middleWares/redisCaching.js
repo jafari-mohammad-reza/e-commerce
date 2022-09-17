@@ -11,15 +11,11 @@ const cache = (parameter) => {
     try {
       const identifier = req.params[parameter];
       client.get(identifier).then((data) => {
-        if (data) {
-          return res.status(StatusCodes.OK).json({
-            success: true,
-            isCached: true,
-            data: JSON.parse(data),
-          });
-        } else {
-          next();
-        }
+        return data ? res.status(StatusCodes.OK).json({
+          success: true,
+          isCached: true,
+          data: JSON.parse(data),
+        }) : next();
       }).catch((err) => {
         throw createError.InternalServerError(err.message);
       });

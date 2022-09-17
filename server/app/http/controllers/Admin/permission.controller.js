@@ -7,8 +7,8 @@ const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class PermissionController extends DefaultController {
   /**
      * get all permissions in database
-     * @param {req} req
-     * @param {res} res
+     * @param {Express.Request} req
+     * @param {Express.Response} res
      * @param {next} next
      * */
   async getAllPermissions(req, res, next) {
@@ -30,8 +30,8 @@ module.exports = new (class PermissionController extends DefaultController {
 
   /**
      * get  permission by id
-     * @param {req} req
-     * @param {res} res
+     * @param {Express.Request} req
+     * @param {Express.Response} res
      * @param {next} next
      * */
   async getById(req, res, next) {
@@ -66,8 +66,8 @@ module.exports = new (class PermissionController extends DefaultController {
 
   /**
      * create a new permission
-     * @param {req} req
-     * @param {res} res
+     * @param {Express.Request} req
+     * @param {Express.Response} res
      * @param {next} next
      * */
   async createPermission(req, res, next) {
@@ -105,8 +105,8 @@ module.exports = new (class PermissionController extends DefaultController {
 
   /**
      * update an exist permission
-     * @param {req} req
-     * @param {res} res
+     * @param {Express.Request} req
+     * @param {Express.Response} res
      * @param {next} next
      * */
   async updatePermission(req, res, next) {
@@ -143,8 +143,8 @@ module.exports = new (class PermissionController extends DefaultController {
 
   /**
      * delete an exist permission
-     * @param {req} req
-     * @param {res} res
+     * @param {Express.Request} req
+     * @param {Express.Response} res
      * @param {next} next
      * */
   async deletePermission(req, res, next) {

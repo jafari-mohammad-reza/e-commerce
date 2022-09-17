@@ -11,8 +11,8 @@ const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class UserController extends DefaultController {
   /**
    * get all users in database except the request user
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async getAll(req, res, next) {
@@ -43,8 +43,8 @@ module.exports = new (class UserController extends DefaultController {
 
   /**
    * get one user by id
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async getUser(req, res, next) {
@@ -79,8 +79,8 @@ module.exports = new (class UserController extends DefaultController {
 
   /**
    * update exist user
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async updateProfile(req, res, next) {
@@ -122,8 +122,8 @@ module.exports = new (class UserController extends DefaultController {
 
   /**
    * ban exist user and email this to the user
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async banUser(req, res, next) {
@@ -147,8 +147,8 @@ module.exports = new (class UserController extends DefaultController {
 
   /**
    * create a user by admin with optional identifier
-   * @param {req} req
-   * @param {res} res
+   * @param {Express.Request} req
+   * @param {Express.Response} res
    * @param {next} next
    * */
   async createUser(req, res, next) {

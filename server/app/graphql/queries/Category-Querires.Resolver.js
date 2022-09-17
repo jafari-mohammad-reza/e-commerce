@@ -2,7 +2,9 @@ const {GraphQLList, GraphQLInt, GraphQLString} = require('graphql');
 const {CategoryType} = require('../typeDefs/Category.type');
 const {CategoryModel} = require('../../models/Category');
 const {AnyType} = require('../typeDefs/Public.type');
-const CategoryQueriresResolver = {
+const {checkRedisKey} = require('../../utils/functions');
+const redisClient = require('../../conf/redisConfiguration');
+const CategoryQueriesResolver = {
   type: new GraphQLList(CategoryType),
   args: {
     limit: {
@@ -41,7 +43,11 @@ const GetCategoryByTitleResolver = {
   resolve: async (_, args) => {
     let {title} = args;
     title = title.replace('_', ' ');
-    return CategoryModel.aggregate(
+    const cachedData =await checkRedisKey(title);
+    if (cachedData) {
+      return cachedData;
+    }
+    const data =await CategoryModel.aggregate(
         [
           {$match: {title: {$regex: title, $options: 'i'}}},
           {$project: {_id: 1, title: 1}},
@@ -85,11 +91,13 @@ const GetCategoryByTitleResolver = {
 
         ],
     );
+    await redisClient.setEx(title, 3600, JSON.stringify(data));
+    return data;
   },
 };
 
 
 module.exports = {
-  CategoryResolver: CategoryQueriresResolver,
+  CategoryResolver: CategoryQueriesResolver,
   ChildrenCategoryResolver, GetCategoryByTitleResolver,
 };

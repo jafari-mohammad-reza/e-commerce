@@ -1,6 +1,7 @@
 const {UserModel} = require('../models/User');
 const {Kind} = require('graphql/language');
-
+const redisClient = require('../conf/redisConfiguration');
+const createHttpError = require('http-errors');
 /**
  * delete all custom invalid properties in object
  * @param {{}} data
@@ -18,6 +19,21 @@ function deleteInvalidPropertyInObject(data = {}, blackListFields = []) {
     if (nullishData.includes(data[key])) delete data[key];
   });
 }
+/**
+ * this function will check for a key in redis cache and return a value or null
+ * @param {string} key
+ * @return {data}
+ * */
+async function checkRedisKey(key) {
+  return new Promise(async (resolve, reject) => {
+    redisClient.get(key).then((data) => {
+      resolve(data ? JSON.parse(data) : null);
+    }).catch((error) => {
+      reject(createHttpError.InternalServerError(error.message));
+    });
+  });
+}
+
 
 /**
  * transform an input object to a valid json object
@@ -159,4 +175,5 @@ module.exports = {
   convertTOObject,
   parseLiteral,
   getUserCart,
+  checkRedisKey,
 };

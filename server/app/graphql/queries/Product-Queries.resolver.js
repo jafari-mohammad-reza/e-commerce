@@ -7,6 +7,8 @@ const {ProductType} = require('../typeDefs/Product.type');
 const {ProductModel} = require('../../models/Product');
 
 const {CategoryModel} = require('../../models/Category');
+const {checkRedisKey} = require('../../utils/functions');
+const redisClient = require('../../conf/redisConfiguration');
 const ProductQueriesResolver = {
   type: new GraphQLList(ProductType),
   args: {
@@ -52,18 +54,29 @@ const MostRatedProductResolver = {
 const GetProductDetailResolver = {
   type: ProductType,
   args: {
-    id: {type: GraphQLString, default: ''},
-    title: {type: GraphQLString, default: ''},
+    id: {type: GraphQLString, default: undefined},
+    title: {type: GraphQLString, default: undefined},
   },
   resolve: async (parent, args) => {
     let {id, title} = args;
-    title = title.replace('_', ' ');
     if (!id && !title) return null;
-    console.log(title);
     if (id) {
-      return ProductModel.findById(id);
+      const cachedData = await checkRedisKey(id);
+      if (cachedData) {
+        return cachedData;
+      }
+      const data = await ProductModel.findById(id);
+      await redisClient.setEx(id, 3600, JSON.stringify(data));
+      return data;
     } else {
-      return ProductModel.findOne({$text: {$search: title, $caseSensitive: false}});
+      title = title.replace('_', ' ');
+      const cachedData = await checkRedisKey(title);
+      if (cachedData) {
+        return cachedData;
+      }
+      const data = await ProductModel.findOne({$text: {$search: title, $caseSensitive: false}});
+      await redisClient.setEx(title, 3600, JSON.stringify(data));
+      return data;
     }
   },
 };
@@ -76,9 +89,16 @@ const GetProductByCategoryResolver = {
   resolve: async (parent, args) => {
     let {title} = args;
     title = title.replace('_', ' ');
-    const category = await CategoryModel.findOne({$text: {$search: title, $caseSensitive: false}});
-    console.log(category);
-    return ProductModel.find({category: category});
+    let foundedCategory = undefined;
+    const cachedCategory = await checkRedisKey(title);
+    if (cachedCategory) {
+      foundedCategory = cachedCategory;
+    } else {
+      const category = await CategoryModel.findOne({$text: {$search: title, $caseSensitive: false}});
+      foundedCategory = category;
+      await redisClient.setEx(title, 3600, JSON.stringify(category));
+    }
+    return ProductModel.find({category: foundedCategory});
   },
 };
 

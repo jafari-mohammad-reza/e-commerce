@@ -3,6 +3,7 @@ const {
   GraphQLSchema,
 } = require('graphql');
 const {BlogResolver} = require('./queries/Blog-Queries.resolver');
+
 const {
   ProductResolver,
   DiscountedProductResolver,
@@ -76,6 +77,7 @@ const graphQlSchema = new GraphQLSchema({
   query: RootQuery,
   mutation: RootMutation,
 });
+
 
 module.exports = {
   graphQlSchema,
