@@ -44,8 +44,8 @@ module.exports = new (class RoleController extends DefaultController {
           .catch((error) => {
             next(error);
           });
-    } catch (e) {
-      next(createHttpError.InternalServerError(e));
+    } catch (error) {
+      next(error);
     }
   }
 
@@ -89,22 +89,21 @@ module.exports = new (class RoleController extends DefaultController {
       await RoleModel.findById(id)
           .populate({path: 'permissions'})
           .then((result) => {
-            if (!result) {
-              throw createHttpError.BadRequest(
-                  'role has not been found.',
-              );
-            }
-            redisClient.setEx(id, 3600, JSON.stringify(result)).then(() => {
-              return res.status(StatusCodes.OK).json({
-                success: true,
-                role: result,
+            if (result) {
+              redisClient.setEx(id, 3600, JSON.stringify(result)).then(() => {
+                return res.status(StatusCodes.OK).json({
+                  success: true,
+                  role: result,
+                });
+              }).catch((error) => {
+                throw createHttpError.InternalServerError(error);
               });
-            }).catch((error) => {
-              throw createHttpError.InternalServerError(error);
-            });
+            } else {
+              throw createHttpError.NotFound('no role found');
+            }
           })
           .catch((error) => {
-            throw createHttpError.InternalServerError(error);
+            next(error);
           });
     } catch (error) {
       next(error);
@@ -126,20 +125,18 @@ module.exports = new (class RoleController extends DefaultController {
       }
       const bodyData = copyObject(req.body);
       bodyData.title = bodyData?.title?.toUpperCase();
+      if (!await RoleModel.findById(id)) {
+        throw createHttpError.NotFound('No role with this id');
+      }
       await RoleModel.findByIdAndUpdate(id, {$set: bodyData})
           .then((result) => {
-            if (!result) {
-              throw createHttpError.BadRequest(
-                  'role has not been updated successfully.',
-              );
-            }
             return res.status(StatusCodes.OK).json({
               success: true,
               message: 'role has  been updated successfully.',
             });
           })
           .catch((error) => {
-            throw createHttpError.InternalServerError(error);
+            throw createHttpError.BadRequest(error);
           });
     } catch (error) {
       next(error);
@@ -159,14 +156,11 @@ module.exports = new (class RoleController extends DefaultController {
       if (!isValidObjectId(id)) {
         throw createHttpError.BadRequest('Not a valid id');
       }
+      if (!await RoleModel.findById(id)) {
+        throw createHttpError.NotFound('No role with this id');
+      }
       await RoleModel.findByIdAndDelete(id)
           .then((result) => {
-            console.log(result);
-            if (!result) {
-              throw createHttpError.BadRequest(
-                  'role has not been deleted successfully.',
-              );
-            }
             return res.status(StatusCodes.OK).json({
               success: true,
               message: 'role has been deleted successfully.',

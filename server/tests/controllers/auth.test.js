@@ -15,7 +15,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -24,7 +23,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(404);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -33,7 +31,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(400);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -42,7 +39,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(403);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -59,7 +55,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(201);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -74,7 +69,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -89,7 +83,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(405);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -104,7 +97,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(405);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -115,7 +107,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -124,7 +115,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(400);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -133,7 +123,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(400);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -142,7 +131,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(404);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -153,7 +141,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -162,7 +149,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -171,7 +157,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -180,7 +165,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(404);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -189,7 +173,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(406);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -198,7 +181,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(406);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -209,7 +191,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -218,7 +199,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -228,7 +208,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(401);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -237,7 +216,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(400);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -246,7 +224,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(406);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -257,7 +234,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -266,7 +242,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -275,7 +250,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(401);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -284,7 +258,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(406);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -295,7 +268,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -304,7 +276,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -315,7 +286,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -324,7 +294,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -333,7 +302,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -342,7 +310,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(404);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -351,7 +318,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(404);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });
@@ -360,7 +326,6 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(400);
         done();
       }).catch((err) => {
-        done();
         throw new Error(err.message);
       });
     });

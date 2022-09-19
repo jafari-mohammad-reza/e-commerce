@@ -4,6 +4,7 @@ const {PermissionsModel} = require('../../../models/Permission');
 const {StatusCodes} = require('http-status-codes');
 const {isValidObjectId} = require('mongoose');
 const redisClient = require('../../../conf/redisConfiguration');
+const {RoleModel} = require('../../../models/Role');
 module.exports = new (class PermissionController extends DefaultController {
   /**
      * get all permissions in database
@@ -40,25 +41,21 @@ module.exports = new (class PermissionController extends DefaultController {
       if (!isValidObjectId(id)) {
         throw createHttpError.BadRequest('Not a valid id.');
       }
-      await PermissionsModel.findById(id)
-          .then((result) => {
-            if (!result) {
-              throw createHttpError.InternalServerError(
-                  'permission has not been found.',
-              );
-            }
-            redisClient.setEx(id, 3600, JSON.stringify(result)).then(() => {
-              return res.status(StatusCodes.OK).json({
-                success: true,
-                permission: result,
-              });
-            }).catch((error) => {
-              throw createHttpError.InternalServerError(error);
-            });
-          })
+      const permission = await PermissionsModel.findById(id)
           .catch((error) => {
             throw createHttpError.InternalServerError(error);
           });
+      if (!permission) {
+        throw createHttpError.NotFound('not permission with this id');
+      }
+      redisClient.setEx(id, 3600, JSON.stringify(permission)).then(() => {
+        return res.status(StatusCodes.OK).json({
+          success: true,
+          permission,
+        });
+      }).catch((error) => {
+        throw createHttpError.InternalServerError(error);
+      });
     } catch (error) {
       next(error);
     }
@@ -121,20 +118,20 @@ module.exports = new (class PermissionController extends DefaultController {
             'each permission need to have a title.',
         );
       }
+      if (await PermissionsModel.findOne({title})) {
+        throw createHttpError.BadRequest(
+            'title is already used by another permission.',
+        );
+      }
       await PermissionsModel.findByIdAndUpdate(id, {$set: {title, description}})
           .then((result) => {
-            if (!result) {
-              throw createHttpError.InternalServerError(
-                  'permission has not been updated successfully.',
-              );
-            }
             return res.status(StatusCodes.OK).json({
               success: true,
               message: 'permission has been updated successfully.',
             });
           })
           .catch((error) => {
-            throw createHttpError.InternalServerError(error);
+            throw createHttpError.InternalServerError(error.message);
           });
     } catch (error) {
       next(error);
@@ -153,13 +150,11 @@ module.exports = new (class PermissionController extends DefaultController {
       if (!isValidObjectId(id)) {
         throw createHttpError.BadRequest('Not a valid id.');
       }
+      if (!await PermissionsModel.findOne({_id: id})) {
+        throw createHttpError.NotFound('permission not found');
+      }
       await PermissionsModel.findByIdAndDelete(id)
           .then((result) => {
-            if (!result) {
-              throw createHttpError.InternalServerError(
-                  'permission has not been deleted successfully.',
-              );
-            }
             return res.status(StatusCodes.OK).json({
               success: true,
               message: 'permission has been deleted successfully.',
