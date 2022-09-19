@@ -80,7 +80,7 @@ const isEmailValid = Joi.object({
       }),
 });
 const mobileValidator = Joi.string()
-    .required().pattern(/^(\+98|0)?9\d{9}$/)
+    .required().pattern(/(0|0098|98)9(0[1-5]|[1 3]\d|2[0-2]|9[0-4]|98)\d{7}$/)
     .trim().messages({
       'any.required': 'Mobile cannot be empty',
       'any.pattern': 'Not a valid mobile number  ',

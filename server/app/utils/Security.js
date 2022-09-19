@@ -59,13 +59,12 @@ function generateAccessToken(payload, expiresIn = '30d') {
  * @return {string}
  * */
 async function generateRefreshToken(userId) {
-  const user = await UserModel.findOne({_id: userId});
-  const payload = {
-    mobileNumber: user.mobileNumber,
-    email: user.email,
-  };
-
-  return new Promise((resolve, reject) => {
+  return await new Promise(async (resolve, reject) => {
+    const user = await UserModel.findOne({_id: userId});
+    const payload = {
+      mobileNumber: user.mobileNumber,
+      email: user.email,
+    };
     jwt.sign(payload, process.env.JWT_REFRESH_TOKEN, {
       expiresIn: '1y',
     }, async (err, token) => {

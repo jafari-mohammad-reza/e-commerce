@@ -2,6 +2,7 @@
 const {UserModel} = require('../../models/User');
 const JWT = require('jsonwebtoken');
 const redisClient = require('../../conf/redisConfiguration');
+const createHttpError = require('http-errors');
 require('jsonwebtoken');
 
 /**
@@ -40,6 +41,9 @@ function VerifyAccessToken(req, res, next) {
     JWT.verify(token, process.env.JWT_TOKEN, {}, async (err, encoded) => {
       try {
         if (err) {
+          if (err.message === 'jwt expired') {
+            throw createHttpError.NotAcceptable('your link has been expired.');
+          }
           throw createHttpError.InternalServerError(`JWT error : ${err}`);
         }
         const {email, mobileNumber} = encoded.payload || {};

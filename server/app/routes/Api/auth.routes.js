@@ -32,7 +32,7 @@ const router = require('express').Router();
 router.get('/get-access-token', VerifyRefreshToken, authController.getAccessToken);
 // ? Email Authentication Routes=
 router.post('/email/login', authLimiter, authController.loginByEmail);
-router.post('/email/register', authLimiter, authController.registerByEmail);
+router.post('/email/register', authController.registerByEmail);
 router.post('/email/verify-account/', authController.verifyAccountByEmail);
 router.post(
     '/email/resend-code/',

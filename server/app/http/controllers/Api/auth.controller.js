@@ -70,7 +70,7 @@ module.exports = new (class AuthController extends DefaultController {
         );
       }
       user.accessToken = generateAccessToken({email: user.email});
-      user.refreshToken =await generateRefreshToken(user._id);
+      user.refreshToken = await generateRefreshToken(user._id);
       await user.save();
       return res
           .status(StatusCodes.OK)
@@ -110,7 +110,8 @@ module.exports = new (class AuthController extends DefaultController {
         (await UserModel.findOne({email})) ||
           (await UserModel.findOne({username}))
       ) {
-        throw createHttpError.BadRequest('User already exist.');
+        // not allowed
+        throw createHttpError(405, 'User already exist.');
       }
       const user = await UserModel.create({
         email,
@@ -235,7 +236,6 @@ module.exports = new (class AuthController extends DefaultController {
   async logOut(req, res, next) {
     try {
       const user = req?.user;
-      if (!user) throw createHttpError.Unauthorized('Not a valid token');
       user.accessToken = '';
       user.refreshToken = '';
       await user.save();
@@ -304,7 +304,7 @@ module.exports = new (class AuthController extends DefaultController {
    * */
   async getOTP(req, res, next) {
     try {
-      const {mobile} = await mobileValidator.validateAsync(req.body);
+      const mobile = await mobileValidator.validateAsync(req.body.mobile);
       const otp = generateOTP();
       await UserModel.updateOne(
           {mobileNumber: mobile},
@@ -312,7 +312,7 @@ module.exports = new (class AuthController extends DefaultController {
           {upsert: true},
       )
           .then(() => {
-            SendSms(mobile, `Your verification code ${otp.code}, this code will expire in next 2 minutes`);
+            SendSms(`+${mobile}`, `Your verification code ${otp.code}, this code will expire in next 2 minutes`);
             return res.status(StatusCodes.OK).json({
               success: true,
               message:
@@ -354,7 +354,7 @@ module.exports = new (class AuthController extends DefaultController {
         );
       }
       if (user.otp.code !== +otp) {
-        throw createHttpError.BadRequest(
+        throw createHttpError.NotFound(
             'Not a correct code ,make sure to use the exactly code we  have sent for you.',
         );
       }
@@ -363,7 +363,7 @@ module.exports = new (class AuthController extends DefaultController {
       user.accessToken = generateAccessToken({
         mobileNumber: user?.mobileNumber,
       });
-      user.refreshToken = generateRefreshToken(user._id);
+      user.refreshToken = await generateRefreshToken(user._id);
       await user.save();
       return res
           .status(StatusCodes.OK)

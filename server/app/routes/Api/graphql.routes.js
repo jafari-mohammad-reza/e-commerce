@@ -13,7 +13,7 @@ const graphqlLimit = limit({
   skipFailedRequests: true,
 });
 router.get('/graphql-doc', (req, res) => {
-  return res.render('swagger-doc/index.html');
+  return res.render('graphql-doc/index.html');
 });
 
 router.use('/graphql',
