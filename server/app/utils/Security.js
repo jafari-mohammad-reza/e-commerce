@@ -6,7 +6,7 @@ const {UserModel} = require('../models/User');
 
 /**
  * hash given password and return it
- * @param {password} password
+ * @param {string} password
  * @return {string}
  * */
 function hashPassword(password) {

@@ -1,7 +1,7 @@
 const createHttpError = require('http-errors');
 const nodemailer = require('nodemailer');
-const accountSid = process.env.SMS_AUTH_SID;
-const authToken = process.env.SMS_AUTH_TOKEN;
+const accountSid = process.env.SMS_AUTH_SID; //
+const authToken = process.env.SMS_AUTH_TOKEN; // AC24ee22288290e4895e24dc443f8f4691
 const {messages} = require('twilio')('AC24ee22288290e4895e24dc443f8f4691', '1116a8ece02c66d071226804a95e0ed2');
 const transporter = nodemailer.createTransport({
   service: 'gmail',

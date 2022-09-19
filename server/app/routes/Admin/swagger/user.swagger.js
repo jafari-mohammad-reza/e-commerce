@@ -99,10 +99,15 @@
  */
 /**
  * @swagger
- *  /admin/users/profile:
+ *  /admin/users/{id}:
  *      get:
  *          tags: [Users(AdminPanel)]
  *          summary: get user profile
+ *          parameters:
+ *              -   in: path
+ *                  name: id
+ *                  required: true
+ *                  type: string
  *          responses :
  *              200:
  *                  description: success

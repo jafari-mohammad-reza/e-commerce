@@ -1,8 +1,13 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../../test.index');
+const mongoose = require('mongoose');
 chai.should();
 chai.use(chaiHttp);
+let userWithToken;
+before(async () => {
+  userWithToken = await mongoose.model('user').findOne({accessToken: {$ne: undefined}});
+});
 describe('Test Auth controller', function() {
   describe('Login Function', function() {
     it('should Return status code 200', function(done) {
@@ -10,6 +15,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -18,6 +24,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(404);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -26,6 +33,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(400);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -34,6 +42,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(403);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -50,6 +59,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(201);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -64,6 +74,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -78,6 +89,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(405);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -92,6 +104,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(405);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -102,6 +115,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -110,6 +124,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(400);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -118,6 +133,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(400);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -126,6 +142,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(404);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -136,6 +153,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -144,6 +162,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -152,6 +171,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -160,6 +180,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(404);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -168,6 +189,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(406);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -176,26 +198,27 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(406);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
   });
   describe('Reset password Function', function() {
     it('should return statuscode 200', function(done) {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoibW9oYW1tYWRyZXphamFmYXJpNDE5QGdtYWlsLmNvbSIsImlhdCI6MTY2MzU2NzAyMiwiZXhwIjoxNjYzNTcwNjIyfQ.Vwc0eU-inP5-OkCcezIm8aqMnXz4ur6YWZ5asTUqO-k';
-      chai.request(server).post(`/api/v1/auth/email/reset-password/${token}`).send({password: 'Mohammad1234', confirmPassword: 'Mohammad1234'}).then((response) => {
+      chai.request(server).post(`/api/v1/auth/email/reset-password/${userWithToken.accessToken}`).send({password: 'Mohammad1234', confirmPassword: 'Mohammad1234'}).then((response) => {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
     it('should return statuscode 500 (Not valid input)', function(done) {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoibW9oYW1tYWRyZXphamFmYXJpNDE5QGdtYWlsLmNvbSIsImlhdCI6MTY2MzU2NzAyMiwiZXhwIjoxNjYzNTcwNjIyfQ.Vwc0eU-inP5-OkCcezIm8aqMnXz4ur6YWZ5asTUqO-k';
-      chai.request(server).post(`/api/v1/auth/email/reset-password/${token}`).send({password: 'Mohammad12344', confirmPassword: 'Mohammad13234'}).then((response) => {
+      chai.request(server).post(`/api/v1/auth/email/reset-password/${userWithToken.accessToken.replace('e', 'd')}`).send({password: 'Mohammad12344', confirmPassword: 'Mohammad13234'}).then((response) => {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -205,15 +228,16 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(401);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
     it('should return statuscode 400 (same password as old one)', function(done) {
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjoiYWxpcmV6YUBnbWFpbC5jb20iLCJpYXQiOjE2NjM1NjkwMDAsImV4cCI6MTY2MzU3MjYwMH0.fn_D_i596t3CjhPX1SdkQyRLIFiNDF81_OxFDVCnBhk';
-      chai.request(server).post(`/api/v1/auth/email/reset-password/${token}`).send({password: 'Mohammad123', confirmPassword: 'Mohammad123'}).then((response) => {
+      chai.request(server).post(`/api/v1/auth/email/reset-password/${userWithToken.accessToken}`).send({password: 'Mohammad123', confirmPassword: 'Mohammad123'}).then((response) => {
         chai.expect(response.status).eq(400);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -222,24 +246,27 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(406);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
   });
   describe('Logout Function', function() {
     it('should return statuscode 200', function(done) {
-      chai.request(server).post('/api/v1/auth/email/logout').set('authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImVtYWlsIjoibW9oYW1tYWRyZXphamFmYXJpNDE5QGdtYWlsLmNvbSJ9LCJpYXQiOjE2NjM1NjU3MzYsImV4cCI6MTY2NjE1NzczNn0.1Q7GLWPACQFhi1JZtYr651J-JpR0CrP83ElBJ71Kcvw').send().then((response) => {
+      chai.request(server).post('/api/v1/auth/email/logout').set('authorization', `Bearer ${userWithToken.accessToken}`).send().then((response) => {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
     it('should return statuscode 500 (not a valid token)', function(done) {
-      chai.request(server).post('/api/v1/auth/email/logout').set('authorization', 'Bearer eyJhbGciOiJIUzI1NiIsInR5ghI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImVtYWlsIjoibW9oYW1tYWRyZXphamFmYXJpNDE5QGdtYWlsLmNvbSJ9LCJpYXQiOjE2NjM1NjU3MzYsImV4cCI6MTY2NjE1NzczNn0.1Q7GLWPACQFhi1JZtYr651J-JpR0CrP83ElBJ71Kcvw').send().then((response) => {
+      chai.request(server).post('/api/v1/auth/email/logout').set('authorization', `Bearer ${userWithToken.accessToken.replace('e', 'd')}`).send().then((response) => {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -248,14 +275,16 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(401);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
     it('should return statuscode 406 (token is expired)', function(done) {
-      chai.request(server).post('/api/v1/auth/email/logout').set('authorization', 'Bearer hthtrhrrthrhrh.eyJwYXlsb2FkIjp7ImVtYWlsIjoibW9oYW1tYWRyZXphamFmYXJpNDE5QGdtYWlsLmNvbSJ9LCJpYXQiOjE2NjM1NjU3MzYsImV4cCI6MTY2NjE1NzczNn0.1Q7GLWPACQFhi1JZtYr651J-JpR0CrP83ElBJ71Kcvw').send().then((response) => {
+      chai.request(server).post('/api/v1/auth/email/logout').set('authorization', `Bearer ${userWithToken.accessToken}`).send().then((response) => {
         chai.expect(response.status).eq(406);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -266,6 +295,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -274,6 +304,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -284,6 +315,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(200);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -292,6 +324,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -300,6 +333,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(500);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -308,6 +342,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(404);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -316,6 +351,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(404);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });
@@ -324,6 +360,7 @@ describe('Test Auth controller', function() {
         chai.expect(response.status).eq(400);
         done();
       }).catch((err) => {
+        done();
         throw new Error(err.message);
       });
     });

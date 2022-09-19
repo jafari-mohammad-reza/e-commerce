@@ -23,7 +23,7 @@ module.exports = new (class UserController extends DefaultController {
         dataBaseQuery['$text'] = {$search: search.toString()};
       }
 
-      const users = await UserModel.find({$and: [{dataBaseQuery}, {_id: {$ne: req.user._id}}]}, {
+      const users = await UserModel.find({$and: [dataBaseQuery, {_id: {$ne: req.user._id}}]}, {
         username: 1,
         email: 1,
         mobileNumber: 1,
@@ -67,6 +67,9 @@ module.exports = new (class UserController extends DefaultController {
       }).catch((err) => {
         throw createHttpError.internalServerError(err);
       });
+      if (!user) {
+        throw createHttpError.NotFound('user not found');
+      }
       await redisClient.setEx(id, 3600, JSON.stringify(user));
       return res.status(StatusCodes.OK).json({
         success: true,
@@ -95,7 +98,7 @@ module.exports = new (class UserController extends DefaultController {
       deleteInvalidPropertyInObject(body, ['password', 'bookmarks', 'accessToken', 'verificationToken', 'resetPasswordAttempt', 'verificationCode', 'resetPasswordToken', 'lastResetPassword']);
       if (body.Role) {
         if (existUser.Role !== 'USER' && currentUser.Role !== 'SUPERADMIN') {
-          throw createHttpError.BadRequest('you are not able to change the role of this user');
+          throw createHttpError(406, 'you are not able to change the role of this user');
         }
       }
 
@@ -129,8 +132,13 @@ module.exports = new (class UserController extends DefaultController {
   async banUser(req, res, next) {
     try {
       const {id} = req?.params;
+      const currentUser = req?.user;
       if (!isValidObjectId || !id) {
         throw createHttpError.BadRequest('Please provide a valid user id');
+      }
+      const existUser = await UserModel.findById(id, {Role: 1});
+      if (existUser.Role !== 'USER' && currentUser.Role !== 'SUPERADMIN') {
+        throw createHttpError(406, 'you are not able to change the role of this user');
       }
       await UserModel.findByIdAndUpdate(id, {$set: {isBanned: true}}).then((result) => {
         SendEmail(result.email, `Your account has been banned by our admins, contact our support for more information`);
@@ -162,13 +170,13 @@ module.exports = new (class UserController extends DefaultController {
       if (!email && !mobileNumber) {
         throw createHttpError.BadRequest('Please provide an email or a mobileNumber.');
       }
-      const generatedPassword = passwordGenerator.generate({
+      const generatedPassword =passwordGenerator.generate({
         length: 10,
         lowercase: true,
         uppercase: true,
         numbers: true,
       });
-      const hashedPassword = password || hashPassword(generatedPassword);
+      const hashedPassword = password ? hashPassword(password) : hashPassword(generatedPassword);
 
 
       await UserModel.create({
@@ -185,7 +193,7 @@ module.exports = new (class UserController extends DefaultController {
           return res.status(200).json({
             status: 200,
             userCredentials: {
-              password: password || generatedPassword,
+              password: hashedPassword,
               username,
               email,
               mobileNumber,
