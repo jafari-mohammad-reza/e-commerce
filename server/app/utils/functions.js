@@ -2,6 +2,8 @@ const {UserModel} = require('../models/User');
 const {Kind} = require('graphql/language');
 const redisClient = require('../conf/redisConfiguration');
 const createHttpError = require('http-errors');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 /**
  * delete all custom invalid properties in object
  * @param {{}} data
@@ -169,6 +171,16 @@ async function getUserCart(userID) {
   return copyObject(userDetail[0]);
 }
 
+/**
+ * return value converted to ObjectId
+ * @param {string} id
+ * @return {string}
+ * */
+function valueToObjectId(id) {
+  return ObjectId(id);
+}
+
+
 module.exports = {
   deleteInvalidPropertyInObject,
   copyObject,
@@ -176,4 +188,5 @@ module.exports = {
   parseLiteral,
   getUserCart,
   checkRedisKey,
+  valueToObjectId,
 };

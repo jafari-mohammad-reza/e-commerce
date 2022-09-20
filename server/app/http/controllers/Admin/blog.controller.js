@@ -62,16 +62,18 @@ module.exports = new (class AdminBlogController extends DefaultController {
     try {
       const {id} = req.params;
       if (!isValidObjectId(id)) {
-        return res.status(StatusCodes.BadRequest).json({
-          success: false,
-          message: 'Not a valid id',
-        });
+        throw createHttpError.BadRequest('Blog with this title already exists');
+      }
+      if (req.body.title) {
+        if (await BlogModel.findOne({title: req.body.title})) {
+          throw createHttpError.BadRequest('Blog with this title already exists');
+        }
       }
       const blog = await BlogModel.findOne({_id: id}).catch((err) => {
         throw createHttpError.InternalServerError(err);
       });
       if (!blog) {
-        throw createHttpError.BadRequest('the blogs could not be found');
+        throw createHttpError.NotFound('the blogs could not be found');
       }
       if (req.body.fileUploadPath && req.body.fileName) {
         req.body.image = path.join(req.body.fileUploadPath, req.body.fileName);
@@ -132,7 +134,7 @@ module.exports = new (class AdminBlogController extends DefaultController {
         throw createHttpError.InternalServerError(err);
       });
       if (!blog) {
-        throw createHttpError.BadRequest('the blogs could not be found');
+        throw createHttpError.NotFound('the blogs could not be found');
       }
       await BlogModel.deleteOne({_id: id})
           .then((result) => {
@@ -190,38 +192,27 @@ module.exports = new (class AdminBlogController extends DefaultController {
     try {
       const {id} = req.params;
       if (!isValidObjectId(id)) {
-        return res.status(StatusCodes.BadRequest).json({
-          success: false,
-          message: 'Not a valid id',
-        });
+        throw createHttpError.BadRequest('not a valid id');
       }
-      await BlogModel.findOne({_id: id})
+      const blog = await BlogModel.findOne({_id: id})
           .populate([
             {path: 'category', select: ['title']},
             {
               path: 'author',
               select: ['mobile', 'first_name', 'last_name', 'username'],
             },
-          ])
-          .then((result) => {
-            if (!result) {
-              return res.status(StatusCodes.NotFound).json({
-                success: false,
-                message: 'BLog not found',
-              });
-            }
-            redisClient.setEx(id, 3600, JSON.stringify(result)).then(() => {
-              return res.status(StatusCodes.OK).json({
-                success: true,
-                blog: result,
-              });
-            }).catch((error) => {
-              throw createHttpError.InternalServerError(error);
-            });
-          })
-          .catch((error) => {
-            throw createHttpError.InternalServerError(error);
-          });
+          ]);
+      if (!blog) {
+        throw createHttpError.NotFound('no blog found with this id');
+      }
+      await redisClient.setEx(id, 3600, JSON.stringify(blog)).then(() => {
+        return res.status(StatusCodes.OK).json({
+          success: true,
+          blog,
+        });
+      }).catch((error) => {
+        throw createHttpError.InternalServerError(error);
+      });
     } catch (error) {
       next(error);
     }

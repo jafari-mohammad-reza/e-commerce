@@ -9,6 +9,7 @@ const {isValidObjectId} = require('mongoose');
 const path = require('path');
 const {deleteImageFromPath} = require('../../../utils/imageUtils');
 const redisClient = require('../../../conf/redisConfiguration');
+const {valueToObjectId} = require('../../../utils/functions');
 module.exports = new (class AdminCategoryController extends DefaultController {
   /**
    * create a new category with parent or without parent
@@ -27,14 +28,20 @@ module.exports = new (class AdminCategoryController extends DefaultController {
       const bodyData = await modifyCategory.validateAsync(req.body);
 
       const {title, parent} = bodyData;
-      if (await CategoryModel.findOne({title}, {__v: 0, parent: 0})) {
-        throw createError.InternalServerError(
+      if (await CategoryModel.findOne({title}, {__v: 0, parent: 0}) ) {
+        throw createError.BadRequest(
             'there is already one category with this title.',
         );
       }
+      if (parent && !await CategoryModel.findOne({_id: parent})) {
+        throw createError.BadRequest(
+            'Not a valid parent.',
+        );
+      }
+
       await CategoryModel.create({title, parent, image: image || undefined})
           .then(() => {
-            return res.status(StatusCodes.OK).json({
+            return res.status(StatusCodes.CREATED).json({
               success: true,
               message: 'Category created successfully.',
             });
@@ -59,12 +66,22 @@ module.exports = new (class AdminCategoryController extends DefaultController {
       if (!isValidObjectId(id)) {
         throw createError.BadRequest('the id is not valid');
       }
-      const previousCategory = await CategoryModel.findOne({_id: id}, {image: 1});
+      const previousCategory = await CategoryModel.findOne({_id: id});
       const bodyData = await modifyCategory.validateAsync(req.body);
       const {title, parent} = bodyData;
       if (req.body.fileUploadPath && req.body.fileName) {
         req.body.image = path.join(req.body.fileUploadPath, req.body.fileName);
         req.body.image = req.body.image.replace(/\\/g, '/');
+      }
+      if (await CategoryModel.findOne({title}, {__v: 0, parent: 0}) ) {
+        throw createError.BadRequest(
+            'there is already one category with this title.',
+        );
+      }
+      if (parent && !await CategoryModel.findOne({_id: parent})) {
+        throw createError.BadRequest(
+            'Not a valid parent.',
+        );
       }
       const image = req.body.image;
       const result = await CategoryModel.updateOne(
@@ -82,7 +99,7 @@ module.exports = new (class AdminCategoryController extends DefaultController {
       }
       return res.status(StatusCodes.Failed).json({
         success: true,
-        message: 'Category wasnot updated .',
+        message: 'Category was not updated .',
       });
     } catch (error) {
       next(error);
@@ -103,14 +120,14 @@ module.exports = new (class AdminCategoryController extends DefaultController {
       }
       await CategoryModel.deleteMany({$or: [{_id: id}, {parent: id}]}).then((result) => {
         if (result.deletedCount === 0) {
-          throw createError.BadRequestError('any category has not been deleted');
+          throw createError.BadRequest('any category has not been deleted');
         }
         return res.status(StatusCodes.OK).json({
           success: true,
           message: 'the category and all it child\'s hav been removed',
         });
       }).catch((error) => {
-        throw createError.InternalServerError(error);
+        throw createError.BadRequest(error);
       });
     } catch (error) {
       next(error);
@@ -173,6 +190,9 @@ module.exports = new (class AdminCategoryController extends DefaultController {
           {_id: id},
           {__v: 0, parent: 0},
       );
+      if (!category) {
+        throw createError.NotFound('Category not found');
+      }
       await redisClient.setEx(id, 3600, JSON.stringify(category));
       return res.status(StatusCodes.OK).json({
         success: true,
@@ -196,17 +216,18 @@ module.exports = new (class AdminCategoryController extends DefaultController {
       if (!isValidObjectId(id)) {
         throw createError.BadRequest('the id is not valid');
       }
-      const categories = await CategoryModel.aggregate([
+      const category = await CategoryModel.aggregate([
         {
           $match: {
-            _id: id,
+            _id: valueToObjectId(id),
+            parent: undefined,
           },
         },
         {
           $lookup: {
             from: 'category',
             localField: '_id',
-            foreignField: 'paernt',
+            foreignField: 'parent',
             as: 'children',
           },
         },
@@ -218,10 +239,13 @@ module.exports = new (class AdminCategoryController extends DefaultController {
           },
         },
       ]);
-      await redisClient.setEx(id, 3600, JSON.stringify(categories));
+      if (!category) {
+        throw createError.NotFound('Category not found');
+      }
+      await redisClient.setEx(id, 3600, JSON.stringify(category));
       return res.status(StatusCodes.OK).json({
         success: true,
-        data: categories,
+        data: category,
       });
     } catch (error) {
       next(error);
