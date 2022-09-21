@@ -36,7 +36,7 @@ const createProductValidator = Joi.object({
   fileUploadPath: Joi.string().empty(),
   physicalFeatures: Joi.array().empty().allow(),
   colors: Joi.array().empty().allow(),
-  additionalFeatures: Joi.array().empty(),
+  additionalFeatures: Joi.array().empty().allow(),
 
 });
 module.exports = {

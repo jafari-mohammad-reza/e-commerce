@@ -12,7 +12,6 @@ const {
 } = require('../../../utils/imageUtils');
 const {copyObject} = require('../../../utils/functions');
 const redisClient = require('../../../conf/redisConfiguration');
-const {log} = require('forever');
 module.exports = new (class AdminProductController extends DefaultController {
   /**
    * create new product
@@ -39,14 +38,12 @@ module.exports = new (class AdminProductController extends DefaultController {
       }
       if (req.body.additionalFeatures) {
         copyObject(req.body.additionalFeatures).split(',').forEach((feature) => {
-          physicalList.push(JSON.parse(feature));
+          additionalList.push(JSON.parse(feature));
         });
         req.body.additionalFeatures =additionalList;
       } else {
         req.body.additionalFeatures = [];
       }
-
-
       if (req.body.colors) {
         req.body.colors = Array(req.body.colors);
       }
@@ -113,6 +110,27 @@ module.exports = new (class AdminProductController extends DefaultController {
           req?.files || [],
           req.body.fileUploadPath,
       );
+      const physicalList = [];
+      const additionalList = [];
+      if (bodyData.physicalFeatures) {
+        copyObject(bodyData.physicalFeatures).split(',').forEach((feature) => {
+          physicalList.push(JSON.parse(feature));
+        });
+        bodyData.physicalFeatures =physicalList;
+      } else {
+        bodyData.physicalFeatures=[];
+      }
+      if (bodyData.additionalFeatures) {
+        copyObject(bodyData.additionalFeatures).split(',').forEach((feature) => {
+          additionalList.push(JSON.parse(feature));
+        });
+        bodyData.additionalFeatures =additionalList;
+      } else {
+        bodyData.additionalFeatures = [];
+      }
+      if (bodyData.colors) {
+        bodyData.colors = Array(bodyData.colors);
+      }
       Object.keys(bodyData).forEach((key) => {
         if (['likes', 'dislikes', 'comments', 'rate'].includes(key)) {
           delete bodyData[key];
@@ -121,7 +139,9 @@ module.exports = new (class AdminProductController extends DefaultController {
           bodyData[key] = bodyData[key].trim();
         }
         if (Array.isArray(bodyData[key]) && bodyData[key].length > 0) {
-          bodyData[key] = bodyData[key].map((item) => item.trim());
+          if (typeof [...bodyData[key]] !== 'object') {
+            bodyData[key] = bodyData[key].map((item) => item.trim());
+          }
         }
         if (Array.isArray(bodyData[key]) && bodyData[key].length === 0) {
           delete bodyData[key];
