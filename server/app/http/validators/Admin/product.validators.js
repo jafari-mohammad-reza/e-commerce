@@ -38,7 +38,7 @@ const createProductValidator = Joi.object({
   colors: Joi.array().empty().allow(),
   additionalFeatures: Joi.array().empty().allow(),
 
-});
+}).error((error) => createHttpError.BadRequest(error.map((err) => `${err.messages} \n`)));
 module.exports = {
   createProductValidator,
 };

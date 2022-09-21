@@ -22,7 +22,7 @@ const ProductSchema = new mongoose.Schema(
         required: false,
       },
       price: {type: Number, default: 0, required: true},
-      discount: {type: Number, default: 0},
+      discount: {type: Number, default: 0, min: 0, max: 100},
       stockCount: {type: Number, default: 0},
       supplier: {type: mongoose.Types.ObjectId, ref: 'user', required: true},
       physicalFeatures: {type: [Object], required: false},

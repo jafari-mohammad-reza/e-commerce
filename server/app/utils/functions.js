@@ -180,6 +180,14 @@ function valueToObjectId(id) {
   return ObjectId(id);
 }
 
+/**
+ * this function will convert list of objects in a string to real array
+ * @param {string} data
+ * @return {data}
+ * */
+function objectsStringToArray(data) {
+  return copyObject(data.replace(/'/g, '"').replace(/[\])[(]/g, '')).split(',');
+}
 
 module.exports = {
   deleteInvalidPropertyInObject,
@@ -189,4 +197,5 @@ module.exports = {
   getUserCart,
   checkRedisKey,
   valueToObjectId,
+  objectsStringToArray,
 };

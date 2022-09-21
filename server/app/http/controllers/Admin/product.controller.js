@@ -10,7 +10,7 @@ const {
   uploadMultipleFiles,
   deleteImageFromPath,
 } = require('../../../utils/imageUtils');
-const {copyObject} = require('../../../utils/functions');
+const {copyObject, objectsStringToArray} = require('../../../utils/functions');
 const redisClient = require('../../../conf/redisConfiguration');
 module.exports = new (class AdminProductController extends DefaultController {
   /**
@@ -29,7 +29,7 @@ module.exports = new (class AdminProductController extends DefaultController {
       const physicalList = [];
       const additionalList = [];
       if (req.body.physicalFeatures) {
-        copyObject(req.body.physicalFeatures).split(',').forEach((feature) => {
+        objectsStringToArray(req.body.physicalFeatures).forEach((feature) => {
           physicalList.push(JSON.parse(feature));
         });
         req.body.physicalFeatures =physicalList;
@@ -37,7 +37,7 @@ module.exports = new (class AdminProductController extends DefaultController {
         req.body.physicalFeatures=[];
       }
       if (req.body.additionalFeatures) {
-        copyObject(req.body.additionalFeatures).split(',').forEach((feature) => {
+        objectsStringToArray(req.body.additionalFeatures).forEach((feature) => {
           additionalList.push(JSON.parse(feature));
         });
         req.body.additionalFeatures =additionalList;
@@ -80,7 +80,7 @@ module.exports = new (class AdminProductController extends DefaultController {
       })
           .then((result) => {
             if (result) {
-              return res.status(StatusCodes.OK).json({
+              return res.status(StatusCodes.CREATED).json({
                 success: true,
                 message: 'Products has been created successfully.',
               });
@@ -105,6 +105,9 @@ module.exports = new (class AdminProductController extends DefaultController {
     try {
       const {id} = req.params;
       const product = await this.getById(id);
+      if (!product) {
+        throw createHttpError.NotFound('no product with this id');
+      }
       const bodyData = copyObject(req.body);
       bodyData.images = uploadMultipleFiles(
           req?.files || [],
@@ -113,23 +116,28 @@ module.exports = new (class AdminProductController extends DefaultController {
       const physicalList = [];
       const additionalList = [];
       if (bodyData.physicalFeatures) {
-        copyObject(bodyData.physicalFeatures).split(',').forEach((feature) => {
+        objectsStringToArray(bodyData.physicalFeatures).forEach((feature) => {
           physicalList.push(JSON.parse(feature));
         });
         bodyData.physicalFeatures =physicalList;
       } else {
-        bodyData.physicalFeatures=[];
+        bodyData.physicalFeatures=product.physicalFeatures;
       }
       if (bodyData.additionalFeatures) {
-        copyObject(bodyData.additionalFeatures).split(',').forEach((feature) => {
+        objectsStringToArray(bodyData.additionalFeatures).forEach((feature) => {
           additionalList.push(JSON.parse(feature));
         });
         bodyData.additionalFeatures =additionalList;
       } else {
-        bodyData.additionalFeatures = [];
+        bodyData.additionalFeatures=product.additionalFeatures;
       }
       if (bodyData.colors) {
         bodyData.colors = Array(bodyData.colors);
+      }
+      if (bodyData.discount) {
+        if (bodyData.discount > 100) {
+          throw createHttpError.BadRequest('discount above 100');
+        }
       }
       Object.keys(bodyData).forEach((key) => {
         if (['likes', 'dislikes', 'comments', 'rate'].includes(key)) {
@@ -139,7 +147,7 @@ module.exports = new (class AdminProductController extends DefaultController {
           bodyData[key] = bodyData[key].trim();
         }
         if (Array.isArray(bodyData[key]) && bodyData[key].length > 0) {
-          if (typeof [...bodyData[key]] !== 'object') {
+          if (typeof bodyData[key] !== 'object') {
             bodyData[key] = bodyData[key].map((item) => item.trim());
           }
         }
@@ -157,7 +165,7 @@ module.exports = new (class AdminProductController extends DefaultController {
 
       await ProductModel.updateOne({_id: id}, {$set: bodyData}).then(
           (result) => {
-            if (result.modifiedCount > 0) {
+            if (result.modifiedCount> 0) {
               for (const image of product.images) {
                 deleteImageFromPath(image);
               }
@@ -165,6 +173,8 @@ module.exports = new (class AdminProductController extends DefaultController {
                 success: true,
                 message: 'product has been updated successfully',
               });
+            } else {
+              createHttpError.InternalServerError('update failed');
             }
           },
       ).catch((err) => {
@@ -186,6 +196,9 @@ module.exports = new (class AdminProductController extends DefaultController {
     try {
       const {id} = req.params;
       const product = await this.getById(id);
+      if (!product) {
+        throw createHttpError.NotFound('product is not found');
+      }
       await ProductModel.deleteOne({_id: product._id})
           .then((result) => {
             if (result && result.deletedCount > 0) {

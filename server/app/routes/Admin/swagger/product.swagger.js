@@ -4,11 +4,6 @@
  *      schemas:
  *          feature:
  *              type: object
- *              properties:
- *                  title:
- *                      type: string
- *                  value:
- *                      type: string
  *          Color:
  *              type: array
  *              items:
