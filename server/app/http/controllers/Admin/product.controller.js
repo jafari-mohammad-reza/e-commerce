@@ -12,6 +12,7 @@ const {
 } = require('../../../utils/imageUtils');
 const {copyObject} = require('../../../utils/functions');
 const redisClient = require('../../../conf/redisConfiguration');
+const {log} = require('forever');
 module.exports = new (class AdminProductController extends DefaultController {
   /**
    * create new product
@@ -26,32 +27,26 @@ module.exports = new (class AdminProductController extends DefaultController {
           req?.files || [],
           req.body.fileUploadPath,
       );
-
+      const physicalList = [];
+      const additionalList = [];
       if (req.body.physicalFeatures) {
-        const physicalFeaturesList = [];
-
-        if (typeof req.body.physicalFeatures === 'string') {
-          Array(req.body.additionalFeatures).forEach((key) => {
-            console.log(key);
-            physicalFeaturesList.push(key);
-          });
-        }
-        req.body.physicalFeatures = physicalFeaturesList;
-        console.log(req.body.physicalFeatures);
+        copyObject(req.body.physicalFeatures).split(',').forEach((feature) => {
+          physicalList.push(JSON.parse(feature));
+        });
+        req.body.physicalFeatures =physicalList;
+      } else {
+        req.body.physicalFeatures=[];
       }
-
       if (req.body.additionalFeatures) {
-        const additionalFeaturesList = [];
-
-        if (typeof req.body.additionalFeatures === 'string') {
-          Array(req.body.additionalFeatures).forEach((key) => {
-            console.log(key);
-            additionalFeaturesList.push(key);
-          });
-        }
-        req.body.additionalFeatures=additionalFeaturesList;
-        console.log(req.body.additionalFeatures);
+        copyObject(req.body.additionalFeatures).split(',').forEach((feature) => {
+          physicalList.push(JSON.parse(feature));
+        });
+        req.body.additionalFeatures =additionalList;
+      } else {
+        req.body.additionalFeatures = [];
       }
+
+
       if (req.body.colors) {
         req.body.colors = Array(req.body.colors);
       }
