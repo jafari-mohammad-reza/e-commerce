@@ -14,7 +14,7 @@ const Form = () => {
     const [allCategories, setAllCategories] = useState([])
     const [image, setImage] = useState(null)
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/categories", {withCredentials: true}).then((result) => {
+        axios.get(`/admin/categories`, {withCredentials: true}).then((result) => {
             if (result.status === 200) {
                 setAllCategories(result.data.categories)
                 setIsLoading(false)
@@ -36,11 +36,11 @@ const Form = () => {
                 formData.append("image", image[i]);
             }
 
-            await axios.post(`http://localhost:5000/admin/blogs/`, formData, {withCredentials: true}).then(result => {
+            await axios.post(`/admin/blogs/`, formData, {withCredentials: true}).then(result => {
                 if (result.status === 200) {
                     Global_Success("blog has been created successfully");
-                    return setInterval(() => {
-                        router.push("/admin/blogs")
+                    setInterval(async () => {
+                        await router.push("/admin/blogs")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")

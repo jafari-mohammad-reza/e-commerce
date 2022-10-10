@@ -7,9 +7,10 @@
     "test": "test"
   },
   "scripts": {
-    "start": "nodemon index.js",
-    "forever": "forever index.js",
-    "test": "mocha ./tests/**/*.js"
+    "start": "node app/conf/seedData.js && forever index.js",
+    "dev": "node app/conf/seedData.js && nodemon index.js",
+    "test": "mocha ./tests/**/*.js",
+    "seedData": "node app/conf/seedData.js"
   },
   "author": "mohammadrezajafari.dev@gmail.com",
   "license": "ISC",
@@ -36,6 +37,7 @@
     "jsdoc": "^3.6.11",
     "jsonwebtoken": "^8.5.1",
     "mocha": "^10.0.0",
+    "moment": "^2.29.4",
     "mongoose": "^6.4.0",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",

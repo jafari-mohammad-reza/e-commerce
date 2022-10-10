@@ -30,12 +30,11 @@ const UserLayout = ({children}) => {
                 <UserLink title={"Information"}/>
                 <UserLink title={"Orders"}/>
                 <UserLink title={"Discounts"}/>
-                <UserLink title={"Messages"}/>
                 <UserLink title={"BookMarks"}/>
                 <hr/>
-                <button className={'auth_button'} onClick={() => {
+                <button className={'auth_button'} onClick={async () => {
                     dispatch(logout())
-                    router.push("http://localhost:3000/auth/login")
+                    await router.push("http://localhost:3000/auth/login")
                 }}>
                     Logout
                 </button>

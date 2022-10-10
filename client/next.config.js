@@ -6,4 +6,10 @@ module.exports = {
       'localhost',
     ],
   },
+  output: 'standalone',
+  experimental: {
+    images: {
+      unoptimized: true,
+    },
+  },
 };

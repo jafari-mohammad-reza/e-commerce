@@ -19,7 +19,7 @@ module.exports = class ApplicationServer {
 
   /**
      *  Server constructor that stars everything
-     *  @param {port}  port number
+     *  @param {number}  port number
      *  @param {mongoUrl}  mongoUrl address
      */
   constructor(port, mongoUrl) {
@@ -61,7 +61,7 @@ module.exports = class ApplicationServer {
     );
 
 
-    this.#app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+    this.#app.use(cors({credentials: true, origin: process.env.CLIENT_ADDRESS}));
     this.#app.use(express.json());
     this.#app.use(express.urlencoded({extended: true}));
     this.#app.use(express.static(path.join(__dirname, '..', 'public')));
@@ -85,7 +85,7 @@ module.exports = class ApplicationServer {
                 },
                 servers: [
                   {
-                    url: 'http://localhost:5000',
+                    url: process.env.SERVER_ADDRESS,
                   },
                 ],
                 components: {
@@ -108,22 +108,27 @@ module.exports = class ApplicationServer {
   // ? \x1b[36m & \x1b[32m are console color codes to make it more attractive
   /**
      *  Configure application middlewares
-     *    @param {port} port of application
+     *    @param {number} port of application
      * */
   configureServer(port) {
-    if (cluster.isMaster) {
-      for (let i = 0; i < os.cpus().length; i++) {
-        cluster.fork();
-      }
-      cluster.on('exit', (_worker, _code, _signal) => {
-        cluster.fork();
-      });
-    } else {
-      require('http')
-          .createServer(this.#app)
-          .listen(port, () => {
-          });
-    }
+    // if (cluster.isMaster) {
+    //   for (let i = 0; i < os.cpus().length; i++) {
+    //     cluster.fork();
+    //   }
+    //   cluster.on('exit', (_worker, _code, _signal) => {
+    //     cluster.fork();
+    //   });
+    // } else {
+    //   require('http')
+    //       .createServer(this.#app)
+    //       .listen(port, () => {
+    //       });
+    // }
+    require('http')
+        .createServer(this.#app)
+        .listen(port, () => {
+          console.log('Listen to server');
+        });
   }
 
   /**

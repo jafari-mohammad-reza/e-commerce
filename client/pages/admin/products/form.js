@@ -17,7 +17,7 @@ const Form = () => {
     const [allCategories, setAllCategories] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/categories", {withCredentials: true}).then((result) => {
+        axios.get(`/admin/categories`, {withCredentials: true}).then((result) => {
             if (result.status === 200) {
                 setAllCategories(result.data.categories)
                 setIsLoading(false)
@@ -39,12 +39,12 @@ const Form = () => {
             for (let i = 0; i < images.length; i++) {
                 formData.append("images", images[i]);
             }
-            await axios.post("http://localhost:5000/admin/products", formData, {withCredentials: true}).then(result => {
+            await axios.post(`/admin/products`, formData, {withCredentials: true}).then(result => {
                 console.log(result)
-                if (result.status === 200) {
+                if (result.status === 201) {
                     Global_Success("Product has been created successfully");
-                    return setInterval(() => {
-                        router.push("/admin/products")
+                    setInterval(async () => {
+                        await router.push("/admin/products")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")

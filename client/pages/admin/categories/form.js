@@ -11,7 +11,7 @@ const Form = () => {
     const [allCategories, setAllCategories] = useState([])
     const [image, setImage] = useState(undefined)
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/categories", {withCredentials: true}).then((result) => {
+        axios.get(`/admin/categories`, {withCredentials: true}).then((result) => {
             if (result.status === 200) {
                 setAllCategories(result.data.categories)
                 setIsLoading(false)
@@ -24,18 +24,18 @@ const Form = () => {
         try {
             const formData = new FormData()
             formData.append("title", titleRef.current.value);
-            formData.append("parent", parentRef.current.value || null);
+            parentRef.current.value && formData.append("parent", parentRef.current.value);
             if (image) {
                 for (let i = 0; i < image.length; i++) {
                     formData.append("image", image[i]);
                 }
             }
 
-            await axios.post(`http://localhost:5000/admin/categories/`, formData, {withCredentials: true}).then(result => {
+            await axios.post(`/admin/categories/`, formData, {withCredentials: true}).then(result => {
                 if (result.status === 201) {
                     Global_Success("category has been created successfully");
-                    return setInterval(() => {
-                        router.push("/admin/categories")
+                    setInterval(async () => {
+                        await router.push("/admin/categories")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")
@@ -56,7 +56,8 @@ const Form = () => {
                         <input type="text" className={'admin_input'} placeholder={'category title....'} required={true}
                                ref={titleRef}/>
                         <select name="parent" className={'admin_input'} ref={parentRef}>
-                            <option value={null} disabled={true} defaultChecked={true}>Select One category
+                            <option value={null}  defaultChecked={true} disabled={true}>
+                                Select One category
                             </option>
                             {allCategories && allCategories.map(category => (
                                 <option value={category._id} key={category._id}>{category.title}</option>

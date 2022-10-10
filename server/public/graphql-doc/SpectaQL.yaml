@@ -4,20 +4,20 @@ spectaql:
   logoFile: ./logo.svg
 
 introspection:
-  url: 'http://localhost:5000/graphql'
+  url: 'localhost:5000/graphql'
   headers:
     Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImVtYWlsIjoibW9oYW1tYWRyZXphamFmYXJpNTYyQGdtYWlsLmNvbSJ9LCJpYXQiOjE2NjMwNTI2OTksImV4cCI6MTY2NTY0NDY5OX0.UB3DoaFjmTwepi3__FWFwOJ87djQtAy1VXgvFB2baoA'
 
 info:
   title: E-commerce
   description:
-    'E-commerce project graphql endpoints documentation [View GraphiQL playground](http://localhost:5000/graphql)'
+    'E-commerce project graphql endpoints documentation [View GraphiQL playground](SERVER_ADDRESS/graphql)'
   contact:
     name: Mohammadreza Jafari
     url: https://mohammadrezajafari.info
     email: mohammadrezajafari.dev@gmail.com
 
 servers:
-  - url: 'http://localhost:5000/graphql'
+  - url: 'localhost:5000/graphql'
     description: Production
     production: false

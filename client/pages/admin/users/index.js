@@ -64,7 +64,7 @@ const Users = ({users}) => {
                                 <button
                                     className="w-max h-max py-5 px-7 rounded-2xl text-2xl bg-red-600 text-center text-white flex space-x-3 items-center"
                                     onClick={() => {
-                                        axios.put(`http://localhost:5000/admin/users/${user._id}`, {isBanned: true}).then(result => {
+                                        axios.put(`/admin/users/${user._id}`, {isBanned: true}).then(result => {
                                             if (result.status === 200) {
                                                 Global_Success("user banned successfully.")
                                                 setInterval(() => router.reload(), 2000)
@@ -84,7 +84,7 @@ const Users = ({users}) => {
 };
 
 export async function getServerSideProps(context) {
-    const {data} = await axios.get(`http://localhost:5000/admin/users`, {
+    const {data} = await axios.get(`/admin/users`, {
         headers: {
             cookie: context.req.headers.cookie
         }

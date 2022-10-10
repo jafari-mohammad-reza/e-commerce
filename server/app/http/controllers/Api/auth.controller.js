@@ -215,9 +215,12 @@ module.exports = new (class AuthController extends DefaultController {
       }
       user.resetPasswordToken = generateToken(user.email, '1h');
       user.resetPasswordAttempt++;
-      user.lastResetPassword = currentDate;
       await user.save();
-      await SendEmail(user.email, `Use this link to reset your password \n http://localhost:3000/reset-password/${user.resetPasswordToken}`);
+      await SendEmail(user.email, `Reset your password`, `
+        <a href="http://localhost:3000/auth/reset_password/${user.resetPasswordToken}">
+        Click to reset your password
+</a>
+      `);
       return res.status(StatusCodes.OK).json({
         success: true,
         message: 'we sent you a email contains a link to reset your password',
@@ -240,6 +243,7 @@ module.exports = new (class AuthController extends DefaultController {
       user.refreshToken = '';
       await user.save();
       return res
+          .status(StatusCodes.OK)
           .clearCookie('access_token')
           .clearCookie('refresh_token')
           .json({
@@ -282,15 +286,18 @@ module.exports = new (class AuthController extends DefaultController {
         );
       }
       user.password = hashPassword(password);
-      // log of user after changing his/her password
       user.accessToken = '';
       user.refreshToken = '';
       user.resetPasswordToken = '';
+      user.lastResetPassword = new Date();
       await user.save();
-      return res.status(StatusCodes.OK).json({
-        success: true,
-        message: 'password has been changed successfully',
-      });
+      return res
+          .clearCookie('access_token')
+          .clearCookie('refresh_token')
+          .status(StatusCodes.OK).json({
+            success: true,
+            message: 'password has been changed successfully',
+          });
     } catch (error) {
       next(error);
     }

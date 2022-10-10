@@ -28,7 +28,7 @@ CategorySchema.virtual('children', {
 });
 CategorySchema.virtual('imageURL').get(function() {
   return this.image ?
-        `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${this.image}` :
+        `${process.env.SERVER_ADDRESS}/${this.image}` :
         undefined;
 });
 

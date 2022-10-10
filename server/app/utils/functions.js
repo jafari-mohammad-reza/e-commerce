@@ -4,6 +4,7 @@ const redisClient = require('../conf/redisConfiguration');
 const createHttpError = require('http-errors');
 const mongoose = require('mongoose');
 const ObjectId = mongoose.Types.ObjectId;
+const moment = require('moment');
 /**
  * delete all custom invalid properties in object
  * @param {{}} data
@@ -110,7 +111,7 @@ async function getUserCart(userID) {
               return productsDetail.map(function(product) {
                 const count = products.find((item) => item.productId.valueOf() === product._id.valueOf()).count;
                 const totalPrice = count * product.price;
-                const imagesURL = product.images.map((image) => `http://localhost:5000/${image}`);
+                const imagesURL = product.images.map((image) => `${process.env.SERVER_ADDRESS}/${image}`);
                 return {
                   ...product,
                   imagesURL,
@@ -188,6 +189,13 @@ function valueToObjectId(id) {
 function objectsStringToArray(data) {
   return copyObject(data.replace(/'/g, '"').replace(/[\])[(]/g, '')).split(',');
 }
+/**
+ * generate an invoice number
+ * @return {number}
+ * */
+function invoiceNumberGenerator() {
+  return moment().format('jYYYYjMMjDDHHmmssSSS') + String(process.hrtime()[1]).padStart(9, 0);
+}
 
 module.exports = {
   deleteInvalidPropertyInObject,
@@ -198,4 +206,5 @@ module.exports = {
   checkRedisKey,
   valueToObjectId,
   objectsStringToArray,
+  invoiceNumberGenerator,
 };

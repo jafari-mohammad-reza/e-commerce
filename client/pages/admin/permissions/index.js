@@ -50,7 +50,7 @@ const permissions = ({permissions}) => {
                                 <button
                                     className="w-max h-max py-5 px-7 rounded-2xl text-2xl bg-red-600 text-center text-white flex space-x-3 items-center"
                                     onClick={() => {
-                                        axios.delete(`http://localhost:5000/admin/permissions/${permission._id}`).then(result => {
+                                        axios.delete(`/admin/permissions/${permission._id}`).then(result => {
                                             if (result.status === 200) {
                                                 Global_Success("permission deleted successfully.")
                                             }
@@ -69,7 +69,7 @@ const permissions = ({permissions}) => {
 };
 
 export async function getServerSideProps(context) {
-    const {data} = await axios.get(`http://localhost:5000/admin/permissions`, {
+    const {data} = await axios.get(`/admin/permissions`, {
         headers: {
             cookie: context.req.headers.cookie
         }

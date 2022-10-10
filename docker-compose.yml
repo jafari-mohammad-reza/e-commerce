@@ -1,37 +1,64 @@
 version: "3.8"
 services:
+  server:
+    build: ./server
+    ports:
+      - "5000:5000"
+    env_file: ./server/.env
+    environment:
+      MONGO_URL: mongodb://mongodb/e-commerce
+      REDIS_URL: redis://redis
+      CLIENT_ADDRESS: 'http://client:3000'
+      SERVER_ADDRESS: 'http://server:5000'
+    depends_on:
+      - mongodb
+      - redis
+    volumes:
+      - ./server:/app
+    restart: always
+
+    networks:
+      e-commerce-network:
   client:
     build: ./client
     ports:
       - "3000:3000"
     volumes:
       - ./client:/app
-  server:
-    build: ./server
-    ports:
-      - "5000:5000"
+    depends_on:
+      - server
     environment:
-      MONGO_URL: mongodb://mongodb/e-commerce
-      REDIS_URL: redis://redis
-    volumes:
-      - ./server:/app
+      CLIENT_ADDRESS: 'http://client:3000'
+      SERVER_ADDRESS: 'http://server:5000'
+    networks:
+      e-commerce-network:
   mongodb:
     image: mongo:5.0.0-focal
     ports:
-      - "27018:27017"
+      - "27017:27017"
     volumes:
       - e-commerce:/data/db
-    container_name: main_Mongo
+    container_name: mongodb
+    networks:
+      e-commerce-network:
   redis:
     image: redis:alpine
     command:
       - redis-server
     ports:
-      - 6379:6379
+      - "6379:6379"
     container_name: main_Redis
     volumes:
-      - redis-data:/data
+      - redis-data:/data/
       - redis-conf:/usr/local/etc/redis/redis.conf
+    networks:
+      e-commerce-network:
+networks:
+  e-commerce-network:
+    name: e-commerce-network
+    driver: bridge
+    internal: false
+    attachable: true
 volumes:
   e-commerce:
   redis-data:

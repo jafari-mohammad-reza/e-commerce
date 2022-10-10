@@ -12,7 +12,7 @@ const Form = () => {
     const [allPermissions, setAllPermissions] = useState([])
 
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/permissions", {withCredentials: true}).then((result) => {
+        axios.get("/admin/permissions", {withCredentials: true}).then((result) => {
             if (result.status === 200) {
                 setAllPermissions(result.data.permissions)
                 setIsLoading(false)
@@ -30,12 +30,12 @@ const Form = () => {
                 permissions: [...new Set(permissions.map(permission => permission._id))]
             }
             console.log(bodyData)
-            await axios.post(`http://localhost:5000/admin/roles/`, bodyData, {withCredentials: true}).then(result => {
+            await axios.post(`/admin/roles/`, bodyData, {withCredentials: true}).then(result => {
                 console.log(result)
                 if (result.status === 201) {
                     Global_Success("role has been created successfully");
-                    return setInterval(() => {
-                        router.push("/admin/roles")
+                    setInterval(async () => {
+                        await router.push("/admin/roles")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")

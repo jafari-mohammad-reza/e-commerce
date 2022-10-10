@@ -17,14 +17,14 @@ const EditForm = () => {
     const isBannedRef = useRef(null)
     const [allRoles, setAllRoles] = useState([])
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/roles", {withCredentials: true}).then((result) => {
+        axios.get("/admin/roles", {withCredentials: true}).then((result) => {
             if (result.status === 200) {
                 setAllRoles(result.data.roles)
             }
         })
     }, [])
     useEffect(() => {
-        router.query.id && axios.get(`http://localhost:5000/admin/users/${router?.query?.id}`).then(result => {
+        router.query.id && axios.get(`/admin/users/${router?.query?.id}`).then(result => {
             if (result.status === 200) {
                 const user = result.data.user
                 firstNameRef.current.value = user.firstName;
@@ -57,12 +57,12 @@ const EditForm = () => {
                 isBanned: isBannedRef.current.value || undefined,
                 isPrime: isPrimeRef.current.value || undefined,
             }
-            router?.query?.id && await axios.put(`http://localhost:5000/admin/users/${router?.query?.id}`, bodyData, {withCredentials: true}).then(result => {
+            router?.query?.id && await axios.put(`/admin/users/${router?.query?.id}`, bodyData, {withCredentials: true}).then(result => {
                 console.log(result)
                 if (result.status === 200) {
                     Global_Success("user has been Updated successfully");
-                    return setInterval(() => {
-                        router.push("/admin/users")
+                    setInterval(async () => {
+                        await router.push("/admin/users")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")

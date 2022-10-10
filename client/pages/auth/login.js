@@ -21,7 +21,7 @@ const Login = () => {
     const forgotPassHandler = async (e) => {
         e.preventDefault()
         if (!email.current.value || !email.current.value.endsWith("@gmail.com" || "@yahoo.com" || "@hotmail.com")) {
-            return Global_Error({message: "Make sure to insert a valid email"})
+            return Global_Error("Make sure to insert a valid email")
         }
         await axios.post("/api/v1/auth/email/forgot-password", {email: email.current.value}).then(result => {
             if (result.status === 200) {
@@ -35,26 +35,27 @@ const Login = () => {
                 setIsForgotPass(false)
             }
         }).catch(err => {
+            console.log(err)
             if (err?.response === 404 || err?.response === 400) {
                 return Global_Error("Make sure to insert correct email address")
             } else {
-                return Global_Error("Something went wrong")
+                return Global_Error(err.response.data.errors.message)
             }
         })
     }
     const submitHandler = async (e) => {
         e.preventDefault()
         if (!email.current.value || !password.current.value) {
-            return Global_Error({message: "All fields are required"})
+            return Global_Error("All fields are required")
         }
         if (!email.current.value.endsWith("@gmail.com" || "@yahoo.com" || "@hotmail.com")) {
-            return Global_Error({message: "Please enter a valid email"})
+            return Global_Error("Please enter a valid email")
         }
 
         if (!password.current.value.match(PASSWORD_PATTERN)) {
-            return Global_Error({message: "Password must contain at least one lowercase letter, one uppercase letter and one number"})
+            return Global_Error("Password must contain at least one lowercase letter, one uppercase letter and one number")
         }
-        await axios.post("/api/v1/auth/email/login", {
+         axios.post("/api/v1/auth/email/login", {
             email: email.current.value, password: password.current.value, rememberme: rememberme.current.checked,
         }).then(result => {
             if (result.status === 200) {
@@ -70,13 +71,14 @@ const Login = () => {
                     position: "top-right",
                     timer: 1500
                 })
-                return setInterval(() => {
-                    router.push("/")
+                 setInterval(async () => {
+                    await router.push("/")
                 }, 700)
             }
 
 
         }).catch(err => {
+             console.log(err)
             if (err?.response?.status === 404) {
                 return Global_Error("Email or password is incorrect")
             } else if (err?.response?.status === 400) {

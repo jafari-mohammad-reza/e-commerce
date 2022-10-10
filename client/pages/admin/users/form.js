@@ -13,7 +13,7 @@ const Form = () => {
     const [allRoles, setAllRoles] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/roles", {withCredentials: true}).then((result) => {
+        axios.get("/admin/roles", {withCredentials: true}).then((result) => {
             if (result.status === 200) {
                 setAllRoles(result.data.roles)
                 setIsLoading(false)
@@ -30,12 +30,12 @@ const Form = () => {
                 mobileNumber: mobileNumberRef.current.value || undefined,
                 Role: RoleRef.current.value || undefined,
             }
-            await axios.post("http://localhost:5000/admin/users", bodyData, {withCredentials: true}).then(result => {
+            await axios.post("/admin/users", bodyData, {withCredentials: true}).then(result => {
                 console.log(result)
                 if (result.status === 200) {
                     Global_Success("user has been created successfully");
-                    return setInterval(() => {
-                        router.push("/admin/users")
+                    setInterval(async () => {
+                        await router.push("/admin/users")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")

@@ -11,7 +11,7 @@ const EditForm = () => {
     const [allCategories, setAllCategories] = useState([])
     const [image, setImage] = useState(null)
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/categories", {withCredentials: true}).then((result) => {
+        axios.get(`/admin/categories`, {withCredentials: true}).then((result) => {
             if (result.status === 200) {
                 setAllCategories(result.data.categories)
                 setIsLoading(false)
@@ -19,7 +19,7 @@ const EditForm = () => {
         })
     }, [])
     useEffect(() => {
-        router.query.id && axios.get(`http://localhost:5000/admin/categories/${router?.query?.id}`).then(result => {
+        router.query.id && axios.get(`/admin/categories/${router?.query?.id}`).then(result => {
             if (result.status === 200) {
                 const category = result.data.data
                 titleRef.current.value = category.title
@@ -39,11 +39,11 @@ const EditForm = () => {
                 formData.append("image", image[i]);
             }
 
-            router?.query?.id && await axios.put(`http://localhost:5000/admin/categories/${router?.query?.id}`, formData, {withCredentials: true}).then(result => {
+            router?.query?.id && await axios.put(`/admin/categories/${router?.query?.id}`, formData, {withCredentials: true}).then(result => {
                 if (result.status === 200) {
                     Global_Success("category has been Updated successfully");
-                    return setInterval(() => {
-                        router.push("/admin/categories")
+                    setInterval(async () => {
+                        await router.push("/admin/categories")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")

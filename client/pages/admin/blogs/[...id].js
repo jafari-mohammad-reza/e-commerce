@@ -14,14 +14,14 @@ const EditForm = () => {
     const [allCategories, setAllCategories] = useState([])
     const [image, setImage] = useState(null)
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/categories", {withCredentials: true}).then((result) => {
+        axios.get(`/admin/categories`, {withCredentials: true}).then((result) => {
             if (result.status === 200) {
                 setAllCategories(result.data.categories)
             }
         })
     }, [])
     useEffect(() => {
-        axios.get(`http://localhost:5000/admin/blogs/${router?.query?.id}`, {withCredentials: true}).then((result) => {
+        axios.get(`/admin/blogs/${router?.query?.id}`, {withCredentials: true}).then((result) => {
             if (result.status === 200) {
                 const blog = result.data.blog;
                 titleRef.current.value = blog.title
@@ -48,11 +48,11 @@ const EditForm = () => {
                 formData.append("image", image[i]);
             }
 
-            router?.query?.id && axios.put(`http://localhost:5000/admin/blogs/${router?.query?.id}`, formData, {withCredentials: true}).then(result => {
+            router?.query?.id && axios.put(`/admin/blogs/${router?.query?.id}`, formData, {withCredentials: true}).then(result => {
                 if (result.status === 200) {
                     Global_Success("blog has been updated successfully");
-                    return setInterval(() => {
-                        router.push("/admin/blogs")
+                    setInterval(async () => {
+                        await router.push("/admin/blogs")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")

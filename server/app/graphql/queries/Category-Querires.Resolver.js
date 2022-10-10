@@ -71,7 +71,7 @@ const GetCategoryByTitleResolver = {
                 price: 1,
                 discount: 1,
                 discountedPrice: {$subtract: ['$products.price', {$divide: [{$multiply: ['$products.price', '$products.discount']}, 100]}]},
-                imagesURL: {$concat: ['http://localhost:5000/', {$arrayElemAt: ['$products.images', 0]}]},
+                imagesURL: {$concat: ['proc/', {$arrayElemAt: ['$products.images', 0]}]},
                 category: {
                   _id: 1,
                   title: 1,

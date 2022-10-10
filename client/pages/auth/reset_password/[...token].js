@@ -17,26 +17,28 @@ const ResetPassword = () => {
     const submitHandler = async (e) => {
         e.preventDefault()
         if (!password.current.value.match(PASSWORD_PATTERN)) {
-            return Global_Error({message: "Password must contain at least one lowercase letter, one uppercase letter and one number"})
+            return Global_Error("Password must contain at least one lowercase letter, one uppercase letter and one number")
         } else if (password.current.value !== confirmPassword.current.value) {
-            return Global_Error({message: "Make sure that the new password and its confirmation are the same"})
+            return Global_Error("Make sure that the new password and its confirmation are the same")
         }
         await axios.post(`/api/v1/auth/email/reset-password/${token[0]}`, {
             password: password.current.value,
             confirmPassword: confirmPassword.current.value
-        }).then(result => {
+        }).then(async (result) => {
             if (result.status === 200) {
-                Swal.fire({
+               await Swal.fire({
                     icon: "success",
                     title: "Success",
                     text: "Your password has been changed successfully.",
                     position: "top-right",
                     timer: 2000
-                })
-                router.push("/auth/login")
+                }).then(async () => {
+await                 router.push("/auth/login")
+
+               })
             }
         }).catch(err => {
-            return Global_Error({message: err.response.data.errors.message})
+            return Global_Error(err.response.data.errors.message)
         })
     }
     return (

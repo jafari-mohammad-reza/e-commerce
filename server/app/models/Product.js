@@ -41,7 +41,7 @@ ProductSchema.index({title: 'text', overView: 'text', description: 'text'});
 ProductSchema.virtual('imagesURL').get(function() {
   return this.images.map(
       (image) =>
-        `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${image}`,
+        `${process.env.SERVER_ADDRESS}/${image}`,
   );
 });
 

@@ -55,7 +55,7 @@ const roles = ({roles}) => {
                                 <button
                                     className="w-max h-max py-5 px-7 rounded-2xl text-2xl bg-red-600 text-center text-white flex space-x-3 items-center"
                                     onClick={() => {
-                                        axios.delete(`http://localhost:5000/admin/roles/${role._id}`).then(result => {
+                                        axios.delete(`/admin/roles/${role._id}`).then(result => {
                                             console.log(result)
                                             if (result.status === 200) {
                                                 Global_Success("role deleted successfully.")
@@ -75,7 +75,7 @@ const roles = ({roles}) => {
 };
 
 export async function getServerSideProps(context) {
-    const {data} = await axios.get(`http://localhost:5000/admin/roles`, {
+    const {data} = await axios.get(`/admin/roles`, {
         headers: {
             cookie: context.req.headers.cookie
         }

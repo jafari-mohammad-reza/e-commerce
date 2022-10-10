@@ -29,7 +29,7 @@ const BlogSchema = new mongoose.Schema(
 
 
 BlogSchema.virtual('imageURL').get(function() {
-  return `${process.env.BASE_URL}:${process.env.APPLICATION_PORT}/${this.image}`;
+  return `${process.env.SERVER_ADDRESS}/${this.image}`;
 });
 
 /**

@@ -27,7 +27,6 @@ const AdminLayout = ({children}) => {
     return (
         <div className={'grid grid-cols-1 md:grid-cols-12 h-screen overflow-hidden w-full pt-10 px-10 '}>
             <div className={'h-screen col-span-1 flex flex-col items-start justify-start space-y-7'}>
-                <UserLink title={"Dashboard"}/>
                 <UserLink title={"Users"}/>
                 <UserLink title={"Products"}/>
                 <UserLink title={"Categories"}/>
@@ -36,9 +35,9 @@ const AdminLayout = ({children}) => {
                 <UserLink title={"Permissions"}/>
                 <UserLink title={"Orders"}/>
                 <hr/>
-                <button className={'auth_button'} onClick={() => {
+                <button className={'auth_button'} onClick={async () => {
                     dispatch(logout())
-                    router.push("http://localhost:3000/auth/login")
+                   await router.push("http://localhost:3000/auth/login")
                 }}>
                     Logout
                 </button>

@@ -17,14 +17,14 @@ const EditForm = () => {
     const [images, setImages] = useState([])
     const [allCategories, setAllCategories] = useState([])
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/categories", {withCredentials: true}).then((result) => {
+        axios.get(`/admin/categories`, {withCredentials: true}).then((result) => {
             if (result.status === 200) {
                 setAllCategories(result.data.categories)
             }
         })
     }, [])
     useEffect(() => {
-        router.query.id && axios.get(`http://localhost:5000/admin/products/${router?.query?.id}`).then(result => {
+        router.query.id && axios.get(`/admin/products/${router?.query?.id}`).then(result => {
             if (result.status === 200) {
                 const product = result.data.product
                 titleRef.current.value = product.title
@@ -56,11 +56,11 @@ const EditForm = () => {
             for (let i = 0; i < images.length; i++) {
                 formData.append("images", images[i]);
             }
-            router?.query?.id && await axios.put(`http://localhost:5000/admin/products/${router?.query?.id}`, formData, {withCredentials: true}).then(result => {
+            router?.query?.id && await axios.put(`/admin/products/${router?.query?.id}`, formData, {withCredentials: true}).then(result => {
                 if (result.status === 200) {
                     Global_Success("Product has been Updated successfully");
-                    return setInterval(() => {
-                        router.push("/admin/products")
+                    setInterval(async () => {
+                        await router.push("/admin/products")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")

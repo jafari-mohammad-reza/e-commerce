@@ -17,19 +17,19 @@ const Register = () => {
     const submitHandler = async (e) => {
         e.preventDefault()
         if (!username.current.value || !email.current.value || !password.current.value || !confirmPassword.current.value) {
-            return Global_Error({message: "All fields are required"})
+            return Global_Error( "All fields are required")
         }
         if (!email.current.value.endsWith("@gmail.com" || "@yahoo.com" || "@hotmail.com")) {
-            return Global_Error({message: "Please enter a valid email"})
+            return Global_Error( "Please enter a valid email")
         }
         if (username.current.value.length < 3 || username.current.value.length > 16) {
-            return Global_Error({message: "Username must be between 3 and 16 characters"})
+            return Global_Error( "Username must be between 3 and 16 characters")
         }
         if (password.current.value !== confirmPassword.current.value) {
-            return Global_Error({message: "Passwords do not match"})
+            return Global_Error( "Passwords do not match")
         }
         if (!password.current.value.match(PASSWORD_PATTERN)) {
-            return Global_Error({message: "Password must contain at least one lowercase letter, one uppercase letter and one number"})
+            return Global_Error( "Password must contain at least one lowercase letter, one uppercase letter and one number")
         }
         await axios.post("/api/v1/auth/email/register", {
             username: username.current.value,
@@ -46,8 +46,8 @@ const Register = () => {
                     position: "top-right",
                     timer: 1500
                 })
-                setInterval(() => {
-                    router.push("/auth/verify_account")
+                setInterval(async () => {
+                    await router.push("/auth/verify_account")
                 }, 700)
             }
         }).catch(err => {

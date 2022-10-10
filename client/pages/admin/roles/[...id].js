@@ -12,7 +12,7 @@ const EditForm = () => {
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        router.query.id && axios.get(`http://localhost:5000/admin/roles/${router?.query?.id}`).then(result => {
+        router.query.id && axios.get(`/admin/roles/${router?.query?.id}`).then(result => {
             if (result.status === 200) {
                 const role = result.data.role
                 setTitle(role.title)
@@ -22,7 +22,7 @@ const EditForm = () => {
         })
     }, [router.query.id])
     useEffect(() => {
-        axios.get("http://localhost:5000/admin/permissions", {withCredentials: true}).then((result) => {
+        axios.get("/admin/permissions", {withCredentials: true}).then((result) => {
             if (result.status === 200) {
                 setAllPermissions(result.data.permissions)
             }
@@ -38,12 +38,12 @@ const EditForm = () => {
                 title,
                 permissions: [...new Set(permissions.map(permission => permission._id))]
             }
-            router.query.id && await axios.put(`http://localhost:5000/admin/roles/${router.query.id}`, bodyData, {withCredentials: true}).then(result => {
+            router.query.id && await axios.put(`/admin/roles/${router.query.id}`, bodyData, {withCredentials: true}).then(result => {
                 console.log(result)
                 if (result.status === 200) {
                     Global_Success("role has been updated successfully");
-                    return setInterval(() => {
-                        router.push("/admin/roles")
+                    setInterval(async () => {
+                        await router.push("/admin/roles")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")

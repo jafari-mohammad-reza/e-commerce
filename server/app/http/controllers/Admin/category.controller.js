@@ -9,7 +9,7 @@ const {isValidObjectId} = require('mongoose');
 const path = require('path');
 const {deleteImageFromPath} = require('../../../utils/imageUtils');
 const redisClient = require('../../../conf/redisConfiguration');
-const {valueToObjectId} = require('../../../utils/functions');
+const {valueToObjectId, copyObject} = require('../../../utils/functions');
 module.exports = new (class AdminCategoryController extends DefaultController {
   /**
    * create a new category with parent or without parent

@@ -44,7 +44,9 @@ const Information = () => {
         }).then((result) => {
             if (result?.data?.UpdateProfile.statusCode) {
                 Global_Success("Your information updated successfully")
-                setInterval( () => router.push("/auth/login") , 1500)
+                setInterval( async () => {
+                    await router.push("/auth/login")
+                } , 1500)
             }
         }).catch(err => {
             console.log(err)

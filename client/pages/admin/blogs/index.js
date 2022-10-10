@@ -58,7 +58,7 @@ const blogs = ({blogs}) => {
                                 <button
                                     className="w-max h-max py-5 px-7 rounded-2xl text-2xl bg-red-600 text-center text-white flex space-x-3 items-center"
                                     onClick={() => {
-                                        axios.delete(`http://localhost:5000/admin/blogs/${blog._id}`).then(result => {
+                                        axios.delete(`/admin/blogs/${blog._id}`).then(result => {
                                             console.log(result)
                                             if (result.status === 200) {
                                                 Global_Success("blog deleted successfully.")
@@ -78,7 +78,7 @@ const blogs = ({blogs}) => {
 };
 
 export async function getServerSideProps(context) {
-    const {data} = await axios.get(`http://localhost:5000/admin/blogs`, {
+    const {data} = await axios.get(`/admin/blogs`, {
         headers: {
             cookie: context.req.headers.cookie
         }

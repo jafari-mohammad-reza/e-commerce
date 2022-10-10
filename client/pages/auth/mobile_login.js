@@ -15,13 +15,13 @@ const MobileLogin = () => {
     const dispatch = useDispatch()
     const resendCode = async () => {
         if (!mobile.current.value) {
-            return Global_Error({message: "Please insert your mobile number first"})
+            return Global_Error( "Please insert your mobile number first")
         }
     }
     const submitHandler = async (e) => {
         e.preventDefault()
         if (!mobile.current.value) {
-            return Global_Error({message: "Please insert your mobile number first"})
+            return Global_Error( "Please insert your mobile number first")
         }
         if (loginStage === "get-otp") {
             await axios.post("api/v1/auth/mobile/get-otp", {mobile: mobile.current.value}).then(result => {
@@ -30,35 +30,37 @@ const MobileLogin = () => {
                 }
             }).catch(err => {
                 console.log(err)
-                return Global_Error({message: "Something went wong."})
+                return Global_Error( "Something went wong.")
             })
         } else if (loginStage === "validate-otp") {
             if (!otp.current.value) {
-                return Global_Error({message: "Please insert the code we have sent yo your phone"})
+                return Global_Error( "Please insert the code we have sent yo your phone")
             }
             await axios.post("/api/v1/auth/mobile/validate-otp", {
                 mobile: mobile.current.value,
                 otp: otp.current.value
-            }).then(result => {
+            }).then(async (result) => {
                 if (typeof window !== "undefined") {
                     localStorage.setItem("user_info", JSON.stringify(result.data.credentials))
                 }
                 dispatch(setCredits(result.data.credentials))
                 if (result.status === 200) {
-                    Swal.fire({
+                    await Swal.fire({
                         icon: "success",
                         title: "Success",
                         text: "you have been logged in successfully.",
                         timer: 1500
+                    }).then(async () => {
+await                     router.push("/")
+
                     })
-                    return router.push("/")
                 }
             }).catch(err => {
                 console.log(err)
                 if (err.response.status === 404) {
-                    return Global_Error({message: "Please refresh page and insert you number again"})
+                    return Global_Error( "Please refresh page and insert you number again")
                 }
-                return Global_Error({message: err.response.data.errors.message})
+                return Global_Error( err.response.data.errors.message)
             })
         }
     }

@@ -26,9 +26,9 @@ const VerifyAccount = () => {
         }).catch(err => {
             console.log(err)
             if (err.response.status === 400 || err.response.status === 404) {
-                return Global_Error({message: "There is no verification code"})
+                return Global_Error("There is no verification code")
             } else {
-                return Global_Error({message: err.response.data.errors.message})
+                return Global_Error(err.response.data.errors.message)
             }
         })
 
@@ -36,10 +36,10 @@ const VerifyAccount = () => {
     const submitHandler = async (e) => {
         e.preventDefault()
         if (!code.current.value) {
-            return Global_Error({message: "Please insert the code we have sent you"})
+            return Global_Error("Please insert the code we have sent you")
         }
-        if (code.current.value.length !== 10) {
-            return Global_Error({message: "Make sure to insert exact same code we have sent you."})
+        if (code.current.value.length > 10) {
+            return Global_Error("Make sure to insert exact same code we have sent you.")
         }
         await axios.post("/api/v1/auth/email/verify-account", {code: code.current.value}).then(result => {
             if (result.status === 200) {
@@ -50,15 +50,15 @@ const VerifyAccount = () => {
                     timer: 1500
                 })
                 removeCookie("verificationToken")
-                setInterval(() => {
-                    return router.push("/auth/login")
+                setInterval(async () => {
+                    await router.push("/auth/login")
                 }, 1000)
             }
         }).catch(err => {
             if (err.response.status === 400 || err.response.status === 404) {
-                return Global_Error({message: "Make sure to insert a valid code. click on resend link if you need a new code"})
+                return Global_Error("Make sure to insert a valid code. click on resend link if you need a new code")
             } else {
-                return Global_Error({message: err.response.data.errors.message})
+                return Global_Error(err.response.data.errors.message)
             }
 
         })

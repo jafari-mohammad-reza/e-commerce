@@ -12,11 +12,11 @@ const Form = () => {
         try {
 
 
-            await axios.post(`http://localhost:5000/admin/permissions/`, {title: titleRef.current.value}, {withCredentials: true}).then(result => {
+            await axios.post(`/admin/permissions/`, {title: titleRef.current.value}, {withCredentials: true}).then(result => {
                 if (result.status === 201) {
                     Global_Success("permission has been created successfully");
-                    return setInterval(() => {
-                        router.push("/admin/permissions")
+                    setInterval(async () => {
+                        await router.push("/admin/permissions")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")

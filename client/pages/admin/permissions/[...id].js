@@ -9,7 +9,7 @@ const EditForm = () => {
     const [title, setTitle] = useState("")
     const [isLoading, setIsLoading] = useState(true)
     useEffect(() => {
-        router.query.id && axios.get(`http://localhost:5000/admin/permissions/${router?.query?.id}`).then(result => {
+        router.query.id && axios.get(`/admin/permissions/${router?.query?.id}`).then(result => {
             const permission = result.data.permission
             if (result.status === 200) {
                 setTitle(permission.title)
@@ -20,12 +20,12 @@ const EditForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         try {
-            router.query.id && await axios.put(`http://localhost:5000/admin/permissions/${router.query.id}`, {title}, {withCredentials: true}).then(result => {
+            router.query.id && await axios.put(`/admin/permissions/${router.query.id}`, {title}, {withCredentials: true}).then(result => {
                 console.log(result)
                 if (result.status === 200) {
                     Global_Success("permission has been updated successfully");
-                    return setInterval(() => {
-                        router.push("/admin/permissions")
+                    setInterval(async () => {
+                        await router.push("/admin/permissions")
                     }, 2000)
                 } else {
                     return Global_Message("Something happened")
